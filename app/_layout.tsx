@@ -1,3 +1,6 @@
+require('react-native-ui-lib/config').setConfig({appScheme: 'default'});
+import {Colors} from "react-native-ui-lib";
+
 import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
 import {useFonts} from 'expo-font';
 import {Stack} from 'expo-router';
@@ -7,6 +10,7 @@ import {useEffect} from 'react';
 import 'react-native-reanimated';
 
 import {useColorScheme} from '@/hooks/useColorScheme';
+import {SafeAreaProvider} from "react-native-safe-area-context";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 setTimeout(function () {
@@ -15,6 +19,8 @@ setTimeout(function () {
 
 export default function RootLayout() {
     const colorScheme = useColorScheme();
+    Colors.setScheme(colorScheme === 'dark' ? 'dark' : 'light');
+
     const [loaded] = useFonts({
         SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     });
@@ -30,12 +36,14 @@ export default function RootLayout() {
     }
 
     return (
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <Stack>
-                <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
-                <Stack.Screen name="+not-found"/>
-            </Stack>
-            <StatusBar style="auto"/>
-        </ThemeProvider>
+        <SafeAreaProvider>
+            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+                <Stack>
+                    <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
+                    <Stack.Screen name="+not-found"/>
+                </Stack>
+                <StatusBar style="auto"/>
+            </ThemeProvider>
+        </SafeAreaProvider>
     );
 }

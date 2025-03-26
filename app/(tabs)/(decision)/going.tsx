@@ -1,11 +1,12 @@
 import {ScrollView, StyleSheet} from "react-native";
 import {SafeThemedView} from "@/components/SafeThemedView";
-import {ThemedText} from "@/components/ThemedText";
+import {Styles} from "@/constants/Styles";
+import {Text} from "react-native-ui-lib";
 
 export default function TabGoing() {
     return (
-        <SafeThemedView style={styles.container}>
-            <ThemedText style={styles.whoGoText}>Who's Going?</ThemedText>
+        <SafeThemedView style={Styles.container}>
+            <Text style={styles.whoGoText}>Who's Going?</Text>
             <ScrollView>
 
             </ScrollView>
@@ -13,9 +14,7 @@ export default function TabGoing() {
     )
 }
 
-
 const styles = StyleSheet.create({
-    container: {height: '100%'},
     whoGoText: {
         fontWeight: 'bold',
         textAlign: 'center',

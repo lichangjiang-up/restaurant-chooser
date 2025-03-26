@@ -1,8 +1,8 @@
 import {StyleSheet, Image, Platform} from 'react-native';
 import {Link} from 'expo-router';
 import {Styles} from '@/constants/Styles';
-import {ThemedText} from "@/components/ThemedText";
 import {SafeThemedView} from "@/components/SafeThemedView";
+import {Colors, Text} from "react-native-ui-lib";
 
 const img_url = Platform.select({
     ios: require('@/assets/images/img/its-decision-time.ios.png'),
@@ -19,7 +19,7 @@ export default function TabDecisionScreen() {
                     source={img_url}
                     style={styles.foodImage}/>
             </Link>
-            <ThemedText style={styles.hintText}>(click the food to get going)</ThemedText>
+            <Text color={Colors.$textDefault} style={styles.hintText}>(click the food to get going)</Text>
         </SafeThemedView>
     );
 }
