@@ -4,15 +4,15 @@ import {ReactNode, useContext, useState} from "react";
 import {Button, ButtonSize, Colors, Picker, TextField} from "react-native-ui-lib";
 import {Validator} from "react-native-ui-lib/src/components/textField/types";
 import {ThemedView} from "@/components/ThemedView";
-import {Restaurant, storageListByTyp, StorageTyp} from "@/constants/Storage";
+import {Restaurant, RESTAURANT_STORAGE, storageListByTyp} from "@/constants/Storage";
 import {router} from "expo-router";
-import {ToastContext} from "@/components/ui/ToastProvider";
-import {useAsyncStorage} from "@react-native-async-storage/async-storage";
+import {ToastContext} from "@/components/provider/ToastProvider";
 
 const pricePickerItems = [1, 2, 3, 4, 5]
     .map(String)
     .map((v) =>
         <Picker.Item key={v}
+                     labelStyle={{lineHeight: 40}}
                      label={v}
                      value={v}/>);
 
@@ -20,12 +20,14 @@ const ratingPickerItems = [1, 2, 3, 4, 5]
     .map(String)
     .map((v) =>
         <Picker.Item key={v}
+                     labelStyle={{lineHeight: 40}}
                      label={v}
                      value={v}/>);
 
 const cuisinePickerItems = ['Algerian', 'American', 'BBQ', 'Chinese', 'Other']
     .map((v, index) => <Picker.Item
         key={index}
+        labelStyle={{lineHeight: 40}}
         label={v}
         value={v}/>);
 
@@ -38,9 +40,6 @@ export default function TabAddScreen({data}: { data?: any }) {
     const [formData, setFormData] = useState(data || new Restaurant());
 
     const [isSaving, setSaving] = useState(false);
-
-    const hook = useAsyncStorage(StorageTyp.RESTAURANT)
-
 
     function updateFormData(key: string, value: any) {
         setFormData(Object.assign({}, formData, {[key]: value}))
@@ -88,15 +87,16 @@ export default function TabAddScreen({data}: { data?: any }) {
         setTimeout(() => {
             formData.key ||= new Date().getTime().toString();
             console.log(formData.key);
-            storageListByTyp(hook, formData.key, formData).then(() => {
+            try {
+                storageListByTyp(RESTAURANT_STORAGE, formData.key, formData);
                 showToast('Restaurant saved');
                 router.back();
-            }).catch((err) => {
+            } catch (err) {
                 showToast('Restaurant save failed', 'error');
                 console.log(err);
-            }).finally(() => {
+            } finally {
                 setSaving(false);
-            });
+            }
         }, 1000);
     }
 
@@ -112,8 +112,8 @@ export default function TabAddScreen({data}: { data?: any }) {
                 {getTextField('address', 'Address', g6Len, vMsg, 128)}
                 {getTextField('webSite', 'Website', checkWebsite, ['Website format mismatch'], 512)}
                 {getPicker('delivery', 'Delivery',
-                    [<Picker.Item key='yes' label='Yes' value='Yes'/>,
-                        <Picker.Item key='no' label='No' value='No'/>], ['required'])}
+                    [<Picker.Item labelStyle={{lineHeight: 40}} key='yes' label='Yes' value='Yes'/>,
+                        <Picker.Item labelStyle={{lineHeight: 40}} key='no' label='No' value='No'/>], ['required'])}
                 <Button
                     disabled={isSaving}
                     label={isSaving ? 'Saving...' : 'Save Restaurant'}

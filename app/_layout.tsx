@@ -9,7 +9,7 @@ import 'react-native-reanimated';
 import {useColorScheme} from '@/hooks/useColorScheme';
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {Colors} from "react-native-ui-lib";
-import {ToastProvider} from "@/components/ui/ToastProvider";
+import {ToastProvider} from "@/components/provider/ToastProvider";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

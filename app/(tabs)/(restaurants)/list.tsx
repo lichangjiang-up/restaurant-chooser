@@ -4,20 +4,33 @@ import {SafeThemedView} from "@/components/SafeThemedView";
 import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
 import {Button, ButtonSize, Colors, ListItem, Text, View} from "react-native-ui-lib";
-import {deleteItem, getListByTyp, Restaurant, StorageTyp} from "@/constants/Storage";
+import {getListByTyp, Restaurant, RESTAURANT_STORAGE} from "@/constants/Storage";
 import {useContext, useEffect, useState} from "react";
-import {ToastContext} from "@/components/ui/ToastProvider";
-import {useAsyncStorage} from "@react-native-async-storage/async-storage";
+import {ToastContext} from "@/components/provider/ToastProvider";
+import {Listener} from 'react-native-mmkv/lib/typescript/src/Types';
+
+let listener: Listener;
 
 export default function TabRestaurantsScreen() {
-    const [lst, setLst] = useState(new Array<Restaurant>());
+    const [mp, setMp] = useState(new Map<string, Restaurant>());
 
-    const hook = useAsyncStorage(StorageTyp.RESTAURANT)
     useEffect(() => {
-        getListByTyp<Restaurant>(hook).then(lst => setLst(lst.sort((r1, r2) => Number(r2.key) - Number(r1.key))));
+        const nMp = getListByTyp<Restaurant>(RESTAURANT_STORAGE);
+        setMp(nMp);
+        if (listener) {
+            listener.remove();
+        }
+        listener = RESTAURANT_STORAGE.addOnValueChangedListener((changedKey) => {
+            const newValue = RESTAURANT_STORAGE.getString(changedKey)
+            if (!newValue) {
+                nMp.delete(changedKey);
+            } else {
+                nMp.set(changedKey, JSON.parse(newValue));
+            }
+            setMp(nMp);
+        });
     }, []);
 
-    console.log('-->', lst);
 
     const {showToast} = useContext(ToastContext);
 
@@ -29,7 +42,7 @@ export default function TabRestaurantsScreen() {
             key={index}>
             <View
                 style={styles.itemCon}>
-                <Text style={styles.itemText} $textDefault>{item.name}</Text>
+                <Text style={styles.itemText} $textDefault>{item.name || item.key}</Text>
                 <Button backgroundColor={Colors.$backgroundNeutralHeavy}
                         color={Colors.$white}
                         label='Delete'
@@ -37,9 +50,8 @@ export default function TabRestaurantsScreen() {
                         size={ButtonSize.large}
                         borderRadius={6}
                         onPress={() => {
-                            deleteItem(hook, item.key).then(() => {
-                                showToast('Restaurant deleted');
-                            });
+                            RESTAURANT_STORAGE.delete(item.key);
+                            showToast('Restaurant deleted');
                         }}/>
             </View>
         </ListItem>;
@@ -47,9 +59,9 @@ export default function TabRestaurantsScreen() {
 
     return (
         <SafeThemedView style={Styles.container}>
-            <FlatList data={lst}
+            <FlatList data={Array.from(mp.values()).sort((a, b) => Number(b.key) - Number(a.key))}
                       style={Styles.flexG1}
-                      keyExtractor={({key}) => key.toString()}
+                      keyExtractor={({key}) => key}
                       renderItem={renderItem}>
             </FlatList>
             <Button

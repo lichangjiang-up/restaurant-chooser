@@ -4,11 +4,11 @@ import {Colors} from "react-native-ui-lib";
 export const Styles = StyleSheet.create({
     cContainer: {justifyContent: 'center', alignItems: 'center', height: '100%', padding: 20},
     container: {
-        padding: 10,
+        padding: 15,
         height: '100%',
     },
     containerPh: {
-        paddingHorizontal: 10,
+        paddingHorizontal: 15,
         height: '100%',
     },
     dNone: {
