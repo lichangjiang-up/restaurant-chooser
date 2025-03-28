@@ -4,12 +4,12 @@ import {Platform, StyleSheet} from 'react-native';
 
 import {HapticTab} from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
-import {IconImage} from "@/components/ui/IconImage";
+import {IconImage, IconImageName} from "@/components/ui/IconImage";
 import {Colors} from "react-native-ui-lib";
 
-const icon_size = 22
 
 export default function TabLayout() {
+    const styles = getStyles();
     return (
         <Tabs
             screenOptions={{
@@ -23,36 +23,42 @@ export default function TabLayout() {
                 name="index"
                 options={{
                     title: 'People',
-                    tabBarIcon: ({color}) => <IconImage size={icon_size} name="people.fill" color={color}/>,
+                    tabBarIcon: getIconImg('people.fill'),
                 }}
             />
             <Tabs.Screen
                 name="(decision)"
                 options={{
                     title: 'Decision',
-                    tabBarIcon: ({color}) => <IconImage size={icon_size} name="decision.fill" color={color}/>,
+                    tabBarIcon: getIconImg('decision.fill'),
                 }}
             />
             <Tabs.Screen
                 name="(restaurants)"
                 options={{
                     title: 'Restaurants',
-                    tabBarIcon: ({color}) => <IconImage size={icon_size} name="restaurants.fill" color={color}/>,
+                    tabBarIcon: getIconImg('restaurants.fill'),
                 }}
             />
         </Tabs>
     );
 }
 
+function getIconImg(name: IconImageName) {
+    return ({color}: { color: string }) => <IconImage size={22} name={name} color={color}/>
+}
 
-const styles = StyleSheet.create({
-    tabBar: Platform.select({
-        ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-        },
-        default: {
-            elevation: 0,
-        },
-    })
-});
+function getStyles() {
+    return StyleSheet.create({
+        tabBar: Platform.select({
+            ios: {
+                // Use a transparent background on iOS to show the blur effect
+                position: 'absolute',
+            },
+            default: {
+                elevation: 0,
+            },
+        })
+    });
+}
+

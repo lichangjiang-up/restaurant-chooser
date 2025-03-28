@@ -11,6 +11,7 @@ const img_url = Platform.select({
 
 
 export default function TabDecisionScreen() {
+    const styles = getStyles()
     return (
         <SafeThemedView style={Styles.cContainer}>
             <Link href='/(tabs)/(decision)/going' style={styles.link}>
@@ -24,19 +25,21 @@ export default function TabDecisionScreen() {
     );
 }
 
-const styles = StyleSheet.create({
-    foodImage: {
-        objectFit: 'contain',
-        maxWidth: '80%',
-        height: 200,
-    },
-    link: {
-        width: '100%',
-        height: 'auto',
-        textAlign: 'center',
-    },
-    hintText: {
-        fontWeight: 'bold',
-        marginTop: 20
-    },
-});
+function getStyles() {
+    return StyleSheet.create({
+        foodImage: {
+            objectFit: 'contain',
+            maxWidth: '80%',
+            height: 200,
+        },
+        link: {
+            width: '100%',
+            height: 'auto',
+            textAlign: 'center',
+        },
+        hintText: {
+            fontWeight: 'bold',
+            marginTop: 20
+        },
+    });
+}
