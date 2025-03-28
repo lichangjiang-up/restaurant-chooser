@@ -7,7 +7,7 @@ enum StorageTyp {
 
 export const RESTAURANT_STORAGE = new MMKV({
     id: StorageTyp.RESTAURANT,
-})
+});
 
 export function storageListByTyp(storage: MMKV, key: string, v: Restaurant | Person) {
     storage.set(key, JSON.stringify(v));

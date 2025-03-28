@@ -1,10 +1,10 @@
-import {Colors, Toast} from "react-native-ui-lib";
+import {Toast, ToastPresets} from "react-native-ui-lib";
 import {createContext, useState} from "react";
 
-export type ToastTyp = ('success' | 'error' | 'loader');
+type ToastTyp = ToastPresets | 'loader';
 
 export const ToastContext = createContext({
-    showToast(message: string, type?: ToastTyp) {
+    showToast(message: string, preset?: ToastTyp) {
     },
     hideToast(dur = 3000) {
     }
@@ -21,20 +21,17 @@ export const ToastProvider = ({children}: { children: React.ReactNode }) => {
     const [toast, setToast] = useState({
         message: '',
         showLoader: false,
-        bg: Colors.$textSuccess,
+        preset: ToastPresets.SUCCESS,
         visible: false,
     });
 
     const showToast = (message: string, typ?: ToastTyp) => {
-        hideToast(typ === 'loader' ? 30000 : 3000);
+        const isLoading = typ === 'loader';
+        hideToast(isLoading ? 30000 : 3000);
         setToast({
             message,
-            bg: {
-                'error': Colors.$textDanger,
-                'success': Colors.$textSuccess,
-                'loader': Colors.$textWarning,
-            }[typ || 'success'],
-            showLoader: typ === 'loader',
+            preset: isLoading ? ToastPresets.OFFLINE : (typ || ToastPresets.SUCCESS),
+            showLoader: isLoading,
             visible: true,
         });
     };
@@ -52,11 +49,8 @@ export const ToastProvider = ({children}: { children: React.ReactNode }) => {
     return (
         <ToastContext.Provider value={{showToast, hideToast}}>
             {children}
-            <Toast message={toast.message}
-                   centerMessage
-                   showLoader={toast.showLoader}
-                   backgroundColor={toast.bg}
-                   visible={toast.visible}/>
+            <Toast {...toast}
+                   centerMessage/>
         </ToastContext.Provider>
     );
 };

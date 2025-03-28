@@ -1,7 +1,7 @@
 import {Styles} from "@/constants/Styles";
 import {ScrollView, StyleSheet} from "react-native";
 import {ReactNode, useContext, useState} from "react";
-import {Button, ButtonSize, Colors, Picker, TextField} from "react-native-ui-lib";
+import {Button, ButtonSize, Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {Validator} from "react-native-ui-lib/src/components/textField/types";
 import {ThemedView} from "@/components/ThemedView";
 import {Restaurant, RESTAURANT_STORAGE, storageListByTyp} from "@/constants/Storage";
@@ -92,7 +92,7 @@ export default function TabAddScreen({data}: { data?: any }) {
                 showToast('Restaurant saved');
                 router.back();
             } catch (err) {
-                showToast('Restaurant save failed', 'error');
+                showToast('Restaurant save failed', ToastPresets.FAILURE);
                 console.log(err);
             } finally {
                 setSaving(false);
