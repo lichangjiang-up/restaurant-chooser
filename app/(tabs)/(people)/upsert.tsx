@@ -4,53 +4,42 @@ import {ReactNode, useContext, useState} from "react";
 import {Button, ButtonSize, Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {Validator} from "react-native-ui-lib/src/components/textField/types";
 import {ThemedView} from "@/components/ThemedView";
-import {Restaurant, RESTAURANT_STORAGE, storageListByTyp} from "@/constants/Storage";
+import {PEOPLE_STORAGE, Person, storageListByTyp} from "@/constants/Storage";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {USW} from "@/constants/UseStateWrapper";
 
-const pricePickerItems = [1, 2, 3, 4, 5]
-    .map(String)
-    .map((v) =>
-        <Picker.Item key={v}
-                     labelStyle={{lineHeight: 40}}
-                     label={v}
-                     value={v}/>);
-
-const ratingPickerItems = [1, 2, 3, 4, 5]
-    .map(String)
-    .map((v) =>
-        <Picker.Item key={v}
-                     labelStyle={{lineHeight: 40}}
-                     label={v}
-                     value={v}/>);
-
-const cuisinePickerItems = ['Algerian', 'American', 'BBQ', 'Chinese', 'Other']
-    .map((v, index) => <Picker.Item
-        key={index}
-        labelStyle={{lineHeight: 40}}
-        label={v}
-        value={v}/>);
 
 const g6Len: Validator[] = (['required', (value?: string) => (value ?? '').length > 6]);
 const vMsg = ['is required', 'is too short']
-const checkWebsite: Validator[] = [(value) => !value || (value.length > 6 && ['http://', 'https://'].every(htp => value.startsWith(htp)))];
+const genderList = ['-', 'Male', 'Female'].map(g => <Picker.Item
+    labelStyle={{lineHeight: 40}}
+    key={g}
+    label={g}
+    value={g}/>);
 
-export default function UpsertRestaurantScreen() {
-    const [usw, setUsw] = useState(new USW(new Restaurant()));
+const personTypList = ['Other', 'Me', 'Family'].map(g => <Picker.Item
+    labelStyle={{lineHeight: 40}}
+    key={g}
+    label={g}
+    value={g}/>);
+
+
+export default function UpsertPersonScreen() {
+    const [usw, setUsw] = useState(new USW(new Person()));
     const formData = usw.v;
 
-    function updateFormData(key: keyof Restaurant, value: any) {
-        setUsw(usw.renewObj({[key]: value}));
+    function updateFormData(key: keyof Person, value: any) {
+        setUsw(usw.renewObj({[key]: value}))
     }
 
     const styles = getStyles();
 
-    function getTextField(key: keyof Restaurant, name: string, validate: Validator | Validator[], validationMessage: string[], maxLength = 30) {
+    function getTextField(key: keyof Person, name: string, validate: Validator | Validator[], validationMessage: string[], maxLength = 30) {
         return <TextField
             key={key}
             multiline={maxLength > 30}
-            placeholder={`Input with restaurant ${name.toLocaleLowerCase()}`}
+            placeholder={`Input with person ${name.toLocaleLowerCase()}`}
             label={name}
             maxLength={maxLength}
             validate={validate}
@@ -63,14 +52,14 @@ export default function UpsertRestaurantScreen() {
             onChangeText={(text) => updateFormData(key, text)}/>;
     }
 
-    function getPicker(key: keyof Restaurant, name: string, children: ReactNode[], validate: Validator | Validator[]) {
+    function getPicker(key: keyof Person, name: string, children: ReactNode[], validate: Validator | Validator[]) {
         return <Picker
             key={key}
             style={[styles.picker, Styles.mb20]}
             value={formData[key] as any}
             validate={validate}
             label={name}
-            placeholder={`Select restaurant ${name.toLocaleLowerCase()}`}
+            placeholder={`Select ${name.toLocaleLowerCase()}`}
             onChange={(text) => updateFormData(key, text)}>
             {children}
         </Picker>;
@@ -80,19 +69,23 @@ export default function UpsertRestaurantScreen() {
 
     function onSavePress() {
         if (!formData.name) {
-            showToast('Restaurant name must not empty', ToastPresets.FAILURE);
+            showToast('Person name must not empty', ToastPresets.FAILURE);
             return;
         }
-        showToast('Restaurant saving...', 'loader');
-        setUsw(usw.renewMarked(true));
+        if (!formData.phone) {
+            showToast('Person phone must not empty', ToastPresets.FAILURE);
+            return;
+        }
+        setUsw(usw.renewMarked(true))
+        showToast('Person saving...', 'loader');
         setTimeout(() => {
             formData.key ||= `r${formData.initLastModifiedAndRet()}`;
             try {
-                storageListByTyp(RESTAURANT_STORAGE, formData.key, formData);
-                showToast('Restaurant saved');
+                storageListByTyp(PEOPLE_STORAGE, formData.key, formData);
+                showToast('Person saved');
                 router.back();
             } catch (err) {
-                showToast('Restaurant save failed', ToastPresets.FAILURE);
+                showToast('Person save failed', ToastPresets.FAILURE);
                 console.log(err);
             } finally {
                 setUsw(usw.renewMarked());
@@ -105,21 +98,16 @@ export default function UpsertRestaurantScreen() {
         <ThemedView style={Styles.hw100}>
             <ScrollView contentContainerStyle={Styles.p10}>
                 {getTextField('name', 'Name', g6Len, vMsg)}
-                {getPicker('cuisine', 'Cuisine', cuisinePickerItems, ['required'])}
-                {getPicker('price', 'Price', pricePickerItems, ['required'])}
-                {getPicker('rating', 'Rating', ratingPickerItems, ['required'])}
                 {getTextField('phone', 'Phone number', g6Len, vMsg, 16)}
-                {getTextField('address', 'Address', g6Len, vMsg, 128)}
-                {getTextField('webSite', 'Website', checkWebsite, ['Website format mismatch'], 512)}
-                {getPicker('delivery', 'Delivery',
-                    [<Picker.Item labelStyle={{lineHeight: 40}} key='yes' label='Yes' value='Yes'/>,
-                        <Picker.Item labelStyle={{lineHeight: 40}} key='no' label='No' value='No'/>], ['required'])}
+                {getPicker('gender', 'Gender', genderList, ['required'])}
+                {getPicker('relation', 'Relation', personTypList, ['required'])}
                 <Button
                     disabled={usw.marked}
-                    label={usw.marked ? 'Saving...' : 'Save Restaurant'}
+                    label={usw.marked ? 'Saving...' : 'Save Person'}
                     backgroundColor={Colors.$backgroundNeutralHeavy}
                     borderRadius={14}
                     size={ButtonSize.large}
+                    labelStyle={Styles.lh30}
                     onPress={onSavePress}
                     color={Colors.$white}
                 />

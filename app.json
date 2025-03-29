@@ -14,8 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/adaptive-icon.png"
       },
       "package": "com.anonymous.restaurantchooser"
     },
@@ -29,9 +28,9 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/img/splash.png",
-          "imageWidth": 500,
           "resizeMode": "cover",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#ffffff",
+          "enableFullScreenImage_legacy": true
         }
       ]
     ],

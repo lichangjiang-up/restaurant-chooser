@@ -5,15 +5,33 @@ enum StorageTyp {
     PEOPLE = 'p',
 }
 
+abstract class StorageAbs {
+    key!: string
+    lastModified!: number
+
+    initLastModifiedAndRet() {
+        this.lastModified = new Date().getTime();
+        return this.lastModified;
+    }
+}
+
+export function descSortStorage<T extends StorageAbs>(lst: Iterable<T>): T[] {
+    return Array.from(lst).sort((a, b) => b.lastModified - a.lastModified)
+}
+
 export const RESTAURANT_STORAGE = new MMKV({
     id: StorageTyp.RESTAURANT,
 });
 
-export function storageListByTyp(storage: MMKV, key: string, v: Restaurant | Person) {
+export const PEOPLE_STORAGE = new MMKV({
+    id: StorageTyp.PEOPLE,
+});
+
+export function storageListByTyp(storage: MMKV, key: string, v: StorageAbs) {
     storage.set(key, JSON.stringify(v));
 }
 
-export function getListByTyp<T>(storage: MMKV): Map<string, T> {
+export function getListByTyp<T extends StorageAbs>(storage: MMKV): Map<string, T> {
     const keys = storage.getAllKeys();
     const res = new Map<string, T>()
     if (!keys) {
@@ -28,12 +46,17 @@ export function getListByTyp<T>(storage: MMKV): Map<string, T> {
     }, res);
 }
 
-export class Person {
+export type Gender = '-' | 'Male' | 'Female';
+export type PersonRelation = 'Other' | 'Me' | 'Family';
 
+export class Person extends StorageAbs {
+    name!: string;
+    phone!: string;
+    gender: Gender = '-';
+    relation: PersonRelation = 'Other';
 }
 
-export class Restaurant {
-    key!: string;
+export class Restaurant extends StorageAbs {
     name!: string
     cuisine!: string;
     price!: string;

@@ -9,12 +9,11 @@ const img_url = Platform.select({
     default: require('@/assets/images/img/its-decision-time.android.png'),
 });
 
-
 export default function TabDecisionScreen() {
     const styles = getStyles()
     return (
         <SafeThemedView style={Styles.cContainer}>
-            <Link href='/(tabs)/(decision)/going' style={styles.link}>
+            <Link href='/(tabs)/(decision)/who' style={styles.link}>
                 <Image
                     resizeMode='contain'
                     source={img_url}

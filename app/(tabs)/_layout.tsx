@@ -1,46 +1,52 @@
 import {Tabs} from 'expo-router';
 import React from 'react';
-import {Platform, StyleSheet} from 'react-native';
+import {KeyboardAvoidingView, Platform, StyleSheet} from 'react-native';
 
-import {HapticTab} from '@/components/HapticTab';
+import {HapticPressable} from '@/components/ui/HapticPressable';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import {IconImage, IconImageName} from "@/components/ui/IconImage";
 import {Colors} from "react-native-ui-lib";
 
+const tabHeight = 56;
 
 export default function TabLayout() {
     const styles = getStyles();
     return (
-        <Tabs
-            screenOptions={{
-                tabBarActiveTintColor: Colors.$iconDanger,
-                headerShown: false,
-                tabBarButton: HapticTab,
-                tabBarBackground: TabBarBackground,
-                tabBarStyle: styles.tabBar,
-            }}>
-            <Tabs.Screen
-                name="index"
-                options={{
-                    title: 'People',
-                    tabBarIcon: getIconImg('people.fill'),
-                }}
-            />
-            <Tabs.Screen
-                name="(decision)"
-                options={{
-                    title: 'Decision',
-                    tabBarIcon: getIconImg('decision.fill'),
-                }}
-            />
-            <Tabs.Screen
-                name="(restaurants)"
-                options={{
-                    title: 'Restaurants',
-                    tabBarIcon: getIconImg('restaurants.fill'),
-                }}
-            />
-        </Tabs>
+        <KeyboardAvoidingView style={{flex: 1}}
+                              behavior={Platform.select({default: 'height', ios: 'padding'})}
+                              keyboardVerticalOffset={-tabHeight}>
+            <Tabs
+                screenOptions={{
+                    tabBarPosition: 'bottom',
+                    tabBarActiveTintColor: Colors.$iconDanger,
+                    headerShown: false,
+                    tabBarButton: HapticPressable,
+                    tabBarBackground: TabBarBackground,
+                    tabBarStyle: styles.tabBar,
+                }}>
+                <Tabs.Screen
+                    name="(people)"
+                    options={{
+                        title: 'PEOPLE',
+                        tabBarIcon: getIconImg('people.fill'),
+                    }}
+                />
+                <Tabs.Screen
+                    name="(decision)"
+                    options={{
+                        title: 'DECISION',
+                        tabBarIcon: getIconImg('decision.fill'),
+                    }}
+                />
+                <Tabs.Screen
+                    name="(restaurants)"
+                    options={{
+                        title: 'RESTAURANTS',
+                        tabBarIcon: getIconImg('restaurants.fill'),
+                    }}
+                />
+            </Tabs>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -57,6 +63,7 @@ function getStyles() {
             },
             default: {
                 elevation: 0,
+                height: tabHeight,
             },
         })
     });

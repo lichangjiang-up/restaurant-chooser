@@ -1,11 +1,11 @@
 import {Stack} from "expo-router";
 
-export default function TabRestaurantsLayout() {
+export default function TabPeopleLayout() {
     return (
         <Stack>
-            <Stack.Screen name="list" options={{headerShown: false, animation: 'fade'}}/>
+            <Stack.Screen name="index" options={{headerShown: false, animation: 'fade'}}/>
             <Stack.Screen name="upsert" options={{
-                title: 'Add Restaurant',
+                title: 'Person',
                 animation: 'fade',
             }}/>
         </Stack>

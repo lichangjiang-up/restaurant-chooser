@@ -4,26 +4,31 @@ import {SafeThemedView} from "@/components/SafeThemedView";
 import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
 import {Button, ButtonSize, Colors, Text, View} from "react-native-ui-lib";
-import {descSortStorage, getListByTyp, Restaurant, RESTAURANT_STORAGE} from "@/constants/Storage";
+import {
+    descSortStorage,
+    getListByTyp,
+    PEOPLE_STORAGE,
+    Person,
+} from "@/constants/Storage";
 import {useContext, useEffect, useState} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {HapticPressable} from "@/components/ui/HapticPressable";
 import {USW} from "@/constants/UseStateWrapper";
+import {HapticPressable} from "@/components/ui/HapticPressable";
 
-export default function TabRestaurantsScreen() {
-    const [usw, setUsw] = useState(new USW(new Map<string, Restaurant>()));
+export default function TabPeopleScreen() {
+    const [mp, setMp] = useState(new USW(new Map<string, Person>()));
 
     useEffect(() => {
-        const nUsw = new USW(getListByTyp<Restaurant>(RESTAURANT_STORAGE));
-        setUsw(nUsw);
-        const listener = RESTAURANT_STORAGE.addOnValueChangedListener((changedKey) => {
-            const newValue = RESTAURANT_STORAGE.getString(changedKey)
+        const nMp = new USW(getListByTyp<Person>(PEOPLE_STORAGE));
+        setMp(nMp);
+        const listener = PEOPLE_STORAGE.addOnValueChangedListener((changedKey) => {
+            const newValue = PEOPLE_STORAGE.getString(changedKey)
             if (!newValue) {
-                nUsw.v.delete(changedKey);
+                nMp.v.delete(changedKey);
             } else {
-                nUsw.v.set(changedKey, JSON.parse(newValue));
+                nMp.v.set(changedKey, JSON.parse(newValue));
             }
-            setUsw(nUsw.renew());
+            setMp(nMp.renew());
         });
         return () => {
             listener.remove();
@@ -35,11 +40,12 @@ export default function TabRestaurantsScreen() {
 
     const styles = getStyles();
 
-    function renderItem({item}: { item: Restaurant }) {
+    function renderItem({item}: { item: Person }) {
         return <HapticPressable
-            onPress={upsertRestaurant('Edit', item.key)}
+            onPress={upsertPerson('Edit', item.key)}
             key={item.key}>
-            <View style={[Styles.borderBottom, Styles.rowBtw, Styles.p10_8]}>
+            <View
+                style={[Styles.borderBottom, Styles.rowBtw, Styles.p10_8]}>
                 <Text style={styles.itemText} $textDefault>{item.name || item.key}</Text>
                 <Button backgroundColor={Colors.$backgroundNeutralHeavy}
                         color={Colors.$white}
@@ -48,8 +54,8 @@ export default function TabRestaurantsScreen() {
                         size={ButtonSize.large}
                         borderRadius={14}
                         onPress={() => {
-                            RESTAURANT_STORAGE.delete(item.key);
-                            showToast('Restaurant deleted');
+                            PEOPLE_STORAGE.delete(item.key);
+                            showToast('Person deleted');
                         }}/>
             </View>
         </HapticPressable>;
@@ -57,31 +63,31 @@ export default function TabRestaurantsScreen() {
 
     return (
         <SafeThemedView style={Styles.hw100}>
-            <FlatList data={descSortStorage(usw.v.values())}
+            <FlatList data={descSortStorage(mp.v.values())}
                       style={[Styles.flexG1, Styles.ph5]}
                       keyExtractor={({key}) => key}
                       renderItem={renderItem}>
             </FlatList>
             <Button
-                label='Add Restaurant'
+                label='Add Peron'
                 backgroundColor={Colors.$backgroundNeutralHeavy}
                 borderRadius={14}
                 size={ButtonSize.large}
                 style={Styles.m15}
                 labelStyle={Styles.lh30}
-                onPress={upsertRestaurant('Add')}
+                onPress={upsertPerson('Add')}
                 color={Colors.$white}
             />
         </SafeThemedView>
     );
 }
 
-function upsertRestaurant(typ: string, key?: string) {
+function upsertPerson(typ: string, key?: string) {
     return () => {
         router.push({
-            pathname: '/(tabs)/(restaurants)/upsert',
+            pathname: '/(tabs)/(people)/upsert',
             params: {
-                title: `${typ} Restaurant`,
+                title: `${typ} Person`,
                 mode: typ.toLocaleLowerCase(),
                 key,
             }
