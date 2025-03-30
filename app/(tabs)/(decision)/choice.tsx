@@ -1,31 +1,33 @@
-import {SafeAreaView} from "react-native-safe-area-context";
-import {Styles} from "@/constants/Styles";
+import {Styles, VST} from "@/constants/Styles";
 import {FlatList} from "react-native";
 import {Button, Text, ButtonSize, Colors} from "react-native-ui-lib";
-import {Person} from "@/constants/Storage";
+import {descSortStorage} from "@/store/storage";
 import {HapticPressable} from "@/components/ui/HapticPressable";
-
-class VetPerson extends Person {
-    vetoed: boolean = false;
-}
+import {Marker, Person, stateChoicesPeople, statePeople} from "@/store/store";
+import {SafeThemedView} from "@/components/SafeThemedView";
 
 export default function TabChoiceScreen() {
+    const choices = stateChoicesPeople(state => state.v);
+    const people = Object.values(statePeople(state => state.v)) as Person[];
 
-    function renderItem({item}: { item: VetPerson }) {
+    const itemTextStyle: VST = {fontWeight: 400, fontSize: 18, lineHeight: 50};
+
+    function renderItem({item}: { item: Person & Marker }) {
         return <HapticPressable
             onPress={() => {
             }}
             style={[Styles.borderBottom, Styles.rowBtw]}
             key={item.key}>
-            <Text style={[Styles.lh30]} $textDefault>{`${item.name}(${item.relation})`}</Text>
-            <Text style={[Styles.lh30]} $textDefault>{`Vetoed: ${item.vetoed ? 'yes' : 'no'}`}</Text>
+            <Text style={itemTextStyle} $textDefault>{`${item.name}(${item.relation})`}</Text>
+            <Text style={itemTextStyle} $textDefault>{`Vetoed: ${item.marker ? 'yes' : 'no'}`}</Text>
         </HapticPressable>;
     }
 
     return (
-        <SafeAreaView style={Styles.hw100}>
+        <SafeThemedView style={Styles.hw100}>
             <Text style={Styles.title}>Choice Screen</Text>
-            <FlatList style={[Styles.flexG1, Styles.ph15]} renderItem={renderItem} data={[]}
+            <FlatList style={[Styles.flexG1, Styles.ph15]} renderItem={renderItem}
+                      data={descSortStorage(people.filter(p => choices.hasOwnProperty(p.key))) as (Person & Marker)[]}
                       keyExtractor={({key}) => key}/>
             <Button
                 label='Rondomly Choice'
@@ -38,5 +40,5 @@ export default function TabChoiceScreen() {
                 }}
                 color={Colors.$white}
             />
-        </SafeAreaView>);
+        </SafeThemedView>);
 }

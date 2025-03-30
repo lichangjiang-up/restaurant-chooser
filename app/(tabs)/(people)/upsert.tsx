@@ -1,13 +1,12 @@
 import {Styles} from "@/constants/Styles";
 import {ScrollView, StyleSheet} from "react-native";
-import {ReactNode, useContext, useState} from "react";
+import {ReactNode, useContext} from "react";
 import {Button, ButtonSize, Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {Validator} from "react-native-ui-lib/src/components/textField/types";
-import {ThemedView} from "@/components/ThemedView";
-import {PEOPLE_STORAGE, Person, storageListByTyp} from "@/constants/Storage";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {USW} from "@/constants/UseStateWrapper";
+import {SafeThemedView} from "@/components/SafeThemedView";
+import {Person, statePeople, statePerson} from "@/store/store";
 
 
 const g6Len: Validator[] = (['required', (value?: string) => (value ?? '').length > 6]);
@@ -26,12 +25,9 @@ const personTypList = ['Other', 'Me', 'Family'].map(g => <Picker.Item
 
 
 export default function UpsertPersonScreen() {
-    const [usw, setUsw] = useState(new USW(new Person()));
-    const formData = usw.v;
-
-    function updateFormData(key: keyof Person, value: any) {
-        setUsw(usw.renewObj({[key]: value}))
-    }
+    const person = statePerson((state) => state.v);
+    const marker = statePerson((state) => state.marker);
+    const personState = statePerson.getState();
 
     const styles = getStyles();
 
@@ -47,20 +43,20 @@ export default function UpsertPersonScreen() {
             validateOnBlur={true}
             color={Colors.$textDefault}
             containerStyle={[Styles.mb20, styles.tfContainer]}
-            value={formData[key] as any}
+            value={person[key] as any}
             style={styles.tf}
-            onChangeText={(text) => updateFormData(key, text)}/>;
+            onChangeText={(text) => personState.update(key, text)}/>;
     }
 
     function getPicker(key: keyof Person, name: string, children: ReactNode[], validate: Validator | Validator[]) {
         return <Picker
             key={key}
             style={[styles.picker, Styles.mb20]}
-            value={formData[key] as any}
+            value={person[key] as any}
             validate={validate}
             label={name}
             placeholder={`Select ${name.toLocaleLowerCase()}`}
-            onChange={(text) => updateFormData(key, text)}>
+            onChange={(text) => personState.update(key, text)}>
             {children}
         </Picker>;
     }
@@ -68,42 +64,41 @@ export default function UpsertPersonScreen() {
     const {showToast} = useContext(ToastContext);
 
     function onSavePress() {
-        if (!formData.name) {
+        if (!person.name) {
             showToast('Person name must not empty', ToastPresets.FAILURE);
             return;
         }
-        if (!formData.phone) {
+        if (!person.phone) {
             showToast('Person phone must not empty', ToastPresets.FAILURE);
             return;
         }
-        setUsw(usw.renewMarked(true))
+        statePerson.getState().resetMarker(true);
         showToast('Person saving...', 'loader');
         setTimeout(() => {
-            formData.key ||= `r${formData.initLastModifiedAndRet()}`;
+            person.key ||= `p${person.initLastModifiedAndRet()}`;
             try {
-                storageListByTyp(PEOPLE_STORAGE, formData.key, formData);
+                statePeople.getState().add(person.key, person);
                 showToast('Person saved');
                 router.back();
             } catch (err) {
                 showToast('Person save failed', ToastPresets.FAILURE);
                 console.log(err);
             } finally {
-                setUsw(usw.renewMarked());
+                statePerson.getState().resetMarker();
             }
         }, 500);
     }
 
-
     return (
-        <ThemedView style={Styles.hw100}>
+        <SafeThemedView style={Styles.hw100}>
             <ScrollView contentContainerStyle={Styles.p10}>
                 {getTextField('name', 'Name', g6Len, vMsg)}
                 {getTextField('phone', 'Phone number', g6Len, vMsg, 16)}
                 {getPicker('gender', 'Gender', genderList, ['required'])}
                 {getPicker('relation', 'Relation', personTypList, ['required'])}
                 <Button
-                    disabled={usw.marked}
-                    label={usw.marked ? 'Saving...' : 'Save Person'}
+                    disabled={marker}
+                    label={marker ? 'Saving...' : 'Save Person'}
                     backgroundColor={Colors.$backgroundNeutralHeavy}
                     borderRadius={14}
                     size={ButtonSize.large}
@@ -112,7 +107,7 @@ export default function UpsertPersonScreen() {
                     color={Colors.$white}
                 />
             </ScrollView>
-        </ThemedView>
+        </SafeThemedView>
     );
 }
 

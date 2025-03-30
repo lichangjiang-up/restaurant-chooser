@@ -1,13 +1,12 @@
 import {Styles} from "@/constants/Styles";
 import {ScrollView, StyleSheet} from "react-native";
-import {ReactNode, useContext, useState} from "react";
+import {ReactNode, useContext} from "react";
 import {Button, ButtonSize, Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {Validator} from "react-native-ui-lib/src/components/textField/types";
 import {ThemedView} from "@/components/ThemedView";
-import {Restaurant, RESTAURANT_STORAGE, storageListByTyp} from "@/constants/Storage";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {USW} from "@/constants/UseStateWrapper";
+import {Restaurant, stateRestaurant, stateRestaurants} from "@/store/store";
 
 const pricePickerItems = [1, 2, 3, 4, 5]
     .map(String)
@@ -32,18 +31,15 @@ const cuisinePickerItems = ['Algerian', 'American', 'BBQ', 'Chinese', 'Other']
         label={v}
         value={v}/>);
 
+// TODO
 const g6Len: Validator[] = (['required', (value?: string) => (value ?? '').length > 6]);
 const vMsg = ['is required', 'is too short']
 const checkWebsite: Validator[] = [(value) => !value || (value.length > 6 && ['http://', 'https://'].every(htp => value.startsWith(htp)))];
 
 export default function UpsertRestaurantScreen() {
-    const [usw, setUsw] = useState(new USW(new Restaurant()));
-    const formData = usw.v;
-
-    function updateFormData(key: keyof Restaurant, value: any) {
-        setUsw(usw.renewObj({[key]: value}));
-    }
-
+    const restaurant = stateRestaurant((state) => state.v);
+    const marker = stateRestaurant((state) => state.marker);
+    const state = stateRestaurant.getState();
     const styles = getStyles();
 
     function getTextField(key: keyof Restaurant, name: string, validate: Validator | Validator[], validationMessage: string[], maxLength = 30) {
@@ -58,20 +54,20 @@ export default function UpsertRestaurantScreen() {
             validateOnBlur={true}
             color={Colors.$textDefault}
             containerStyle={[Styles.mb20, styles.tfContainer]}
-            value={formData[key] as any}
+            value={restaurant[key] as any}
             style={styles.tf}
-            onChangeText={(text) => updateFormData(key, text)}/>;
+            onChangeText={(text) => state.update(key, text)}/>;
     }
 
     function getPicker(key: keyof Restaurant, name: string, children: ReactNode[], validate: Validator | Validator[]) {
         return <Picker
             key={key}
             style={[styles.picker, Styles.mb20]}
-            value={formData[key] as any}
+            value={restaurant[key] as any}
             validate={validate}
             label={name}
             placeholder={`Select restaurant ${name.toLocaleLowerCase()}`}
-            onChange={(text) => updateFormData(key, text)}>
+            onChange={(text) => state.update(key, text)}>
             {children}
         </Picker>;
     }
@@ -79,27 +75,26 @@ export default function UpsertRestaurantScreen() {
     const {showToast} = useContext(ToastContext);
 
     function onSavePress() {
-        if (!formData.name) {
+        if (!restaurant.name) {
             showToast('Restaurant name must not empty', ToastPresets.FAILURE);
             return;
         }
         showToast('Restaurant saving...', 'loader');
-        setUsw(usw.renewMarked(true));
+        state.resetMarker(true);
         setTimeout(() => {
-            formData.key ||= `r${formData.initLastModifiedAndRet()}`;
+            restaurant.key ||= `r${restaurant.initLastModifiedAndRet()}`;
             try {
-                storageListByTyp(RESTAURANT_STORAGE, formData.key, formData);
+                stateRestaurants.getState().add(restaurant.key, restaurant);
                 showToast('Restaurant saved');
                 router.back();
             } catch (err) {
                 showToast('Restaurant save failed', ToastPresets.FAILURE);
                 console.log(err);
             } finally {
-                setUsw(usw.renewMarked());
+                state.resetMarker();
             }
         }, 500);
     }
-
 
     return (
         <ThemedView style={Styles.hw100}>
@@ -115,8 +110,8 @@ export default function UpsertRestaurantScreen() {
                     [<Picker.Item labelStyle={{lineHeight: 40}} key='yes' label='Yes' value='Yes'/>,
                         <Picker.Item labelStyle={{lineHeight: 40}} key='no' label='No' value='No'/>], ['required'])}
                 <Button
-                    disabled={usw.marked}
-                    label={usw.marked ? 'Saving...' : 'Save Restaurant'}
+                    disabled={marker}
+                    label={marker ? 'Saving...' : 'Save Restaurant'}
                     backgroundColor={Colors.$backgroundNeutralHeavy}
                     borderRadius={14}
                     size={ButtonSize.large}

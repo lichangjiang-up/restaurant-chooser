@@ -4,40 +4,23 @@ import {SafeThemedView} from "@/components/SafeThemedView";
 import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
 import {Button, ButtonSize, Colors, Text, View} from "react-native-ui-lib";
-import {descSortStorage, getListByTyp, Restaurant, RESTAURANT_STORAGE} from "@/constants/Storage";
-import {useContext, useEffect, useState} from "react";
+import {descSortStorage} from "@/store/storage";
+import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {HapticPressable} from "@/components/ui/HapticPressable";
-import {USW} from "@/constants/UseStateWrapper";
+import {Restaurant, stateRestaurant, stateRestaurants} from "@/store/store";
 
 export default function TabRestaurantsScreen() {
-    const [usw, setUsw] = useState(new USW(new Map<string, Restaurant>()));
-
-    useEffect(() => {
-        const nUsw = new USW(getListByTyp<Restaurant>(RESTAURANT_STORAGE));
-        setUsw(nUsw);
-        const listener = RESTAURANT_STORAGE.addOnValueChangedListener((changedKey) => {
-            const newValue = RESTAURANT_STORAGE.getString(changedKey)
-            if (!newValue) {
-                nUsw.v.delete(changedKey);
-            } else {
-                nUsw.v.set(changedKey, JSON.parse(newValue));
-            }
-            setUsw(nUsw.renew());
-        });
-        return () => {
-            listener.remove();
-        };
-    }, []);
-
-
+    const restaurants = Object.values(stateRestaurants(state => state.v)) as Restaurant[];
+    const state = stateRestaurants.getState();
     const {showToast} = useContext(ToastContext);
+
 
     const styles = getStyles();
 
     function renderItem({item}: { item: Restaurant }) {
         return <HapticPressable
-            onPress={upsertRestaurant('Edit', item.key)}
+            onPress={upsertRestaurant(item)}
             key={item.key}>
             <View style={[Styles.borderBottom, Styles.rowBtw, Styles.p10_8]}>
                 <Text style={styles.itemText} $textDefault>{item.name || item.key}</Text>
@@ -48,7 +31,7 @@ export default function TabRestaurantsScreen() {
                         size={ButtonSize.large}
                         borderRadius={14}
                         onPress={() => {
-                            RESTAURANT_STORAGE.delete(item.key);
+                            state.delete(item.key);
                             showToast('Restaurant deleted');
                         }}/>
             </View>
@@ -57,7 +40,7 @@ export default function TabRestaurantsScreen() {
 
     return (
         <SafeThemedView style={Styles.hw100}>
-            <FlatList data={descSortStorage(usw.v.values())}
+            <FlatList data={descSortStorage(restaurants)}
                       style={[Styles.flexG1, Styles.ph5]}
                       keyExtractor={({key}) => key}
                       renderItem={renderItem}>
@@ -69,23 +52,18 @@ export default function TabRestaurantsScreen() {
                 size={ButtonSize.large}
                 style={Styles.m15}
                 labelStyle={Styles.lh30}
-                onPress={upsertRestaurant('Add')}
+                onPress={upsertRestaurant()}
                 color={Colors.$white}
             />
         </SafeThemedView>
     );
 }
 
-function upsertRestaurant(typ: string, key?: string) {
+function upsertRestaurant(restaurant?: Restaurant) {
     return () => {
-        router.push({
-            pathname: '/(tabs)/(restaurants)/upsert',
-            params: {
-                title: `${typ} Restaurant`,
-                mode: typ.toLocaleLowerCase(),
-                key,
-            }
-        });
+        const state = stateRestaurant.getState();
+        state.reset(restaurant ? {...restaurant} as Restaurant : new Restaurant());
+        router.push('/(tabs)/(restaurants)/upsert');
     }
 }
 

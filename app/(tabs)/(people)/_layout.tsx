@@ -5,7 +5,7 @@ export default function TabPeopleLayout() {
         <Stack>
             <Stack.Screen name="index" options={{headerShown: false, animation: 'fade'}}/>
             <Stack.Screen name="upsert" options={{
-                title: 'Person',
+                headerShown: false,
                 animation: 'fade',
             }}/>
         </Stack>

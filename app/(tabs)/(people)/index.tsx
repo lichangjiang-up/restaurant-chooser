@@ -5,44 +5,22 @@ import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
 import {Button, ButtonSize, Colors, Text, View} from "react-native-ui-lib";
 import {
-    descSortStorage,
-    getListByTyp,
-    PEOPLE_STORAGE,
-    Person,
-} from "@/constants/Storage";
-import {useContext, useEffect, useState} from "react";
+    descSortStorage
+} from "@/store/storage";
+import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {USW} from "@/constants/UseStateWrapper";
 import {HapticPressable} from "@/components/ui/HapticPressable";
+import {Person, statePeople, statePerson} from "@/store/store";
 
 export default function TabPeopleScreen() {
-    const [mp, setMp] = useState(new USW(new Map<string, Person>()));
-
-    useEffect(() => {
-        const nMp = new USW(getListByTyp<Person>(PEOPLE_STORAGE));
-        setMp(nMp);
-        const listener = PEOPLE_STORAGE.addOnValueChangedListener((changedKey) => {
-            const newValue = PEOPLE_STORAGE.getString(changedKey)
-            if (!newValue) {
-                nMp.v.delete(changedKey);
-            } else {
-                nMp.v.set(changedKey, JSON.parse(newValue));
-            }
-            setMp(nMp.renew());
-        });
-        return () => {
-            listener.remove();
-        };
-    }, []);
-
-
+    const people = Object.values(statePeople(state => state.v)) as Person[];
     const {showToast} = useContext(ToastContext);
 
     const styles = getStyles();
 
     function renderItem({item}: { item: Person }) {
         return <HapticPressable
-            onPress={upsertPerson('Edit', item.key)}
+            onPress={upsertPerson(item)}
             key={item.key}>
             <View
                 style={[Styles.borderBottom, Styles.rowBtw, Styles.p10_8]}>
@@ -54,7 +32,7 @@ export default function TabPeopleScreen() {
                         size={ButtonSize.large}
                         borderRadius={14}
                         onPress={() => {
-                            PEOPLE_STORAGE.delete(item.key);
+                            statePeople.getState().delete(item.key);
                             showToast('Person deleted');
                         }}/>
             </View>
@@ -63,7 +41,7 @@ export default function TabPeopleScreen() {
 
     return (
         <SafeThemedView style={Styles.hw100}>
-            <FlatList data={descSortStorage(mp.v.values())}
+            <FlatList data={descSortStorage(people)}
                       style={[Styles.flexG1, Styles.ph5]}
                       keyExtractor={({key}) => key}
                       renderItem={renderItem}>
@@ -75,23 +53,17 @@ export default function TabPeopleScreen() {
                 size={ButtonSize.large}
                 style={Styles.m15}
                 labelStyle={Styles.lh30}
-                onPress={upsertPerson('Add')}
+                onPress={upsertPerson()}
                 color={Colors.$white}
             />
         </SafeThemedView>
     );
 }
 
-function upsertPerson(typ: string, key?: string) {
+function upsertPerson(person?: Person) {
     return () => {
-        router.push({
-            pathname: '/(tabs)/(people)/upsert',
-            params: {
-                title: `${typ} Person`,
-                mode: typ.toLocaleLowerCase(),
-                key,
-            }
-        });
+        statePerson.getState().reset(person ? {...person} as Person : new Person());
+        router.push('/(tabs)/(people)/upsert');
     }
 }
 

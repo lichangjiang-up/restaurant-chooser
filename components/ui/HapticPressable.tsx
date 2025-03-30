@@ -1,6 +1,5 @@
 import {PlatformPressable} from '@react-navigation/elements';
 import * as Haptics from 'expo-haptics';
-import {Styles} from "@/constants/Styles";
 import {Props} from "@react-navigation/elements/lib/typescript/commonjs/src/PlatformPressable";
 
 export function HapticPressable(props: Props) {
