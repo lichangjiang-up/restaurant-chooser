@@ -4,9 +4,7 @@ import {SafeThemedView} from "@/components/SafeThemedView";
 import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
 import {Button, ButtonSize, Colors, Text, View} from "react-native-ui-lib";
-import {
-    descSortStorage
-} from "@/store/storage";
+import {descSortStorage, initStorageAbs, StorageAbs} from "@/store/storage";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {HapticPressable} from "@/components/ui/HapticPressable";
@@ -62,8 +60,8 @@ export default function TabPeopleScreen() {
 
 function upsertPerson(person?: Person) {
     return () => {
-        statePerson.getState().reset(person ? {...person} as Person : new Person());
-        router.push('/(tabs)/(people)/upsert');
+        statePerson.getState().reset(initStorageAbs(person));
+        router.push('/(tabs)/(people)/person');
     }
 }
 

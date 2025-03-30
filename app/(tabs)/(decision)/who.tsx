@@ -10,7 +10,6 @@ import {Person, stateChoicesPeople, statePeople} from "@/store/store";
 
 
 export default function TabWho() {
-    const {showToast} = useContext(ToastContext);
     const people = statePeople(state => state.v);
     const choices = stateChoicesPeople(state => state.v);
     const state = stateChoicesPeople.getState();
@@ -27,6 +26,8 @@ export default function TabWho() {
                              }
                          }}></Checkbox>;
     }
+
+    const {showToast} = useContext(ToastContext);
 
     return (
         <SafeThemedView style={Styles.hw100}>

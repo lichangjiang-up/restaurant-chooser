@@ -27,15 +27,22 @@ export const STATE_STORAGE: StateStorage = {
 
 }
 
+export type StorageAbs = {
+    key: string,
+    lastModified: number,
+    initLastModifiedAndRet: () => number,
+}
 
-export abstract class StorageAbs {
-    key!: string
-    lastModified!: number
-
-    initLastModifiedAndRet() {
+export function initStorageAbs<T extends StorageAbs>(t?: T): T {
+    if (t) {
+        return {...t};
+    }
+    const obj = {} as StorageAbs;
+    obj.initLastModifiedAndRet = function () {
         this.lastModified = new Date().getTime();
         return this.lastModified;
     }
+    return obj as T;
 }
 
 export function descSortStorage<T extends StorageAbs>(lst: T[]): T[] {

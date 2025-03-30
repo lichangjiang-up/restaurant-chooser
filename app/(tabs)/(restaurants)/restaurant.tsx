@@ -75,8 +75,8 @@ export default function UpsertRestaurantScreen() {
     const {showToast} = useContext(ToastContext);
 
     function onSavePress() {
-        if (!restaurant.name) {
-            showToast('Restaurant name must not empty', ToastPresets.FAILURE);
+        if (!(restaurant.name && restaurant.cuisine && restaurant.price && restaurant.rating && restaurant.delivery)) {
+            showToast('Name/Cuisine/Price/Rating/Delivery must not empty', ToastPresets.FAILURE);
             return;
         }
         showToast('Restaurant saving...', 'loader');

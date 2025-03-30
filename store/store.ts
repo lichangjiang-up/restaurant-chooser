@@ -6,24 +6,23 @@ import {createJSONStorage, persist} from "zustand/middleware";
 export type Gender = '-' | 'Male' | 'Female';
 export type PersonRelation = 'Other' | 'Me' | 'Family';
 
-export class Person extends StorageAbs {
-    name!: string;
-    phone!: string;
-    gender: Gender = '-';
-    relation: PersonRelation = 'Other';
-}
+export type Person = {
+    name: string;
+    phone: string;
+    gender: Gender;
+    relation: PersonRelation;
+} & StorageAbs;
 
-export class Restaurant extends StorageAbs {
-    name!: string
-    cuisine!: string;
-    price!: string;
-    rating!: string;
-    phone!: string;
+export type Restaurant = {
+    name: string
+    cuisine: string;
+    price: string;
+    rating: string;
+    phone: string;
     address?: string;
     webSite?: string;
-    delivery!: string;
-}
-
+    delivery: string;
+} & StorageAbs;
 
 export type Marker = {
     marker: boolean;
@@ -62,13 +61,11 @@ type StorageMap<T> = {
     add: (key: string, t: T) => void;
     clear: () => void;
     delete: (...keys: string[]) => void;
-    values: () => T[],
-    keys: () => string[],
 }
 
 function newStorageState<T>(name: StorageTyp) {
     return create<StorageMap<T> & Marker>()(persist(
-        (set, get) => ({
+        (set) => ({
             v: {},
             marker: false,
             add: (key: string, t) => set(produce(state => {
@@ -85,8 +82,6 @@ function newStorageState<T>(name: StorageTyp) {
             resetMarker: (marker?: boolean) => set(produce(state => {
                 state.marker = !!marker;
             })),
-            values: () => Object.values(get().v),
-            keys: () => Object.keys(get().v),
         }),
         {name, storage: JSON_STORAGE})
     );
@@ -100,8 +95,8 @@ export enum StorageTyp {
     PERSON = 'pp',
 }
 
-export const statePerson = newObjState<Person>(new Person(), StorageTyp.PERSON);
-export const stateRestaurant = newObjState<Restaurant>(new Restaurant(), StorageTyp.RESTAURANT);
+export const statePerson = newObjState<Person>({} as Person, StorageTyp.PERSON);
+export const stateRestaurant = newObjState<Restaurant>({} as Restaurant, StorageTyp.RESTAURANT);
 
 export const statePeople = newStorageState<Person>(StorageTyp.PEOPLE);
 export const stateRestaurants = newStorageState<Restaurant>(StorageTyp.RESTAURANTS);
