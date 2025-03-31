@@ -4,7 +4,7 @@ import {SafeThemedView} from "@/components/SafeThemedView";
 import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
 import {Button, ButtonSize, Colors, Text, View} from "react-native-ui-lib";
-import {descSortStorage, initStorageAbs, StorageAbs} from "@/store/storage";
+import {descSortStorage} from "@/store/storage";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {HapticPressable} from "@/components/ui/HapticPressable";
@@ -62,7 +62,7 @@ export default function TabRestaurantsScreen() {
 function upsertRestaurant(restaurant?: Restaurant) {
     return () => {
         const state = stateRestaurant.getState();
-        state.reset(initStorageAbs(restaurant));
+        state.reset(restaurant ? {...restaurant} : {} as Restaurant);
         router.push('/(tabs)/(restaurants)/restaurant');
     }
 }

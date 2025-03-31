@@ -6,7 +6,8 @@ import {Validator} from "react-native-ui-lib/src/components/textField/types";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {SafeThemedView} from "@/components/SafeThemedView";
-import {Person, statePeople, statePerson} from "@/store/store";
+import {Person, statePeople, statePerson, StorageTyp} from "@/store/store";
+import {initLastModifiedAndRet} from "@/store/storage";
 
 
 const g6Len: Validator[] = (['required', (value?: string) => (value ?? '').length > 6]);
@@ -64,20 +65,16 @@ export default function UpsertPersonScreen() {
     const {showToast} = useContext(ToastContext);
 
     function onSavePress() {
-        if (!person.name) {
-            showToast('Person name must not empty', ToastPresets.FAILURE);
-            return;
-        }
-        if (!person.phone) {
-            showToast('Person phone must not empty', ToastPresets.FAILURE);
+        if (!(person.name && person.relation)) {
+            showToast('Name/Relation must not empty', ToastPresets.FAILURE);
             return;
         }
         statePerson.getState().resetMarker(true);
         showToast('Person saving...', 'loader');
         setTimeout(() => {
-            person.key ||= `p${person.initLastModifiedAndRet()}`;
             try {
-                statePeople.getState().add(person.key, person);
+                const res = personState.merge(initLastModifiedAndRet(person, StorageTyp.PERSON));
+                statePeople.getState().add(res.key, res);
                 showToast('Person saved');
                 router.back();
             } catch (err) {

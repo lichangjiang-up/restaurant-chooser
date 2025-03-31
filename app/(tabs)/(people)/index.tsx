@@ -4,7 +4,7 @@ import {SafeThemedView} from "@/components/SafeThemedView";
 import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
 import {Button, ButtonSize, Colors, Text, View} from "react-native-ui-lib";
-import {descSortStorage, initStorageAbs, StorageAbs} from "@/store/storage";
+import {descSortStorage} from "@/store/storage";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {HapticPressable} from "@/components/ui/HapticPressable";
@@ -30,6 +30,7 @@ export default function TabPeopleScreen() {
                         size={ButtonSize.large}
                         borderRadius={14}
                         onPress={() => {
+                            console.log(item.key);
                             statePeople.getState().delete(item.key);
                             showToast('Person deleted');
                         }}/>
@@ -60,7 +61,7 @@ export default function TabPeopleScreen() {
 
 function upsertPerson(person?: Person) {
     return () => {
-        statePerson.getState().reset(initStorageAbs(person));
+        statePerson.getState().reset(person ? {...person} : {} as Person);
         router.push('/(tabs)/(people)/person');
     }
 }

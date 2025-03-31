@@ -6,7 +6,8 @@ import {Validator} from "react-native-ui-lib/src/components/textField/types";
 import {ThemedView} from "@/components/ThemedView";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {Restaurant, stateRestaurant, stateRestaurants} from "@/store/store";
+import {Restaurant, stateRestaurant, stateRestaurants, StorageTyp} from "@/store/store";
+import {initLastModifiedAndRet} from "@/store/storage";
 
 const pricePickerItems = [1, 2, 3, 4, 5]
     .map(String)
@@ -82,9 +83,9 @@ export default function UpsertRestaurantScreen() {
         showToast('Restaurant saving...', 'loader');
         state.resetMarker(true);
         setTimeout(() => {
-            restaurant.key ||= `r${restaurant.initLastModifiedAndRet()}`;
             try {
-                stateRestaurants.getState().add(restaurant.key, restaurant);
+                const res = state.merge(initLastModifiedAndRet(restaurant, StorageTyp.RESTAURANT));
+                stateRestaurants.getState().add(res.key, res);
                 showToast('Restaurant saved');
                 router.back();
             } catch (err) {

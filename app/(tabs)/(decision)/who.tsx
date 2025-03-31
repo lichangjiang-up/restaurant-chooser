@@ -15,16 +15,18 @@ export default function TabWho() {
     const state = stateChoicesPeople.getState();
 
     function renderItem({item}: { item: Person }) {
-        return <Checkbox label={`${item.name}(${item.relation})`}
-                         labelStyle={{lineHeight: 56, width: '100%'}}
-                         value={choices.hasOwnProperty(item.key)}
-                         onValueChange={(v) => {
-                             if (!v) {
-                                 state.delete(item.key);
-                             } else {
-                                 state.add(item.key, null);
-                             }
-                         }}></Checkbox>;
+        return <Checkbox
+            key={item.key}
+            label={`${item.name}(${item.relation})`}
+            labelStyle={{lineHeight: 56, width: '100%'}}
+            value={choices.hasOwnProperty(item.key)}
+            onValueChange={(v) => {
+                if (!v) {
+                    state.delete(item.key);
+                } else {
+                    state.add(item.key, null);
+                }
+            }}></Checkbox>;
     }
 
     const {showToast} = useContext(ToastContext);

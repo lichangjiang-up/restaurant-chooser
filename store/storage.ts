@@ -30,19 +30,12 @@ export const STATE_STORAGE: StateStorage = {
 export type StorageAbs = {
     key: string,
     lastModified: number,
-    initLastModifiedAndRet: () => number,
 }
 
-export function initStorageAbs<T extends StorageAbs>(t?: T): T {
-    if (t) {
-        return {...t};
-    }
-    const obj = {} as StorageAbs;
-    obj.initLastModifiedAndRet = function () {
-        this.lastModified = new Date().getTime();
-        return this.lastModified;
-    }
-    return obj as T;
+export function initLastModifiedAndRet<T extends StorageAbs>(v: T, prefix: string) {
+    const lastModified = new Date().getTime();
+    const key = v.key || `${prefix}-${lastModified}`;
+    return {key, lastModified}
 }
 
 export function descSortStorage<T extends StorageAbs>(lst: T[]): T[] {

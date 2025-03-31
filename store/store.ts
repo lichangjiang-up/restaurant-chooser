@@ -33,13 +33,14 @@ type ObjStore<T extends {}> = {
     v: T;
     update: (key: keyof T, v: any) => void;
     reset: (obj: T) => void;
+    merge: (obj: any) => T,
 }
 
 const JSON_STORAGE = createJSONStorage(() => STATE_STORAGE)
 
 export function newObjState<T extends {}>(t: T, name: StorageTyp) {
     return create<ObjStore<T> & Marker>()(persist(
-        (set) => ({
+        (set, get) => ({
             v: t,
             marker: false,
             update: (key: keyof T, v: any) => set(produce(state => {
@@ -51,6 +52,12 @@ export function newObjState<T extends {}>(t: T, name: StorageTyp) {
             reset: (obj: T) => set(_ => {
                 return {v: obj, marker: false};
             }),
+            merge: (obj: any) => {
+                set(produce(state => {
+                    Object.assign(state.v, obj);
+                }));
+                return get().v;
+            },
         }),
         {name, storage: JSON_STORAGE})
     );
@@ -75,8 +82,10 @@ function newStorageState<T>(name: StorageTyp) {
                 return {v: {}};
             }),
             delete: (...keys: string[]) => {
-                if (keys.length > 1) {
-                    set(produce(state => keys.filter((key: string) => delete state.v[key])));
+                if (keys.length > 0) {
+                    set(produce(state => {
+                        keys.filter((key: string) => delete state.v[key]);
+                    }));
                 }
             },
             resetMarker: (marker?: boolean) => set(produce(state => {
