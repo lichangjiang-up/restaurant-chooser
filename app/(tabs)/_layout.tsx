@@ -6,47 +6,51 @@ import {HapticPressable} from '@/components/ui/HapticPressable';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import {IconImage, IconImageName} from "@/components/ui/IconImage";
 import {Colors} from "react-native-ui-lib";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {Styles} from "@/constants/Styles";
 
 const tabHeight = 56;
 
 export default function TabLayout() {
     const styles = getStyles();
     return (
-        <KeyboardAvoidingView style={{flex: 1}}
-                              behavior={Platform.select({default: 'height', ios: 'padding'})}
-                              keyboardVerticalOffset={-tabHeight}>
-            <Tabs
-                screenOptions={{
-                    tabBarPosition: 'bottom',
-                    tabBarActiveTintColor: Colors.$iconDanger,
-                    headerShown: false,
-                    tabBarButton: HapticPressable,
-                    tabBarBackground: TabBarBackground,
-                    tabBarStyle: styles.tabBar,
-                }}>
-                <Tabs.Screen
-                    name="(people)"
-                    options={{
-                        title: 'PEOPLE',
-                        tabBarIcon: getIconImg('people.fill'),
-                    }}
-                />
-                <Tabs.Screen
-                    name="(decision)"
-                    options={{
-                        title: 'DECISION',
-                        tabBarIcon: getIconImg('decision.fill'),
-                    }}
-                />
-                <Tabs.Screen
-                    name="(restaurants)"
-                    options={{
-                        title: 'RESTAURANTS',
-                        tabBarIcon: getIconImg('restaurants.fill'),
-                    }}
-                />
-            </Tabs>
-        </KeyboardAvoidingView>
+        <SafeAreaView style={Styles.hw100}>
+            <KeyboardAvoidingView style={{flex: 1}}
+                                  behavior={Platform.select({default: 'height', ios: 'padding'})}
+                                  keyboardVerticalOffset={-tabHeight}>
+                <Tabs
+                    screenOptions={{
+                        tabBarPosition: 'bottom',
+                        tabBarActiveTintColor: Colors.$iconDanger,
+                        headerShown: false,
+                        tabBarButton: HapticPressable,
+                        tabBarBackground: TabBarBackground,
+                        tabBarStyle: styles.tabBar,
+                    }}>
+                    <Tabs.Screen
+                        name="(people)"
+                        options={{
+                            title: 'PEOPLE',
+                            tabBarIcon: getIconImg('people.fill'),
+                        }}
+                    />
+                    <Tabs.Screen
+                        name="(decision)"
+                        options={{
+                            title: 'DECISION',
+                            tabBarIcon: getIconImg('decision.fill'),
+                        }}
+                    />
+                    <Tabs.Screen
+                        name="(restaurants)"
+                        options={{
+                            title: 'RESTAURANTS',
+                            tabBarIcon: getIconImg('restaurants.fill'),
+                        }}
+                    />
+                </Tabs>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
 

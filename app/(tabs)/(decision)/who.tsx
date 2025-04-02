@@ -1,5 +1,5 @@
 import {FlatList} from "react-native";
-import {VSafe} from "@/components/VSafe";
+import {VFull} from "@/components/VFull";
 import {Styles} from "@/constants/Styles";
 import {Button, ButtonSize, Checkbox, Colors, Text, ToastPresets} from "react-native-ui-lib";
 import {descSortStorage} from "@/store/storage";
@@ -33,7 +33,7 @@ export default function TabWho() {
     const {showToast} = useContext(ToastContext);
 
     return (
-        <VSafe>
+        <VFull>
             <Text style={Styles.title}>Who's Going?</Text>
             <FlatList style={[Styles.flexG1, Styles.ph15]}
                       renderItem={renderItem}
@@ -53,7 +53,7 @@ export default function TabWho() {
                 }}
                 color={Colors.$white}
             />
-        </VSafe>
+        </VFull>
     )
 }
 

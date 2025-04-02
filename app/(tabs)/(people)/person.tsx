@@ -4,7 +4,7 @@ import {useContext, useState} from "react";
 import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {VSafe} from "@/components/VSafe";
+import {VFull} from "@/components/VFull";
 import {checkName, checkPhone, createMarkerStore, Person, statePeople, statePerson, StorageTyp} from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
 import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
@@ -104,7 +104,7 @@ export default function UpsertPersonScreen() {
     }
 
     return (
-        <VSafe>
+        <VFull>
             <ScrollView contentContainerStyle={Styles.p10}>
                 {getTextField('name', 'Name')}
                 {getTextField('phone', 'Phone number', 16)}
@@ -117,7 +117,7 @@ export default function UpsertPersonScreen() {
                     onPress={onSavePress}
                 />
             </ScrollView>
-        </VSafe>
+        </VFull>
     );
 }
 

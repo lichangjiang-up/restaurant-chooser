@@ -4,7 +4,7 @@ import {Restaurant, stateChoiceRestaurant} from "@/store/state";
 import {router} from "expo-router";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {VSafe} from "@/components/VSafe";
+import {VFull} from "@/components/VFull";
 
 
 export default function TabEnjoyScreen() {
@@ -27,7 +27,7 @@ export default function TabEnjoyScreen() {
         </View>;
     }
 
-    return <VSafe style={Styles.center}>
+    return <VFull style={Styles.center}>
         <View style={{width: '100%'}}>
             <ScrollView style={{height: 'auto', width: '100%'}}>
                 <View style={[Styles.center, Styles.ph15]}>
@@ -43,7 +43,7 @@ export default function TabEnjoyScreen() {
                 </View>
             </ScrollView>
         </View>
-    </VSafe>;
+    </VFull>;
 }
 
 const styles = StyleSheet.create({

@@ -1,7 +1,7 @@
 import {StyleSheet, Image, Platform} from 'react-native';
 import {Link} from 'expo-router';
 import {Styles} from '@/constants/Styles';
-import {VSafe} from "@/components/VSafe";
+import {VFull} from "@/components/VFull";
 import {Colors, Text} from "react-native-ui-lib";
 
 const img_url = Platform.select({
@@ -12,7 +12,7 @@ const img_url = Platform.select({
 export default function TabDecisionScreen() {
     const styles = getStyles()
     return (
-        <VSafe style={Styles.cContainer}>
+        <VFull style={Styles.cContainer}>
             <Link href='/(tabs)/(decision)/who' style={styles.link}>
                 <Image
                     resizeMode='contain'
@@ -20,7 +20,7 @@ export default function TabDecisionScreen() {
                     style={styles.foodImage}/>
             </Link>
             <Text color={Colors.$textDefault} style={styles.hintText}>(click the food to get going)</Text>
-        </VSafe>
+        </VFull>
     );
 }
 

@@ -15,7 +15,7 @@ import {
 } from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
 import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
-import {VSafe} from "@/components/VSafe";
+import {VFull} from "@/components/VFull";
 import LargeBtn from "@/components/ui/LargeBtn";
 
 
@@ -111,7 +111,7 @@ export default function UpsertRestaurantScreen() {
     }
 
     return (
-        <VSafe>
+        <VFull>
             <ScrollView contentContainerStyle={Styles.p10}>
                 {getTextField('name', 'Name')}
                 {getPicker('cuisine', 'Cuisine', ['Algerian', 'American', 'BBQ', 'Chinese', 'Other'].map(newValueLabel))}
@@ -128,7 +128,7 @@ export default function UpsertRestaurantScreen() {
                     onPress={onSavePress}
                 />
             </ScrollView>
-        </VSafe>
+        </VFull>
     );
 }
 

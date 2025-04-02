@@ -12,7 +12,7 @@ import {
 } from "@/store/state";
 import {create} from "zustand/react";
 import {router} from "expo-router";
-import {VSafe} from "@/components/VSafe";
+import {VFull} from "@/components/VFull";
 import {PlatformPressable} from "@react-navigation/elements";
 import LargeBtn from "@/components/ui/LargeBtn";
 import MyModal from "@/components/ui/MyModal";
@@ -83,7 +83,7 @@ export default function TabChoiceScreen() {
         </>;
     }
 
-    return <VSafe>
+    return <VFull>
         <MyModal
             visible={show}
             onPress={() => showOrHide()}
@@ -97,7 +97,7 @@ export default function TabChoiceScreen() {
         <LargeBtn
             label='Rondomly Choice'
             onPress={() => showOrHide(true)}/>
-    </VSafe>;
+    </VFull>;
 }
 
 function getRestaurantText(restaurant: Restaurant) {

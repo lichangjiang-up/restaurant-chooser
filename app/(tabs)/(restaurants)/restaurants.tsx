@@ -9,7 +9,7 @@ import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {ToastPresets} from "react-native-ui-lib";
 import LargeBtn from '@/components/ui/LargeBtn';
-import {VSafe} from "@/components/VSafe";
+import {VFull} from "@/components/VFull";
 
 export default function TabRestaurantsScreen() {
     const restaurants = Object.values(stateRestaurants(state => state.v)) as Restaurant[];
@@ -33,7 +33,7 @@ export default function TabRestaurantsScreen() {
 
 
     return (
-        <VSafe>
+        <VFull>
             <FlatList data={descSortStorage(restaurants)}
                       style={[Styles.flexG1]}
                       keyExtractor={({key}) => key}
@@ -43,7 +43,7 @@ export default function TabRestaurantsScreen() {
                 label='Add Restaurant'
                 onPress={upsertRestaurant()}
             />
-        </VSafe>
+        </VFull>
     );
 }
 
