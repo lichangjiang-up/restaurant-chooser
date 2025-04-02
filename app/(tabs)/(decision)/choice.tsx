@@ -1,21 +1,22 @@
 import {Styles, VST} from "@/constants/Styles";
-import {FlatList, Modal, Pressable, StyleSheet, Text, View} from "react-native";
+import {FlatList, StyleSheet, Text} from "react-native";
 import {descSortStorage} from "@/store/storage";
 import {
     Marker,
-    methodRestaurant,
     Person,
     Restaurant,
     stateChoiceRestaurant,
     stateChoicesPeople,
     statePeople,
-    stateRestaurants
-} from "@/store/store";
+    stateRestaurants, wrapperRestaurant
+} from "@/store/state";
 import {create} from "zustand/react";
 import {router} from "expo-router";
 import {VSafe} from "@/components/VSafe";
 import {PlatformPressable} from "@react-navigation/elements";
 import LargeBtn from "@/components/ui/LargeBtn";
+import MyModal from "@/components/ui/MyModal";
+import {useEffect} from "react";
 
 type DialogStore = {
     show: boolean;
@@ -24,6 +25,7 @@ type DialogStore = {
 
 const dialogStore = create<DialogStore>()((set) => ({
     show: false,
+
     showOrHide: (show) => set(_ => ({show: !!show})),
 }))
 
@@ -33,6 +35,10 @@ export default function TabChoiceScreen() {
     const people = Object.values(statePeople(state => state.v)) as Person[];
     const itemTextStyle: VST = {fontWeight: 400, fontSize: 16, lineHeight: 50};
     const {show, showOrHide} = dialogStore();
+
+    useEffect(() => {
+        showOrHide();
+    }, []);
 
     function renderItem({item}: { item: Person & Marker, index: number }) {
         return <PlatformPressable
@@ -45,24 +51,20 @@ export default function TabChoiceScreen() {
         </PlatformPressable>;
     }
 
-    function newDiaContent(restaurant: Restaurant | null) {
+    function newModalContent(restaurant: Restaurant | false) {
         let title = 'No restaurants';
         let text = 'Please go to the restaurant page to add a restaurant first!';
         let accept = <></>;
-        if (restaurant?.key) {
-            restaurant = methodRestaurant(restaurant);
-            text = `This is a ${restaurant.getHint('rating')} star` +
-                ` ${restaurant.cuisine} restaurant with a price rating of` +
-                ` ${restaurant.getHint('price')} that ` +
-                ` ${restaurant.getHint('delivery')}.`;
+        if (restaurant) {
+            text = getRestaurantText(restaurant);
             title = restaurant.name;
             accept = <LargeBtn
                 label='Accept'
                 style={Styles.mb20}
                 onPress={() => {
-                    showOrHide();
+                    // showOrHide();
                     restaurant && stateChoiceRestaurant.getState().reset(restaurant);
-                    router.push('/(tabs)/(decision)/enjoy');
+                    router.replace('/(tabs)/(decision)/enjoy');
                 }}/>;
         }
         return <>
@@ -70,7 +72,7 @@ export default function TabChoiceScreen() {
             <Text style={styles.restaurantText}>{text}</Text>
             {accept}
             <LargeBtn
-                label={restaurant?.key ? 'Veto' : 'Add Restaurant'}
+                label={restaurant ? 'Veto' : 'Add Restaurant'}
                 style={Styles.mb20}
                 onPress={() => {
                     showOrHide();
@@ -81,30 +83,29 @@ export default function TabChoiceScreen() {
         </>;
     }
 
-    const rest = restaurants?.length > 0 ? restaurants[Math.floor(Math.random() * restaurants.length)] : null;
     return <VSafe>
-        <Modal
+        <MyModal
             visible={show}
-            statusBarTranslucent={true}
-            transparent={true}
-            onRequestClose={() => showOrHide()}
+            onPress={() => showOrHide()}
             onDismiss={() => showOrHide()}>
-            <Pressable onPress={() => showOrHide()} style={[Styles.hw100, styles.modalBg]}>
-                <View style={styles.modalContent}>
-                    {newDiaContent(rest)}
-                </View>
-            </Pressable>
-        </Modal>
-        <View style={Styles.hw100}>
-            <Text style={Styles.title}>Choice Screen</Text>
-            <FlatList style={[Styles.flexG1, Styles.ph15]} renderItem={renderItem}
-                      data={descSortStorage(people.filter(p => choices.hasOwnProperty(p.key))) as (Person & Marker)[]}
-                      keyExtractor={({key}) => key}/>
-            <LargeBtn
-                label='Rondomly Choice'
-                onPress={() => showOrHide(true)}/>
-        </View>
+            {newModalContent(restaurants?.length > 0 && restaurants[Math.floor(Math.random() * restaurants.length)])}
+        </MyModal>
+        <Text style={Styles.title}>Choice Screen</Text>
+        <FlatList style={[Styles.flexG1, {paddingHorizontal: 10}]} renderItem={renderItem}
+                  data={descSortStorage(people.filter(p => choices.hasOwnProperty(p.key))) as (Person & Marker)[]}
+                  keyExtractor={({key}) => key}/>
+        <LargeBtn
+            label='Rondomly Choice'
+            onPress={() => showOrHide(true)}/>
     </VSafe>;
+}
+
+function getRestaurantText(restaurant: Restaurant) {
+    restaurant = wrapperRestaurant(restaurant);
+    return `This is a ${restaurant.getHint('rating')} star` +
+        ` ${restaurant.cuisine} restaurant with a price rating of` +
+        ` ${restaurant.getHint('price')} that ` +
+        ` ${restaurant.getHint('delivery')}.`;
 }
 
 const styles = StyleSheet.create({
@@ -114,20 +115,5 @@ const styles = StyleSheet.create({
         lineHeight: 30,
         paddingHorizontal: 10,
         textAlign: 'center'
-    },
-    modalBg: {
-        backgroundColor: '#000000AA',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    modalContent: {
-        width: '86%',
-        height: 'auto',
-        marginTop: '-20%',
-        backgroundColor: 'white',
-        borderRadius: 20,
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-    },
+    }
 });

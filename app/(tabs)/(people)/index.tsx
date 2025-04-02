@@ -3,12 +3,11 @@ import {FlatList, StyleSheet} from 'react-native';
 import {VSafe} from "@/components/VSafe";
 import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
-import {Button, ButtonSize, Colors, Text, View} from "react-native-ui-lib";
+import {Text} from "react-native-ui-lib";
 import {descSortStorage} from "@/store/storage";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {HapticPressable} from "@/components/ui/HapticPressable";
-import {newPerson, Person, statePeople, statePerson} from "@/store/store";
+import {newPerson, Person, statePeople, statePerson} from "@/store/state";
 import {PlatformPressable} from "@react-navigation/elements";
 import LargeBtn from "@/components/ui/LargeBtn";
 

@@ -1,6 +1,6 @@
 import {Colors, Toast, ToastPresets} from "react-native-ui-lib";
 import {createContext, useState} from "react";
-import {Platform} from "react-native";
+import {Styles} from "@/constants/Styles";
 
 type ToastTyp = ToastPresets | 'loader';
 
@@ -50,10 +50,7 @@ export const ToastProvider = ({children}: { children: React.ReactNode }) => {
             {children}
             <Toast {...toast}
                    position='top'
-                   style={Platform.select({
-                       android: {paddingTop: 30},
-                       ios: {paddingTop: 30},
-                   })}
+                   style={Styles.toastMt30}
                    centerMessage/>
         </ToastContext.Provider>
     );

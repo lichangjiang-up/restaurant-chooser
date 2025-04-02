@@ -1,46 +1,75 @@
 import {Styles} from "@/constants/Styles";
 import {ScrollView, StyleSheet} from "react-native";
-import {useContext} from "react";
-import {Button, ButtonSize, Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
+import {useContext, useState} from "react";
+import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {Restaurant, stateRestaurant, stateRestaurants, StorageTyp} from "@/store/store";
+import {
+    checkName,
+    checkPhone, checkWebsite,
+    createMarkerStore,
+    Restaurant,
+    stateRestaurant,
+    stateRestaurants,
+    StorageTyp
+} from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
 import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
 import {VSafe} from "@/components/VSafe";
 import LargeBtn from "@/components/ui/LargeBtn";
 
+
+const markerState = createMarkerStore();
+
+type ErrRecord = Record<keyof Restaurant, string | false | undefined>;
+
 export default function UpsertRestaurantScreen() {
     const restaurant = stateRestaurant((state) => state.v);
-    const marker = stateRestaurant((state) => state.marker);
+    const marker = markerState((state) => state.marker);
     const state = stateRestaurant.getState();
     const styles = getStyles();
 
+    const [errors, setErrors] = useState<ErrRecord>({} as ErrRecord);
+
     function getTextField(key: keyof Restaurant, name: string, maxLength = 30) {
+        const newErr = errors[key];
         return <TextField
             key={key}
             multiline={maxLength > 30}
             placeholder={`Input with person ${name.toLocaleLowerCase()}`}
-            label={name}
+            label={newErr || name}
+            labelColor={newErr ? 'red' : undefined}
             maxLength={maxLength}
-            validateOnBlur={true}
             color={Colors.$textDefault}
-            containerStyle={[Styles.mb20, styles.tfContainer]}
+            containerStyle={[Styles.mb20, styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
             value={restaurant[key] as any}
             style={styles.tf}
+            onBlur={() => {
+                const v = restaurant[key];
+                if (v && typeof v === 'string' && v.trim().length !== v.length) {
+                    state.update(key, v.trim());
+                }
+            }}
+            onFocus={() => (delete errors[key]) && setErrors({...errors})}
             onChangeText={(text) => state.update(key, text)}/>;
     }
 
     function getPicker(key: keyof Restaurant, name: string, valueLabel: ValueLabel[]) {
+        const newErr = errors[key];
         return <Picker
             key={key}
-            style={[styles.picker, Styles.mb20]}
+            hint={name}
+            style={[styles.picker, Styles.mb20, newErr ? {borderColor: 'red'} : {}]}
             value={restaurant[key] as any}
-            label={name}
+            label={newErr || name}
+            labelColor={newErr ? 'red' : undefined}
             placeholder={`Select ${name.toLocaleLowerCase()}`}
-            onChange={(text) => state.update(key, text)}>
+            onChange={(text) => {
+                (delete errors[key]) && setErrors({...errors});
+                state.update(key, text);
+            }}>
             {valueLabel.map(({value, label}) => <Picker.Item
-                labelStyle={{lineHeight: 40}}
+                labelStyle={Styles.lh40}
                 key={value}
                 label={label}
                 value={value}/>)}
@@ -50,12 +79,22 @@ export default function UpsertRestaurantScreen() {
     const {showToast} = useContext(ToastContext);
 
     function onSavePress() {
-        if (!(restaurant.name && restaurant.cuisine && restaurant.price && restaurant.rating && restaurant.delivery)) {
-            showToast('Name/Cuisine/Price/Rating/Delivery must not empty', ToastPresets.FAILURE);
+        const errMp = {
+            'name': checkName(restaurant.name),
+            'phone': checkPhone(restaurant.phone),
+            'cuisine': restaurant.cuisine ? false : 'Cuisine must not empty',
+            'rating': restaurant.rating ? false : 'Rating must not empty',
+            'price': restaurant.price ? false : 'Price must not empty',
+            'delivery': restaurant.delivery ? false : 'Delivery must not empty',
+            'webSite': checkWebsite(restaurant.webSite),
+        } as ErrRecord;
+        if (Object.values(errMp).some(v => !!v)) {
+            showToast('Please check the form', ToastPresets.FAILURE);
+            setErrors(errMp);
             return;
         }
         showToast('Restaurant saving...', 'loader');
-        state.resetMarker(true);
+        markerState.getState().resetMarker(true);
         setTimeout(() => {
             try {
                 const res = state.merge(initLastModifiedAndRet(restaurant, StorageTyp.RESTAURANT));
@@ -66,7 +105,7 @@ export default function UpsertRestaurantScreen() {
                 showToast('Restaurant save failed', ToastPresets.FAILURE);
                 console.log(err);
             } finally {
-                state.resetMarker();
+                markerState.getState().resetMarker();
             }
         }, 500);
     }

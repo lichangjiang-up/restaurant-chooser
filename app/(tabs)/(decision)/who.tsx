@@ -6,7 +6,7 @@ import {descSortStorage} from "@/store/storage";
 import {router} from "expo-router";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {Person, stateChoicesPeople, statePeople} from "@/store/store";
+import {Person, stateChoicesPeople, statePeople} from "@/store/state";
 import LargeBtn from "@/components/ui/LargeBtn";
 
 

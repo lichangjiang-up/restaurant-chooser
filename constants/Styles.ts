@@ -1,7 +1,12 @@
-import {StyleProp, StyleSheet, TextStyle, ViewStyle} from "react-native";
+import {Platform, StyleProp, StyleSheet, TextStyle, ViewStyle} from "react-native";
 
 export const Styles = StyleSheet.create({
-    cContainer: {justifyContent: 'center', alignItems: 'center', height: '100%', padding: 20},
+    cContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
+        padding: 20
+    },
     m0: {
         margin: 0,
     },
@@ -10,9 +15,6 @@ export const Styles = StyleSheet.create({
     },
     pv5: {
         paddingVertical: 5,
-    },
-    p0: {
-        padding: 0,
     },
     p10: {
         padding: 10,
@@ -89,7 +91,12 @@ export const Styles = StyleSheet.create({
     },
     mv20: {
         marginVertical: 20,
-    }
+    },
+    toastMt30: Platform.select({
+        android: {paddingTop: 30},
+        ios: {paddingTop: 30},
+        default: {},
+    })
 });
 
 export function getStyleBg() {

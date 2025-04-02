@@ -26,8 +26,12 @@ export type Restaurant = {
 } & StorageAbs;
 
 
-export function methodRestaurant(restaurant?: Restaurant): Restaurant {
+export function newRestaurant(restaurant?: Restaurant): Restaurant {
     restaurant = restaurant ? Object.assign({}, restaurant) : {} as Restaurant;
+    return wrapperRestaurant(restaurant);
+}
+
+export function wrapperRestaurant(restaurant: Restaurant) {
     restaurant.getHint = (key: keyof Restaurant) => {
         switch (key) {
             case "price":
@@ -59,18 +63,23 @@ type ObjStore<T extends {}> = {
     merge: (obj: any) => T,
 }
 
-const JSON_STORAGE = createJSONStorage(() => STATE_STORAGE)
+const JSON_STORAGE = createJSONStorage(() => STATE_STORAGE);
+
+export function createMarkerStore() {
+    return create<Marker>()((set) => ({
+        marker: false,
+        resetMarker: (marker?: boolean) => set(state => {
+            return {marker: !!marker};
+        }),
+    }))
+}
 
 export function newObjState<T extends {}>(t: T, name: StorageTyp) {
-    return create<ObjStore<T> & Marker>()(persist(
+    return create<ObjStore<T>>()(persist(
         (set, get) => ({
             v: t,
-            marker: false,
             update: (key: keyof T, v: any) => set(produce(state => {
                 state.v[key] = v;
-            })),
-            resetMarker: (marker?: boolean) => set(produce(state => {
-                state.marker = !!marker;
             })),
             reset: (obj: T) => set(_ => {
                 return {v: obj, marker: false};
@@ -112,10 +121,9 @@ type SimpleStore<T> = {
 }
 
 function newStorageState<T>(name: StorageTyp) {
-    return create<StorageMap<T> & Marker>()(persist(
+    return create<StorageMap<T>>()(persist(
         (set) => ({
             v: {},
-            marker: false,
             add: (key: string, t) => set(produce(state => {
                 state.v[key] = t;
             })),
@@ -129,9 +137,6 @@ function newStorageState<T>(name: StorageTyp) {
                     }));
                 }
             },
-            resetMarker: (marker?: boolean) => set(produce(state => {
-                state.marker = !!marker;
-            })),
         }),
         {name, storage: JSON_STORAGE})
     );
@@ -147,9 +152,38 @@ export enum StorageTyp {
 }
 
 export const statePerson = newObjState<Person>(newPerson(), StorageTyp.PERSON);
-export const stateRestaurant = newObjState<Restaurant>(methodRestaurant(), StorageTyp.RESTAURANT);
+export const stateRestaurant = newObjState<Restaurant>(newRestaurant(), StorageTyp.RESTAURANT);
 export const stateChoiceRestaurant = newLocalState<Restaurant>(StorageTyp.CHOICE_RESTAURANT);
 
 export const statePeople = newStorageState<Person>(StorageTyp.PEOPLE);
 export const stateRestaurants = newStorageState<Restaurant>(StorageTyp.RESTAURANTS);
 export const stateChoicesPeople = newStorageState<null>(StorageTyp.CHOICES);
+
+export type Record<K extends keyof any, T> = {
+    [P in K]: T;
+};
+
+export function checkPhone(v?: string) {
+    if ((v?.length || 0) < 1) {
+        return false;
+    }
+    v = v?.replaceAll('-', '') || '';
+    if (/^[\d\\+]\d{4,16}$/.test(v)) {
+        return false;
+    }
+    return 'Phone numbers format should be 5-16 digits';
+}
+
+export function checkWebsite(website?: string) {
+    if (website && website.indexOf('.') !== -1 && ['http://', 'https://'].every(website.startsWith)) {
+        return false;
+    }
+    return website ? 'Website format error' : false;
+}
+
+export function checkName(v?: string) {
+    if ((v?.trim().length || 0) >= 4) {
+        return false;
+    }
+    return 'Name should be 4-30 characters';
+}

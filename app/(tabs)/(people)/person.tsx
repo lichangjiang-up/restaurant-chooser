@@ -1,52 +1,73 @@
 import {Styles} from "@/constants/Styles";
 import {ScrollView, StyleSheet} from "react-native";
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {VSafe} from "@/components/VSafe";
-import {Person, statePeople, statePerson, StorageTyp} from "@/store/store";
+import {checkName, checkPhone, createMarkerStore, Person, statePeople, statePerson, StorageTyp} from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
 import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
 import LargeBtn from "@/components/ui/LargeBtn";
 
-type NotEmpty = {
 
-}
+// type IsErrFunc<K extends keyof Person> = (v?: Person[K]) => string | false;
+
+const markerState = createMarkerStore();
+
+type ErrRecord = Record<keyof Person, string | false | undefined>;
 
 export default function UpsertPersonScreen() {
     const person = statePerson((state) => state.v);
-    const marker = statePerson((state) => state.marker);
+    const marker = markerState((state) => state.marker);
     const personState = statePerson.getState();
+
+    person.gender ||= '-';
 
     const styles = getStyles();
 
+    const [errors, setErrors] = useState<ErrRecord>({} as ErrRecord);
+
+
     function getTextField(key: keyof Person, name: string, maxLength = 30) {
+        const newErr = errors[key];
         return <TextField
             key={key}
             multiline={maxLength > 30}
             placeholder={`Input with person ${name.toLocaleLowerCase()}`}
-            label={name}
+            label={newErr || name}
+            labelColor={newErr ? 'red' : undefined}
             maxLength={maxLength}
-            validateOnBlur={true}
             color={Colors.$textDefault}
-            containerStyle={[Styles.mb20, styles.tfContainer]}
+            onBlur={() => {
+                const v = person[key];
+                if (v && typeof v === 'string' && v.trim().length !== v.length) {
+                    personState.update(key, v.trim());
+                }
+            }}
+            containerStyle={[Styles.mb20, styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
             value={person[key] as any}
             style={styles.tf}
+            onFocus={() => (delete errors[key]) && setErrors({...errors})}
             onChangeText={(text) => personState.update(key, text)}/>;
     }
 
     function getPicker(key: keyof Person, name: string, valueLabel: ValueLabel[]) {
+        const newErr = errors[key];
         return <Picker
             key={key}
             hint={name}
-            style={[styles.picker, Styles.mb20]}
+            style={[styles.picker, Styles.mb20, newErr ? {borderColor: 'red'} : {}]}
             value={person[key] as any}
-            label={name}
+            label={newErr || name}
+            labelColor={newErr ? 'red' : undefined}
             placeholder={`Select ${name.toLocaleLowerCase()}`}
-            onChange={(text) => personState.update(key, text)}>
+            onChange={(text) => {
+                (delete errors[key]) && setErrors({...errors});
+                personState.update(key, text);
+            }}>
             {valueLabel.map(({value, label}) => <Picker.Item
-                labelStyle={{lineHeight: 40}}
+                labelStyle={Styles.lh40}
                 key={value}
                 label={label}
                 value={value}/>)}
@@ -56,11 +77,16 @@ export default function UpsertPersonScreen() {
     const {showToast} = useContext(ToastContext);
 
     function onSavePress() {
-        if (!(person.name && person.relation)) {
-            showToast('Name/Relation must not empty', ToastPresets.FAILURE);
+        const errMp = {
+            'name': checkName(person.name),
+            'phone': checkPhone(person.phone),
+            'relation': person.relation ? false : 'Relation must not empty',
+        } as ErrRecord;
+        if (Object.values(errMp).some(v => !!v)) {
+            showToast('Please check the form', ToastPresets.FAILURE);
+            setErrors(errMp);
             return;
         }
-        statePerson.getState().resetMarker(true);
         showToast('Person saving...', 'loader');
         setTimeout(() => {
             try {
@@ -72,7 +98,7 @@ export default function UpsertPersonScreen() {
                 showToast('Person save failed', ToastPresets.FAILURE);
                 console.log(err);
             } finally {
-                statePerson.getState().resetMarker();
+                markerState.getState().resetMarker();
             }
         }, 500);
     }

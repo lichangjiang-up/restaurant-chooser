@@ -3,7 +3,7 @@ import {FlatList, Text} from 'react-native';
 import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
 import {descSortStorage} from "@/store/storage";
-import {methodRestaurant, Restaurant, stateRestaurant, stateRestaurants} from "@/store/store";
+import {newRestaurant, Restaurant, stateRestaurant, stateRestaurants} from "@/store/state";
 import {PlatformPressable} from "@react-navigation/elements";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
@@ -49,7 +49,7 @@ export default function TabRestaurantsScreen() {
 
 function upsertRestaurant(restaurant?: Restaurant) {
     return () => {
-        stateRestaurant.getState().reset(methodRestaurant(restaurant));
+        stateRestaurant.getState().reset(newRestaurant(restaurant));
         router.push('/(tabs)/(restaurants)/restaurant');
     }
 }

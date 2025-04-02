@@ -1,6 +1,6 @@
 import {Button, ScrollView, StyleSheet, View, Text} from "react-native";
 import {Styles} from "@/constants/Styles";
-import {Restaurant, stateChoiceRestaurant} from "@/store/store";
+import {Restaurant, stateChoiceRestaurant} from "@/store/state";
 import {router} from "expo-router";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
@@ -54,10 +54,11 @@ const styles = StyleSheet.create({
         padding: 10,
         width: '100%',
         marginVertical: 40,
+        borderRadius: 6,
     },
     valueText: {display: 'flex', flexDirection: 'row', alignItems: 'center', height: 30},
     title: {
-        fontSize: 24,
+        fontSize: 26,
         fontWeight: 'bold',
     }
 });
