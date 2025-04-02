@@ -86,7 +86,7 @@ export default function UpsertRestaurantScreen() {
             'rating': restaurant.rating ? false : 'Rating must not empty',
             'price': restaurant.price ? false : 'Price must not empty',
             'delivery': restaurant.delivery ? false : 'Delivery must not empty',
-            'webSite': checkWebsite(restaurant.webSite),
+            'website': checkWebsite(restaurant.website),
         } as ErrRecord;
         if (Object.values(errMp).some(v => !!v)) {
             showToast('Please check the form', ToastPresets.FAILURE);
@@ -119,7 +119,7 @@ export default function UpsertRestaurantScreen() {
                 {getPicker('rating', 'Rating', [1, 2, 3, 4, 5].map(newValueLabel))}
                 {getTextField('phone', 'Phone number')}
                 {getTextField('address', 'Address')}
-                {getTextField('webSite', 'Website', 512)}
+                {getTextField('website', 'Website', 512)}
                 {getPicker('delivery', 'Delivery', ['Yes', 'No'].map(newValueLabel))}
                 <LargeBtn
                     style={Styles.mv20}

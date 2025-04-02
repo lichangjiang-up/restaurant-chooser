@@ -20,7 +20,7 @@ export type Restaurant = {
     rating: string;
     phone: string;
     address?: string;
-    webSite?: string;
+    website?: string;
     delivery: string;
     getHint: (key: keyof Restaurant) => string;
 } & StorageAbs;

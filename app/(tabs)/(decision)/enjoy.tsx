@@ -1,6 +1,6 @@
 import {Button, ScrollView, StyleSheet, View, Text} from "react-native";
 import {Styles} from "@/constants/Styles";
-import {Restaurant, stateChoiceRestaurant} from "@/store/state";
+import {Restaurant, stateChoiceRestaurant, wrapperRestaurant} from "@/store/state";
 import {router} from "expo-router";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
@@ -8,11 +8,12 @@ import {VFull} from "@/components/VFull";
 
 
 export default function TabEnjoyScreen() {
-    const restaurant = stateChoiceRestaurant(state => state.v)
+    let restaurant = stateChoiceRestaurant(state => state.v)
     if (!restaurant || !restaurant.key) {
         router.push('/');
-        return;
+        return <View/>;
     }
+    restaurant = wrapperRestaurant(restaurant);
 
     const listData = ['Name', 'Cuisine', 'Price', 'Rating', 'Phone', 'Address', 'Website', 'Delivery'].map(key => {
         return {key, value: restaurant.getHint(key.toLowerCase() as keyof Restaurant)};
