@@ -5,6 +5,7 @@ export default function TabRestaurantsLayout() {
         <Stack>
             <Stack.Screen name="restaurants" options={{headerShown: false, animation: 'fade'}}/>
             <Stack.Screen name="restaurant" options={{
+                headerShown: false,
                 title: 'Add Restaurant',
                 animation: 'fade',
             }}/>

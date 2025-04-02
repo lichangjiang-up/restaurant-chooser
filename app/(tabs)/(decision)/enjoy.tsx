@@ -5,6 +5,7 @@ import {router} from "expo-router";
 import {SafeContainer} from "@/components/SafeContainer";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 
 export default function TabEnjoyScreen() {
@@ -21,16 +22,16 @@ export default function TabEnjoyScreen() {
     const {showToast} = useContext(ToastContext)
 
     function renderItem({key, value}: { key: string, value: string }) {
-        return <View key={key} style={Styles.rowBtw}>
+        return <View key={key} style={styles.valueText}>
             <Text style={{width: 100, color: 'red'}}>{key}:</Text>
             <Text>{value}</Text>
         </View>;
     }
 
-    return <SafeContainer style={Styles.center}>
+    return <SafeAreaView style={[Styles.center, Styles.hw100]}>
         <ScrollView style={{height: 'auto', width: '100%'}}>
             <View style={Styles.cContainer}>
-                <Text>Enjoy your meal</Text>
+                <Text style={styles.title}>Enjoy your meal</Text>
                 <View style={styles.detail}>
                     {listData.map((item) => renderItem(item))}
                 </View>
@@ -41,7 +42,7 @@ export default function TabEnjoyScreen() {
                     }}/>
             </View>
         </ScrollView>
-    </SafeContainer>;
+    </SafeAreaView>;
 }
 
 const styles = StyleSheet.create({
@@ -52,5 +53,10 @@ const styles = StyleSheet.create({
         padding: 10,
         width: '100%',
         marginVertical: 40,
+    },
+    valueText: {display: 'flex', flexDirection: 'row', alignItems: 'center', height: 30},
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
     }
 });

@@ -13,6 +13,9 @@ export const Styles = StyleSheet.create({
     dNone: {
         display: 'none',
     },
+    m0: {
+        margin: 0,
+    },
     flexG1: {
         flexGrow: 1,
     },
@@ -45,8 +48,8 @@ export const Styles = StyleSheet.create({
     mb20: {
         marginBottom: 20,
     },
-    lh30: {
-        lineHeight: 30
+    lh26: {
+        lineHeight: 25
     },
     lh40: {
         lineHeight: 40
@@ -65,7 +68,8 @@ export const Styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         fontSize: 28,
-        lineHeight: 80,
+        lineHeight: 36,
+        marginVertical: 22,
     },
     borderBottom: {
         borderColor: '#AAAAAA44',

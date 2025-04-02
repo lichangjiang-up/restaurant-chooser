@@ -7,6 +7,7 @@ import {router} from "expo-router";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {Person, stateChoicesPeople, statePeople} from "@/store/store";
+import LargeBtn from "@/components/ui/LargeBtn";
 
 
 export default function TabWho() {
@@ -38,13 +39,8 @@ export default function TabWho() {
                       renderItem={renderItem}
                       data={descSortStorage(Object.values(people) as Person[])}
                       keyExtractor={({key}) => key}/>
-            <Button
+            <LargeBtn
                 label='Next'
-                backgroundColor={Colors.$backgroundNeutralHeavy}
-                borderRadius={14}
-                size={ButtonSize.large}
-                style={Styles.m15}
-                labelStyle={Styles.lh30}
                 onPress={() => {
                     const choiceKeys = Object.keys(choices)
                     const delKeys = choiceKeys.filter(key => !people.hasOwnProperty(key));
@@ -53,9 +49,7 @@ export default function TabWho() {
                         showToast('Please select least a person', ToastPresets.FAILURE);
                         return;
                     }
-                    router.push({
-                        pathname: '/(tabs)/(decision)/choice',
-                    });
+                    router.push('/(tabs)/(decision)/choice');
                 }}
                 color={Colors.$white}
             />

@@ -1,13 +1,14 @@
 import {Styles} from "@/constants/Styles";
 import {ScrollView, StyleSheet} from "react-native";
 import {useContext} from "react";
-import {Button, ButtonSize, Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
+import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {SafeContainer} from "@/components/SafeContainer";
 import {Person, statePeople, statePerson, StorageTyp} from "@/store/store";
 import {initLastModifiedAndRet} from "@/store/storage";
 import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
+import LargeBtn from "@/components/ui/LargeBtn";
 
 export default function UpsertPersonScreen() {
     const person = statePerson((state) => state.v);
@@ -78,15 +79,10 @@ export default function UpsertPersonScreen() {
                 {getTextField('phone', 'Phone number', 16)}
                 {getPicker('gender', 'Gender', ['-', 'Male', 'Female'].map(newValueLabel))}
                 {getPicker('relation', 'Relation', ['Other', 'Me', 'Family'].map(newValueLabel))}
-                <Button
+                <LargeBtn
                     disabled={marker}
                     label={marker ? 'Saving...' : 'Save Person'}
-                    backgroundColor={Colors.$backgroundNeutralHeavy}
-                    borderRadius={14}
-                    size={ButtonSize.large}
-                    labelStyle={Styles.lh30}
                     onPress={onSavePress}
-                    color={Colors.$white}
                 />
             </ScrollView>
         </SafeContainer>

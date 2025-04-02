@@ -6,6 +6,7 @@ export default function DecisionLayout() {
             <Stack.Screen name="decision" options={{headerShown: false, animation: 'fade'}}/>
             <Stack.Screen name="who" options={{headerShown: false, animation: 'fade'}}/>
             <Stack.Screen name="choice" options={{headerShown: false, animation: 'fade'}}/>
+            <Stack.Screen name="enjoy" options={{headerShown: false, animation: 'fade'}}/>
         </Stack>
     )
 }

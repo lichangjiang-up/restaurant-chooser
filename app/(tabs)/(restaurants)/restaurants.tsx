@@ -3,12 +3,13 @@ import {FlatList, Text} from 'react-native';
 import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
 import {descSortStorage} from "@/store/storage";
-import {newRestaurant, Restaurant, stateRestaurant, stateRestaurants} from "@/store/store";
+import {methodRestaurant, Restaurant, stateRestaurant, stateRestaurants} from "@/store/store";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {PlatformPressable} from "@react-navigation/elements";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {Button, ButtonSize, Colors, ToastPresets} from "react-native-ui-lib";
+import LargeBtn from '@/components/ui/LargeBtn';
 
 export default function TabRestaurantsScreen() {
     const restaurants = Object.values(stateRestaurants(state => state.v)) as Restaurant[];
@@ -20,16 +21,13 @@ export default function TabRestaurantsScreen() {
             key={item.key}
             onPress={upsertRestaurant(item)}>
             <Text style={Styles.itemText}>{item.name || item.key}</Text>
-            <Button backgroundColor={Colors.$backgroundNeutralHeavy}
-                    color={Colors.$white}
-                    label='Delete'
-                    labelStyle={Styles.lh30}
-                    size={ButtonSize.large}
-                    borderRadius={14}
-                    onPress={() => {
-                        stateRestaurants.getState().delete(item.key);
-                        showToast('Restaurant deleted', ToastPresets.OFFLINE);
-                    }}/>
+            <LargeBtn
+                label='Delete'
+                style={Styles.m0}
+                onPress={() => {
+                    stateRestaurants.getState().delete(item.key);
+                    showToast('Restaurant deleted', ToastPresets.OFFLINE);
+                }}/>
         </PlatformPressable>
     }
 
@@ -41,15 +39,9 @@ export default function TabRestaurantsScreen() {
                       keyExtractor={({key}) => key}
                       renderItem={renderItem}>
             </FlatList>
-            <Button
-                label='Add Peron'
-                backgroundColor={Colors.$backgroundNeutralHeavy}
-                borderRadius={14}
-                size={ButtonSize.large}
-                style={Styles.m15}
-                labelStyle={Styles.lh30}
+            <LargeBtn
+                label='Add Restaurant'
                 onPress={upsertRestaurant()}
-                color={Colors.$white}
             />
         </SafeAreaView>
     );
@@ -57,8 +49,7 @@ export default function TabRestaurantsScreen() {
 
 function upsertRestaurant(restaurant?: Restaurant) {
     return () => {
-        const state = stateRestaurant.getState();
-        state.reset(restaurant ? {...restaurant} : newRestaurant());
+        stateRestaurant.getState().reset(methodRestaurant(restaurant));
         router.push('/(tabs)/(restaurants)/restaurant');
     }
 }

@@ -10,6 +10,7 @@ import {ToastContext} from "@/components/provider/ToastProvider";
 import {HapticPressable} from "@/components/ui/HapticPressable";
 import {newPerson, Person, statePeople, statePerson} from "@/store/store";
 import {PlatformPressable} from "@react-navigation/elements";
+import LargeBtn from "@/components/ui/LargeBtn";
 
 export default function TabPeopleScreen() {
     const people = Object.values(statePeople(state => state.v)) as Person[];
@@ -23,16 +24,13 @@ export default function TabPeopleScreen() {
             key={item.key}
             style={[Styles.borderBottom, Styles.rowBtw, Styles.p10_8]}>
             <Text style={styles.itemText} $textDefault>{item.name || item.key}</Text>
-            <Button backgroundColor={Colors.$backgroundNeutralHeavy}
-                    color={Colors.$white}
-                    label='Delete'
-                    labelStyle={Styles.lh30}
-                    size={ButtonSize.large}
-                    borderRadius={14}
-                    onPress={() => {
-                        statePeople.getState().delete(item.key);
-                        showToast('Person deleted');
-                    }}/>
+            <LargeBtn
+                label='Delete'
+                style={Styles.m0}
+                onPress={() => {
+                    statePeople.getState().delete(item.key);
+                    showToast('Person deleted');
+                }}/>
         </PlatformPressable>;
     }
 
@@ -43,15 +41,9 @@ export default function TabPeopleScreen() {
                       keyExtractor={({key}) => key}
                       renderItem={renderItem}>
             </FlatList>
-            <Button
+            <LargeBtn
                 label='Add Peron'
-                backgroundColor={Colors.$backgroundNeutralHeavy}
-                borderRadius={14}
-                size={ButtonSize.large}
-                style={Styles.m15}
-                labelStyle={Styles.lh30}
                 onPress={upsertPerson()}
-                color={Colors.$white}
             />
         </SafeContainer>
     );
@@ -59,7 +51,7 @@ export default function TabPeopleScreen() {
 
 function upsertPerson(person?: Person) {
     return () => {
-        statePerson.getState().reset(person ? {...person} : newPerson());
+        statePerson.getState().reset(Object.assign(newPerson(person)));
         router.push('/(tabs)/(people)/person');
     }
 }

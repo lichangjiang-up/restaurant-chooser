@@ -2,12 +2,12 @@ import {Styles} from "@/constants/Styles";
 import {ScrollView, StyleSheet} from "react-native";
 import {useContext} from "react";
 import {Button, ButtonSize, Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
-import {ThemedView} from "@/components/ThemedView";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {Restaurant, stateRestaurant, stateRestaurants, StorageTyp} from "@/store/store";
 import {initLastModifiedAndRet} from "@/store/storage";
 import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
+import {SafeContainer} from "@/components/SafeContainer";
 
 export default function UpsertRestaurantScreen() {
     const restaurant = stateRestaurant((state) => state.v);
@@ -71,7 +71,7 @@ export default function UpsertRestaurantScreen() {
     }
 
     return (
-        <ThemedView style={Styles.hw100}>
+        <SafeContainer>
             <ScrollView contentContainerStyle={Styles.p10}>
                 {getTextField('name', 'Name')}
                 {getPicker('cuisine', 'Cuisine', ['Algerian', 'American', 'BBQ', 'Chinese', 'Other'].map(newValueLabel))}
@@ -91,7 +91,7 @@ export default function UpsertRestaurantScreen() {
                     color={Colors.$white}
                 />
             </ScrollView>
-        </ThemedView>
+        </SafeContainer>
     );
 }
 
