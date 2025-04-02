@@ -25,7 +25,7 @@ type ErrRecord = Record<keyof Restaurant, string | false | undefined>;
 
 export default function UpsertRestaurantScreen() {
     const restaurant = stateRestaurant((state) => state.v);
-    const marker = markerState((state) => state.marker);
+    const {marker, resetMarker} = markerState();
     const state = stateRestaurant.getState();
     const styles = getStyles();
 
@@ -94,7 +94,7 @@ export default function UpsertRestaurantScreen() {
             return;
         }
         showToast('Restaurant saving...', 'loader');
-        markerState.getState().resetMarker(true);
+        resetMarker(true);
         setTimeout(() => {
             try {
                 const res = state.merge(initLastModifiedAndRet(restaurant, StorageTyp.RESTAURANT));
@@ -105,7 +105,7 @@ export default function UpsertRestaurantScreen() {
                 showToast('Restaurant save failed', ToastPresets.FAILURE);
                 console.log(err);
             } finally {
-                markerState.getState().resetMarker();
+                resetMarker();
             }
         }, 500);
     }

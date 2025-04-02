@@ -19,7 +19,7 @@ type ErrRecord = Record<keyof Person, string | false | undefined>;
 
 export default function UpsertPersonScreen() {
     const person = statePerson((state) => state.v);
-    const marker = markerState((state) => state.marker);
+    const {marker, resetMarker} = markerState();
     const personState = statePerson.getState();
 
     person.gender ||= '-';
@@ -88,6 +88,7 @@ export default function UpsertPersonScreen() {
             return;
         }
         showToast('Person saving...', 'loader');
+        resetMarker(true);
         setTimeout(() => {
             try {
                 const res = personState.merge(initLastModifiedAndRet(person, StorageTyp.PERSON));
@@ -98,7 +99,7 @@ export default function UpsertPersonScreen() {
                 showToast('Person save failed', ToastPresets.FAILURE);
                 console.log(err);
             } finally {
-                markerState.getState().resetMarker();
+                resetMarker();
             }
         }, 500);
     }

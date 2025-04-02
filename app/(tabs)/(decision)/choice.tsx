@@ -1,8 +1,7 @@
 import {Styles, VST} from "@/constants/Styles";
-import {FlatList, StyleSheet, Text} from "react-native";
+import {FlatList, StyleSheet, Text, View} from "react-native";
 import {descSortStorage} from "@/store/storage";
 import {
-    Marker,
     Person,
     Restaurant,
     stateChoiceRestaurant,
@@ -13,20 +12,39 @@ import {
 import {create} from "zustand/react";
 import {router} from "expo-router";
 import {VFull} from "@/components/VFull";
-import {PlatformPressable} from "@react-navigation/elements";
 import LargeBtn from "@/components/ui/LargeBtn";
 import MyModal from "@/components/ui/MyModal";
-import {useEffect} from "react";
+import {useContext, useEffect} from "react";
+import {Checkbox, ToastPresets} from "react-native-ui-lib";
+import {ToastContext} from "@/components/provider/ToastProvider";
 
 type DialogStore = {
     show: boolean;
-    showOrHide: (v?: boolean) => void;
+    modalShowOrHide: (v?: boolean) => void;
+    vetoedSet: Set<string>,
+    vetoShow: boolean,
+    vetoShowHide: (v?: boolean) => void,
+    clearVetoedList: () => void,
+    addOrDelVeto: (key: string, isDel?: boolean) => void,
 }
 
 const dialogStore = create<DialogStore>()((set) => ({
     show: false,
-
-    showOrHide: (show) => set(_ => ({show: !!show})),
+    vetoedSet: new Set<string>(),
+    showVetoSet: new Set<string>(),
+    vetoShow: false,
+    modalShowOrHide: (show) => set(state => ({...state, show: !!show})),
+    vetoShowHide: (v) => set(state => ({...state, vetoShow: !!v})),
+    clearVetoedList: () => set(state => ({...state, vetoedSet: new Set()})),
+    addOrDelVeto: (key: string, isDel?: boolean) => set(state => {
+        const res = {...state};
+        if (isDel) {
+            res.vetoedSet.delete(key);
+        } else {
+            res.vetoedSet.add(key);
+        }
+        return res;
+    }),
 }))
 
 export default function TabChoiceScreen() {
@@ -34,21 +52,20 @@ export default function TabChoiceScreen() {
     const choices = stateChoicesPeople(state => state.v);
     const people = Object.values(statePeople(state => state.v)) as Person[];
     const itemTextStyle: VST = {fontWeight: 400, fontSize: 16, lineHeight: 50};
-    const {show, showOrHide} = dialogStore();
-
+    const {show, modalShowOrHide, addOrDelVeto, vetoedSet, clearVetoedList, vetoShow, vetoShowHide} = dialogStore();
+    const {showToast} = useContext(ToastContext);
     useEffect(() => {
-        showOrHide();
+        modalShowOrHide();
+        clearVetoedList();
     }, []);
 
-    function renderItem({item}: { item: Person & Marker, index: number }) {
-        return <PlatformPressable
-            onPress={() => {
-            }}
+    function renderItem({item}: { item: Person }) {
+        return <View
             style={[Styles.borderBottom, Styles.rowBtw, Styles.ph5]}
             key={item.key}>
             <Text style={itemTextStyle}>{`${item.name}(${item.relation})`}</Text>
-            <Text style={itemTextStyle}>{`Vetoed: ${item.marker ? 'yes' : 'no'}`}</Text>
-        </PlatformPressable>;
+            <Text style={itemTextStyle}>{`Vetoed: ${vetoedSet.has(item.key) ? 'yes' : 'no'}`}</Text>
+        </View>;
     }
 
     function newModalContent(restaurant: Restaurant | false) {
@@ -75,28 +92,70 @@ export default function TabChoiceScreen() {
                 label={restaurant ? 'Veto' : 'Add Restaurant'}
                 style={Styles.mb20}
                 onPress={() => {
-                    showOrHide();
                     if (!restaurant) {
                         router.push('/(tabs)/(restaurants)/restaurant');
+                        return;
                     }
+                    vetoShowHide(true)
                 }}/>
         </>;
     }
 
+    const choicePeople = descSortStorage(people.filter(p => choices.hasOwnProperty(p.key)));
+    if (!choicePeople?.length) {
+        router.push('/(tabs)/(decision)/who')
+        return <></>;
+    }
+    let modalContent = <></>;
+    if (vetoShow) {
+        function vetoRenderItem({item}: { item: Person }) {
+            return <Checkbox
+                label={`${item.name}(${item.relation})`}
+                labelStyle={{lineHeight: 46, width: '100%'}}
+                value={vetoedSet.has(item.key)}
+                onValueChange={(v) => addOrDelVeto(item.key, !v)}></Checkbox>;
+        }
+
+        modalContent = <>
+            <Text style={Styles.title}>Who Veto?</Text>
+            <FlatList data={choicePeople} renderItem={vetoRenderItem} keyExtractor={({key}) => `${key}-v`}/>
+            <View style={[Styles.rowBtw, Styles.mv20]}>
+                <LargeBtn label='Cancel' style={{marginRight: 10, flex: 1}} backgroundColor={'#AAA'}
+                          onPress={() => {
+                              clearVetoedList();
+                              vetoShowHide();
+                          }}/>
+                <LargeBtn label='Save' style={{marginLeft: 10, flex: 1}} onPress={() => {
+                    if (vetoedSet.size < 1) {
+                        showToast('Least one have vetoed!', ToastPresets.FAILURE);
+                        return;
+                    }
+                    modalShowOrHide();
+                }}/>
+            </View>
+        </>;
+    } else if (show) {
+        modalContent = newModalContent(restaurants?.length > 0 && restaurants[Math.floor(Math.random() * restaurants.length)]);
+    }
+
     return <VFull>
         <MyModal
-            visible={show}
-            onPress={() => showOrHide()}
-            onDismiss={() => showOrHide()}>
-            {newModalContent(restaurants?.length > 0 && restaurants[Math.floor(Math.random() * restaurants.length)])}
+            onDismiss={() => {
+                vetoShowHide();
+            }}
+            visible={show}>
+            {modalContent}
         </MyModal>
         <Text style={Styles.title}>Choice Screen</Text>
         <FlatList style={[Styles.flexG1, {paddingHorizontal: 10}]} renderItem={renderItem}
-                  data={descSortStorage(people.filter(p => choices.hasOwnProperty(p.key))) as (Person & Marker)[]}
+                  data={choicePeople}
                   keyExtractor={({key}) => key}/>
         <LargeBtn
             label='Rondomly Choice'
-            onPress={() => showOrHide(true)}/>
+            onPress={() => {
+                modalShowOrHide(true);
+                clearVetoedList();
+            }}/>
     </VFull>;
 }
 

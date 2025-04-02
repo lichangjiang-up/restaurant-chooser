@@ -47,11 +47,11 @@ export const ToastProvider = ({children}: { children: React.ReactNode }) => {
 
     return (
         <ToastContext.Provider value={{showToast}}>
-            {children}
             <Toast {...toast}
                    position='top'
                    style={Styles.toastMt30}
                    centerMessage/>
+            {children}
         </ToastContext.Provider>
     );
 };

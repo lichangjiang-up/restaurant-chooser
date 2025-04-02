@@ -45,5 +45,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         paddingHorizontal: 15,
         paddingVertical: 10,
+        maxHeight: '70%',
     },
 });
