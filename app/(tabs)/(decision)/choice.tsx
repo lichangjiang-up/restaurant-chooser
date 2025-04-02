@@ -2,11 +2,12 @@ import {Styles, VST} from "@/constants/Styles";
 import {FlatList, StyleSheet, Text, View} from "react-native";
 import {descSortStorage} from "@/store/storage";
 import {
+    newRestaurant,
     Person,
     Restaurant,
     stateChoiceRestaurant,
     stateChoicesPeople,
-    statePeople,
+    statePeople, stateRestaurant,
     stateRestaurants, wrapperRestaurant
 } from "@/store/state";
 import {create} from "zustand/react";
@@ -45,7 +46,7 @@ const dialogStore = create<DialogStore>()((set) => ({
         }
         return res;
     }),
-}))
+}));
 
 export default function TabChoiceScreen() {
     const restaurants = Object.values(stateRestaurants(state => state.v)) as Restaurant[];
@@ -93,6 +94,7 @@ export default function TabChoiceScreen() {
                 style={Styles.mb20}
                 onPress={() => {
                     if (!restaurant) {
+                        stateRestaurant.getState().reset(newRestaurant())
                         router.push('/(tabs)/(restaurants)/restaurant');
                         return;
                     }
@@ -117,7 +119,7 @@ export default function TabChoiceScreen() {
         }
 
         modalContent = <>
-            <Text style={Styles.title}>Who Veto?</Text>
+            <Text style={[Styles.title, {marginVertical: 10}]}>Who Veto?</Text>
             <FlatList data={choicePeople} renderItem={vetoRenderItem} keyExtractor={({key}) => `${key}-v`}/>
             <View style={[Styles.rowBtw, Styles.mv20]}>
                 <LargeBtn label='Cancel' style={{marginRight: 10, flex: 1}} backgroundColor={'#AAA'}
@@ -125,7 +127,7 @@ export default function TabChoiceScreen() {
                               clearVetoedList();
                               vetoShowHide();
                           }}/>
-                <LargeBtn label='Save' style={{marginLeft: 10, flex: 1}} onPress={() => {
+                <LargeBtn disabled={!vetoedSet.size} label='Save' style={{marginLeft: 10, flex: 1}} onPress={() => {
                     if (vetoedSet.size < 1) {
                         showToast('Least one have vetoed!', ToastPresets.FAILURE);
                         return;
