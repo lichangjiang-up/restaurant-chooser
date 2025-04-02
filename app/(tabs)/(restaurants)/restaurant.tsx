@@ -36,7 +36,7 @@ export default function UpsertRestaurantScreen() {
         return <TextField
             key={key}
             multiline={maxLength > 30}
-            placeholder={`Input with person ${name.toLocaleLowerCase()}`}
+            placeholder={`Input with person ${name.toLowerCase()}`}
             label={newErr || name}
             labelColor={newErr ? 'red' : undefined}
             maxLength={maxLength}
@@ -100,7 +100,7 @@ export default function UpsertRestaurantScreen() {
                 const res = state.merge(initLastModifiedAndRet(restaurant, StorageTyp.RESTAURANT));
                 stateRestaurants.getState().add(res.key, res);
                 showToast('Restaurant saved');
-                router.back();
+                router.replace('/(tabs)/(restaurants)/restaurants');
             } catch (err) {
                 showToast('Restaurant save failed', ToastPresets.FAILURE);
                 console.log(err);

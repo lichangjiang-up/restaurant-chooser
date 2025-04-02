@@ -15,7 +15,7 @@ export default function TabEnjoyScreen() {
     }
 
     const listData = ['Name', 'Cuisine', 'Price', 'Rating', 'Phone', 'Address', 'Website', 'Delivery'].map(key => {
-        return {key, value: restaurant.getHint(key.toLocaleLowerCase() as keyof Restaurant)};
+        return {key, value: restaurant.getHint(key.toLowerCase() as keyof Restaurant)};
     });
 
     const {showToast} = useContext(ToastContext)

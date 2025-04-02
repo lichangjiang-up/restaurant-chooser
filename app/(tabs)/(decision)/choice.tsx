@@ -34,7 +34,13 @@ const dialogStore = create<DialogStore>()((set) => ({
     vetoedSet: new Set<string>(),
     showVetoSet: new Set<string>(),
     vetoShow: false,
-    modalShowOrHide: (show) => set(state => ({...state, show: !!show})),
+    modalShowOrHide: (show) => set(state => {
+        const res = {...state, show: !!show};
+        if (!res.show) {
+            res.vetoShow = false;
+        }
+        return res;
+    }),
     vetoShowHide: (v) => set(state => ({...state, vetoShow: !!v})),
     clearVetoedList: () => set(state => ({...state, vetoedSet: new Set()})),
     addOrDelVeto: (key: string, isDel?: boolean) => set(state => {
@@ -80,7 +86,7 @@ export default function TabChoiceScreen() {
                 label='Accept'
                 style={Styles.mb20}
                 onPress={() => {
-                    // showOrHide();
+                    modalShowOrHide();
                     restaurant && stateChoiceRestaurant.getState().reset(restaurant);
                     router.replace('/(tabs)/(decision)/enjoy');
                 }}/>;
@@ -94,6 +100,7 @@ export default function TabChoiceScreen() {
                 style={Styles.mb20}
                 onPress={() => {
                     if (!restaurant) {
+                        modalShowOrHide();
                         stateRestaurant.getState().reset(newRestaurant())
                         router.push('/(tabs)/(restaurants)/restaurant');
                         return;
@@ -105,8 +112,8 @@ export default function TabChoiceScreen() {
 
     const choicePeople = descSortStorage(people.filter(p => choices.hasOwnProperty(p.key)));
     if (!choicePeople?.length) {
-        router.push('/(tabs)/(decision)/who')
-        return <></>;
+        router.replace('/(tabs)/(decision)/who');
+        return <View/>;
     }
     let modalContent = <></>;
     if (vetoShow) {
@@ -139,12 +146,8 @@ export default function TabChoiceScreen() {
     } else if (show) {
         modalContent = newModalContent(restaurants?.length > 0 && restaurants[Math.floor(Math.random() * restaurants.length)]);
     }
-
     return <VFull>
         <MyModal
-            onDismiss={() => {
-                vetoShowHide();
-            }}
             visible={show}>
             {modalContent}
         </MyModal>
