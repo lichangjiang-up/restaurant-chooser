@@ -1,6 +1,6 @@
 import {FlatList, StyleSheet} from 'react-native';
 
-import {SafeContainer} from "@/components/SafeContainer";
+import {VSafe} from "@/components/VSafe";
 import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
 import {Button, ButtonSize, Colors, Text, View} from "react-native-ui-lib";
@@ -35,7 +35,7 @@ export default function TabPeopleScreen() {
     }
 
     return (
-        <SafeContainer style={Styles.hw100}>
+        <VSafe>
             <FlatList data={descSortStorage(people)}
                       style={[Styles.flexG1, Styles.ph5]}
                       keyExtractor={({key}) => key}
@@ -45,7 +45,7 @@ export default function TabPeopleScreen() {
                 label='Add Peron'
                 onPress={upsertPerson()}
             />
-        </SafeContainer>
+        </VSafe>
     );
 }
 

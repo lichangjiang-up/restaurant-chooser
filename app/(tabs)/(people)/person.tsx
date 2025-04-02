@@ -4,11 +4,15 @@ import {useContext} from "react";
 import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {SafeContainer} from "@/components/SafeContainer";
+import {VSafe} from "@/components/VSafe";
 import {Person, statePeople, statePerson, StorageTyp} from "@/store/store";
 import {initLastModifiedAndRet} from "@/store/storage";
 import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
 import LargeBtn from "@/components/ui/LargeBtn";
+
+type NotEmpty = {
+
+}
 
 export default function UpsertPersonScreen() {
     const person = statePerson((state) => state.v);
@@ -35,6 +39,7 @@ export default function UpsertPersonScreen() {
     function getPicker(key: keyof Person, name: string, valueLabel: ValueLabel[]) {
         return <Picker
             key={key}
+            hint={name}
             style={[styles.picker, Styles.mb20]}
             value={person[key] as any}
             label={name}
@@ -73,7 +78,7 @@ export default function UpsertPersonScreen() {
     }
 
     return (
-        <SafeContainer style={Styles.hw100}>
+        <VSafe>
             <ScrollView contentContainerStyle={Styles.p10}>
                 {getTextField('name', 'Name')}
                 {getTextField('phone', 'Phone number', 16)}
@@ -81,11 +86,12 @@ export default function UpsertPersonScreen() {
                 {getPicker('relation', 'Relation', ['Other', 'Me', 'Family'].map(newValueLabel))}
                 <LargeBtn
                     disabled={marker}
+                    style={Styles.mv20}
                     label={marker ? 'Saving...' : 'Save Person'}
                     onPress={onSavePress}
                 />
             </ScrollView>
-        </SafeContainer>
+        </VSafe>
     );
 }
 

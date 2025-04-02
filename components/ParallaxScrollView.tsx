@@ -7,7 +7,7 @@ import Animated, {
   useScrollViewOffset,
 } from 'react-native-reanimated';
 
-import { SafeContainer } from '@/components/SafeContainer';
+import { VSafe } from '@/components/VSafe';
 import { useBottomTabOverflow } from '@/components/ui/TabBarBackground';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -45,7 +45,7 @@ export default function ParallaxScrollView({
   });
 
   return (
-    <SafeContainer style={styles.container}>
+    <VSafe style={styles.container}>
       <Animated.ScrollView
         ref={scrollRef}
         scrollEventThrottle={16}
@@ -59,9 +59,9 @@ export default function ParallaxScrollView({
           ]}>
           {headerImage}
         </Animated.View>
-        <SafeContainer style={styles.content}>{children}</SafeContainer>
+        <VSafe style={styles.content}>{children}</VSafe>
       </Animated.ScrollView>
-    </SafeContainer>
+    </VSafe>
   );
 }
 

@@ -4,12 +4,12 @@ import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
 import {descSortStorage} from "@/store/storage";
 import {methodRestaurant, Restaurant, stateRestaurant, stateRestaurants} from "@/store/store";
-import {SafeAreaView} from "react-native-safe-area-context";
 import {PlatformPressable} from "@react-navigation/elements";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {Button, ButtonSize, Colors, ToastPresets} from "react-native-ui-lib";
+import {ToastPresets} from "react-native-ui-lib";
 import LargeBtn from '@/components/ui/LargeBtn';
+import {VSafe} from "@/components/VSafe";
 
 export default function TabRestaurantsScreen() {
     const restaurants = Object.values(stateRestaurants(state => state.v)) as Restaurant[];
@@ -33,7 +33,7 @@ export default function TabRestaurantsScreen() {
 
 
     return (
-        <SafeAreaView style={Styles.hw100}>
+        <VSafe>
             <FlatList data={descSortStorage(restaurants)}
                       style={[Styles.flexG1]}
                       keyExtractor={({key}) => key}
@@ -43,7 +43,7 @@ export default function TabRestaurantsScreen() {
                 label='Add Restaurant'
                 onPress={upsertRestaurant()}
             />
-        </SafeAreaView>
+        </VSafe>
     );
 }
 

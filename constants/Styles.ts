@@ -2,17 +2,6 @@ import {StyleProp, StyleSheet, TextStyle, ViewStyle} from "react-native";
 
 export const Styles = StyleSheet.create({
     cContainer: {justifyContent: 'center', alignItems: 'center', height: '100%', padding: 20},
-    container: {
-        padding: 15,
-        height: '100%',
-    },
-    containerPh: {
-        paddingHorizontal: 15,
-        height: '100%',
-    },
-    dNone: {
-        display: 'none',
-    },
     m0: {
         margin: 0,
     },
@@ -98,10 +87,8 @@ export const Styles = StyleSheet.create({
         borderWidth: 1,
         padding: 10,
     },
-    btn: {
-        height: 48,
-        color: 'white',
-        borderRadius: 16,
+    mv20: {
+        marginVertical: 20,
     }
 });
 

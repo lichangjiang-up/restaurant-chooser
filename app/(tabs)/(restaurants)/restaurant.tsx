@@ -7,7 +7,8 @@ import {ToastContext} from "@/components/provider/ToastProvider";
 import {Restaurant, stateRestaurant, stateRestaurants, StorageTyp} from "@/store/store";
 import {initLastModifiedAndRet} from "@/store/storage";
 import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
-import {SafeContainer} from "@/components/SafeContainer";
+import {VSafe} from "@/components/VSafe";
+import LargeBtn from "@/components/ui/LargeBtn";
 
 export default function UpsertRestaurantScreen() {
     const restaurant = stateRestaurant((state) => state.v);
@@ -71,7 +72,7 @@ export default function UpsertRestaurantScreen() {
     }
 
     return (
-        <SafeContainer>
+        <VSafe>
             <ScrollView contentContainerStyle={Styles.p10}>
                 {getTextField('name', 'Name')}
                 {getPicker('cuisine', 'Cuisine', ['Algerian', 'American', 'BBQ', 'Chinese', 'Other'].map(newValueLabel))}
@@ -81,17 +82,14 @@ export default function UpsertRestaurantScreen() {
                 {getTextField('address', 'Address')}
                 {getTextField('webSite', 'Website', 512)}
                 {getPicker('delivery', 'Delivery', ['Yes', 'No'].map(newValueLabel))}
-                <Button
+                <LargeBtn
+                    style={Styles.mv20}
                     disabled={marker}
                     label={marker ? 'Saving...' : 'Save Restaurant'}
-                    backgroundColor={Colors.$backgroundNeutralHeavy}
-                    borderRadius={14}
-                    size={ButtonSize.large}
                     onPress={onSavePress}
-                    color={Colors.$white}
                 />
             </ScrollView>
-        </SafeContainer>
+        </VSafe>
     );
 }
 

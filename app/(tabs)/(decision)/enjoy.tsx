@@ -2,10 +2,9 @@ import {Button, ScrollView, StyleSheet, View, Text} from "react-native";
 import {Styles} from "@/constants/Styles";
 import {Restaurant, stateChoiceRestaurant} from "@/store/store";
 import {router} from "expo-router";
-import {SafeContainer} from "@/components/SafeContainer";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {SafeAreaView} from "react-native-safe-area-context";
+import {VSafe} from "@/components/VSafe";
 
 
 export default function TabEnjoyScreen() {
@@ -28,21 +27,23 @@ export default function TabEnjoyScreen() {
         </View>;
     }
 
-    return <SafeAreaView style={[Styles.center, Styles.hw100]}>
-        <ScrollView style={{height: 'auto', width: '100%'}}>
-            <View style={Styles.cContainer}>
-                <Text style={styles.title}>Enjoy your meal</Text>
-                <View style={styles.detail}>
-                    {listData.map((item) => renderItem(item))}
+    return <VSafe style={Styles.center}>
+        <View style={{width: '100%'}}>
+            <ScrollView style={{height: 'auto', width: '100%'}}>
+                <View style={[Styles.center, Styles.ph15]}>
+                    <Text style={styles.title}>Enjoy your meal</Text>
+                    <View style={styles.detail}>
+                        {listData.map((item) => renderItem(item))}
+                    </View>
+                    <Button
+                        title='All Done'
+                        onPress={() => {
+                            showToast('Enjoy your meal!');
+                        }}/>
                 </View>
-                <Button
-                    title='All Done'
-                    onPress={() => {
-                        showToast('Enjoy your meal!');
-                    }}/>
-            </View>
-        </ScrollView>
-    </SafeAreaView>;
+            </ScrollView>
+        </View>
+    </VSafe>;
 }
 
 const styles = StyleSheet.create({

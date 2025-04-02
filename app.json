@@ -29,6 +29,7 @@
         {
           "image": "./assets/images/img/splash.png",
           "resizeMode": "cover",
+          "width": 400,
           "backgroundColor": "#ffffff",
           "enableFullScreenImage_legacy": true
         }

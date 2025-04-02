@@ -13,7 +13,7 @@ import {
 } from "@/store/store";
 import {create} from "zustand/react";
 import {router} from "expo-router";
-import {SafeContainer} from "@/components/SafeContainer";
+import {VSafe} from "@/components/VSafe";
 import {PlatformPressable} from "@react-navigation/elements";
 import LargeBtn from "@/components/ui/LargeBtn";
 
@@ -82,7 +82,7 @@ export default function TabChoiceScreen() {
     }
 
     const rest = restaurants?.length > 0 ? restaurants[Math.floor(Math.random() * restaurants.length)] : null;
-    return <SafeContainer>
+    return <VSafe>
         <Modal
             visible={show}
             statusBarTranslucent={true}
@@ -104,7 +104,7 @@ export default function TabChoiceScreen() {
                 label='Rondomly Choice'
                 onPress={() => showOrHide(true)}/>
         </View>
-    </SafeContainer>;
+    </VSafe>;
 }
 
 const styles = StyleSheet.create({
