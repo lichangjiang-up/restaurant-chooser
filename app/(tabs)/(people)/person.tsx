@@ -1,29 +1,13 @@
 import {Styles} from "@/constants/Styles";
 import {ScrollView, StyleSheet} from "react-native";
-import {ReactNode, useContext} from "react";
+import {useContext} from "react";
 import {Button, ButtonSize, Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
-import {Validator} from "react-native-ui-lib/src/components/textField/types";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {SafeThemedView} from "@/components/SafeThemedView";
+import {SafeContainer} from "@/components/SafeContainer";
 import {Person, statePeople, statePerson, StorageTyp} from "@/store/store";
 import {initLastModifiedAndRet} from "@/store/storage";
-
-
-const g6Len: Validator[] = (['required', (value?: string) => (value ?? '').length > 6]);
-const vMsg = ['is required', 'is too short']
-const genderList = ['-', 'Male', 'Female'].map(g => <Picker.Item
-    labelStyle={{lineHeight: 40}}
-    key={g}
-    label={g}
-    value={g}/>);
-
-const personTypList = ['Other', 'Me', 'Family'].map(g => <Picker.Item
-    labelStyle={{lineHeight: 40}}
-    key={g}
-    label={g}
-    value={g}/>);
-
+import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
 
 export default function UpsertPersonScreen() {
     const person = statePerson((state) => state.v);
@@ -32,15 +16,13 @@ export default function UpsertPersonScreen() {
 
     const styles = getStyles();
 
-    function getTextField(key: keyof Person, name: string, validate: Validator | Validator[], validationMessage: string[], maxLength = 30) {
+    function getTextField(key: keyof Person, name: string, maxLength = 30) {
         return <TextField
             key={key}
             multiline={maxLength > 30}
             placeholder={`Input with person ${name.toLocaleLowerCase()}`}
             label={name}
             maxLength={maxLength}
-            validate={validate}
-            validationMessage={validationMessage.map(m => `${name} ${m}`)}
             validateOnBlur={true}
             color={Colors.$textDefault}
             containerStyle={[Styles.mb20, styles.tfContainer]}
@@ -49,16 +31,19 @@ export default function UpsertPersonScreen() {
             onChangeText={(text) => personState.update(key, text)}/>;
     }
 
-    function getPicker(key: keyof Person, name: string, children: ReactNode[], validate: Validator | Validator[]) {
+    function getPicker(key: keyof Person, name: string, valueLabel: ValueLabel[]) {
         return <Picker
             key={key}
             style={[styles.picker, Styles.mb20]}
             value={person[key] as any}
-            validate={validate}
             label={name}
             placeholder={`Select ${name.toLocaleLowerCase()}`}
             onChange={(text) => personState.update(key, text)}>
-            {children}
+            {valueLabel.map(({value, label}) => <Picker.Item
+                labelStyle={{lineHeight: 40}}
+                key={value}
+                label={label}
+                value={value}/>)}
         </Picker>;
     }
 
@@ -87,12 +72,12 @@ export default function UpsertPersonScreen() {
     }
 
     return (
-        <SafeThemedView style={Styles.hw100}>
+        <SafeContainer style={Styles.hw100}>
             <ScrollView contentContainerStyle={Styles.p10}>
-                {getTextField('name', 'Name', g6Len, vMsg)}
-                {getTextField('phone', 'Phone number', g6Len, vMsg, 16)}
-                {getPicker('gender', 'Gender', genderList, ['required'])}
-                {getPicker('relation', 'Relation', personTypList, ['required'])}
+                {getTextField('name', 'Name')}
+                {getTextField('phone', 'Phone number', 16)}
+                {getPicker('gender', 'Gender', ['-', 'Male', 'Female'].map(newValueLabel))}
+                {getPicker('relation', 'Relation', ['Other', 'Me', 'Family'].map(newValueLabel))}
                 <Button
                     disabled={marker}
                     label={marker ? 'Saving...' : 'Save Person'}
@@ -104,7 +89,7 @@ export default function UpsertPersonScreen() {
                     color={Colors.$white}
                 />
             </ScrollView>
-        </SafeThemedView>
+        </SafeContainer>
     );
 }
 

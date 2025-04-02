@@ -32,7 +32,7 @@ export type StorageAbs = {
     lastModified: number,
 }
 
-export function initLastModifiedAndRet<T extends StorageAbs>(v: T, prefix: string) {
+export function initLastModifiedAndRet(v: StorageAbs, prefix: string) {
     const lastModified = new Date().getTime();
     const key = v.key || `${prefix}-${lastModified}`;
     return {key, lastModified}

@@ -1,5 +1,5 @@
 import {FlatList} from "react-native";
-import {SafeThemedView} from "@/components/SafeThemedView";
+import {SafeContainer} from "@/components/SafeContainer";
 import {Styles} from "@/constants/Styles";
 import {Button, ButtonSize, Checkbox, Colors, Text, ToastPresets} from "react-native-ui-lib";
 import {descSortStorage} from "@/store/storage";
@@ -32,7 +32,7 @@ export default function TabWho() {
     const {showToast} = useContext(ToastContext);
 
     return (
-        <SafeThemedView style={Styles.hw100}>
+        <SafeContainer style={Styles.hw100}>
             <Text style={Styles.title}>Who's Going?</Text>
             <FlatList style={[Styles.flexG1, Styles.ph15]}
                       renderItem={renderItem}
@@ -59,7 +59,7 @@ export default function TabWho() {
                 }}
                 color={Colors.$white}
             />
-        </SafeThemedView>
+        </SafeContainer>
     )
 }
 

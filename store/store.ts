@@ -22,7 +22,30 @@ export type Restaurant = {
     address?: string;
     webSite?: string;
     delivery: string;
+    getHint(key: keyof Restaurant): string;
 } & StorageAbs;
+
+
+export function newRestaurant(): Restaurant {
+    return {
+        getHint(key: keyof Restaurant) {
+            switch (key) {
+                case "price":
+                    return '$'.repeat(Number(this.price || 0));
+                case "rating":
+                    return '⭐️'.repeat(Number(this.rating || 0));
+                case "delivery":
+                    return this.delivery?.toLocaleLowerCase() === 'Yes' ? 'DOES delivery' : 'NOT delivery';
+                default:
+                    return this[key];
+            }
+        }
+    } as Restaurant;
+}
+
+export function newPerson(): Person {
+    return {} as Person;
+}
 
 export type Marker = {
     marker: boolean;
@@ -70,6 +93,24 @@ type StorageMap<T> = {
     delete: (...keys: string[]) => void;
 }
 
+export function newLocalState<T extends {}>(name: StorageTyp, t?: T) {
+    return create<SimpleStore<T>>()(persist(
+        (set) => ({
+            v: t,
+            reset: (obj: T) => set(_ => {
+                return {v: obj};
+            }),
+        }),
+        {name, storage: JSON_STORAGE})
+    );
+}
+
+
+type SimpleStore<T> = {
+    v?: T;
+    reset: (obj: T) => void;
+}
+
 function newStorageState<T>(name: StorageTyp) {
     return create<StorageMap<T> & Marker>()(persist(
         (set) => ({
@@ -102,10 +143,12 @@ export enum StorageTyp {
     CHOICES = 'cs',
     RESTAURANT = 'rp',
     PERSON = 'pp',
+    CHOICE_RESTAURANT = 'cs',
 }
 
-export const statePerson = newObjState<Person>({} as Person, StorageTyp.PERSON);
-export const stateRestaurant = newObjState<Restaurant>({} as Restaurant, StorageTyp.RESTAURANT);
+export const statePerson = newObjState<Person>(newPerson(), StorageTyp.PERSON);
+export const stateRestaurant = newObjState<Restaurant>(newRestaurant(), StorageTyp.RESTAURANT);
+export const stateChoiceRestaurant = newLocalState<Restaurant>(StorageTyp.CHOICE_RESTAURANT);
 
 export const statePeople = newStorageState<Person>(StorageTyp.PEOPLE);
 export const stateRestaurants = newStorageState<Restaurant>(StorageTyp.RESTAURANTS);

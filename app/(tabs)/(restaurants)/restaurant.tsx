@@ -1,41 +1,13 @@
 import {Styles} from "@/constants/Styles";
 import {ScrollView, StyleSheet} from "react-native";
-import {ReactNode, useContext} from "react";
+import {useContext} from "react";
 import {Button, ButtonSize, Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
-import {Validator} from "react-native-ui-lib/src/components/textField/types";
 import {ThemedView} from "@/components/ThemedView";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {Restaurant, stateRestaurant, stateRestaurants, StorageTyp} from "@/store/store";
 import {initLastModifiedAndRet} from "@/store/storage";
-
-const pricePickerItems = [1, 2, 3, 4, 5]
-    .map(String)
-    .map((v) =>
-        <Picker.Item key={v}
-                     labelStyle={{lineHeight: 40}}
-                     label={v}
-                     value={v}/>);
-
-const ratingPickerItems = [1, 2, 3, 4, 5]
-    .map(String)
-    .map((v) =>
-        <Picker.Item key={v}
-                     labelStyle={{lineHeight: 40}}
-                     label={v}
-                     value={v}/>);
-
-const cuisinePickerItems = ['Algerian', 'American', 'BBQ', 'Chinese', 'Other']
-    .map((v, index) => <Picker.Item
-        key={index}
-        labelStyle={{lineHeight: 40}}
-        label={v}
-        value={v}/>);
-
-// TODO
-const g6Len: Validator[] = (['required', (value?: string) => (value ?? '').length > 6]);
-const vMsg = ['is required', 'is too short']
-const checkWebsite: Validator[] = [(value) => !value || (value.length > 6 && ['http://', 'https://'].every(htp => value.startsWith(htp)))];
+import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
 
 export default function UpsertRestaurantScreen() {
     const restaurant = stateRestaurant((state) => state.v);
@@ -43,15 +15,13 @@ export default function UpsertRestaurantScreen() {
     const state = stateRestaurant.getState();
     const styles = getStyles();
 
-    function getTextField(key: keyof Restaurant, name: string, validate: Validator | Validator[], validationMessage: string[], maxLength = 30) {
+    function getTextField(key: keyof Restaurant, name: string, maxLength = 30) {
         return <TextField
             key={key}
             multiline={maxLength > 30}
-            placeholder={`Input with restaurant ${name.toLocaleLowerCase()}`}
+            placeholder={`Input with person ${name.toLocaleLowerCase()}`}
             label={name}
             maxLength={maxLength}
-            validate={validate}
-            validationMessage={validationMessage.map(m => `${name} ${m}`)}
             validateOnBlur={true}
             color={Colors.$textDefault}
             containerStyle={[Styles.mb20, styles.tfContainer]}
@@ -60,16 +30,19 @@ export default function UpsertRestaurantScreen() {
             onChangeText={(text) => state.update(key, text)}/>;
     }
 
-    function getPicker(key: keyof Restaurant, name: string, children: ReactNode[], validate: Validator | Validator[]) {
+    function getPicker(key: keyof Restaurant, name: string, valueLabel: ValueLabel[]) {
         return <Picker
             key={key}
             style={[styles.picker, Styles.mb20]}
             value={restaurant[key] as any}
-            validate={validate}
             label={name}
-            placeholder={`Select restaurant ${name.toLocaleLowerCase()}`}
+            placeholder={`Select ${name.toLocaleLowerCase()}`}
             onChange={(text) => state.update(key, text)}>
-            {children}
+            {valueLabel.map(({value, label}) => <Picker.Item
+                labelStyle={{lineHeight: 40}}
+                key={value}
+                label={label}
+                value={value}/>)}
         </Picker>;
     }
 
@@ -100,16 +73,14 @@ export default function UpsertRestaurantScreen() {
     return (
         <ThemedView style={Styles.hw100}>
             <ScrollView contentContainerStyle={Styles.p10}>
-                {getTextField('name', 'Name', g6Len, vMsg)}
-                {getPicker('cuisine', 'Cuisine', cuisinePickerItems, ['required'])}
-                {getPicker('price', 'Price', pricePickerItems, ['required'])}
-                {getPicker('rating', 'Rating', ratingPickerItems, ['required'])}
-                {getTextField('phone', 'Phone number', g6Len, vMsg, 16)}
-                {getTextField('address', 'Address', g6Len, vMsg, 128)}
-                {getTextField('webSite', 'Website', checkWebsite, ['Website format mismatch'], 512)}
-                {getPicker('delivery', 'Delivery',
-                    [<Picker.Item labelStyle={{lineHeight: 40}} key='yes' label='Yes' value='Yes'/>,
-                        <Picker.Item labelStyle={{lineHeight: 40}} key='no' label='No' value='No'/>], ['required'])}
+                {getTextField('name', 'Name')}
+                {getPicker('cuisine', 'Cuisine', ['Algerian', 'American', 'BBQ', 'Chinese', 'Other'].map(newValueLabel))}
+                {getPicker('price', 'Price', [1, 2, 3, 4, 5].map(newValueLabel))}
+                {getPicker('rating', 'Rating', [1, 2, 3, 4, 5].map(newValueLabel))}
+                {getTextField('phone', 'Phone number')}
+                {getTextField('address', 'Address')}
+                {getTextField('webSite', 'Website', 512)}
+                {getPicker('delivery', 'Delivery', ['Yes', 'No'].map(newValueLabel))}
                 <Button
                     disabled={marker}
                     label={marker ? 'Saving...' : 'Save Restaurant'}

@@ -1,5 +1,4 @@
 import {StyleProp, StyleSheet, TextStyle, ViewStyle} from "react-native";
-import {Colors} from "react-native-ui-lib";
 
 export const Styles = StyleSheet.create({
     cContainer: {justifyContent: 'center', alignItems: 'center', height: '100%', padding: 20},
@@ -49,6 +48,9 @@ export const Styles = StyleSheet.create({
     lh30: {
         lineHeight: 30
     },
+    lh40: {
+        lineHeight: 40
+    },
     link: {
         marginTop: 15,
         paddingVertical: 15,
@@ -76,13 +78,32 @@ export const Styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         flexGrow: 1,
+    },
+    label: {
+        fontWeight: 500,
+        lineHeight: 24,
+    },
+    itemText: {flex: 1, fontWeight: '500', color: 'black', fontSize: 16, textAlign: 'left'},
+    wFullMb20: {
+        width: '100%',
+        marginBottom: 20,
+    },
+    input: {
+        height: 46,
+        marginVertical: 12,
+        borderWidth: 1,
+        padding: 10,
+    },
+    btn: {
+        height: 48,
+        color: 'white',
+        borderRadius: 16,
     }
 });
 
 export function getStyleBg() {
-    return {backgroundColor: Colors.$backgroundDefault}
+    return {backgroundColor: 'white'}
 }
-
 
 export type VSP = StyleProp<ViewStyle>
 export type VST = StyleProp<TextStyle>
