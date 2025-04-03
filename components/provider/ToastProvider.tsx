@@ -42,7 +42,7 @@ export const ToastProvider = ({children}: { children: React.ReactNode }) => {
         };
         setToast(newToast);
         gClearTimeout();
-        timeoutId = setTimeout(() => setToast({...newToast, visible: false}), isLoading ? 30000 : 2500);
+        timeoutId = setTimeout(() => setToast({...newToast, visible: false}), isLoading ? 30000 : 1500);
     };
 
     return (
