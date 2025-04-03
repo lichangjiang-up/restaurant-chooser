@@ -1,12 +1,24 @@
-import { create } from "zustand/react";
-import { STATE_STORAGE, StorageAbs } from "@/store/storage";
-import { createJSONStorage, persist } from "zustand/middleware";
-import { StateCreator } from "zustand";
+import {create} from "zustand/react";
+import {STATE_STORAGE, StorageAbs} from "@/store/storage";
+import {createJSONStorage, persist} from "zustand/middleware";
+import {StateCreator} from "zustand";
 
 const JSON_STORAGE = createJSONStorage(() => STATE_STORAGE);
 
-export type Gender = '-' | 'Male' | 'Female';
-export type PersonRelation = 'Other' | 'Me' | 'Family';
+export const GENDERS = ['-', 'Male', 'Female'] as const;
+export type Gender = typeof GENDERS[number];
+
+export const PERSON_RELATIONS = ['Other', 'Me', 'Family'] as const;
+export type PersonRelation = typeof PERSON_RELATIONS[number];
+
+export const LEVELS = ['1', '2', '3', '4', '5'] as const;
+export type Level = typeof LEVELS[number];
+
+export const YES_OR_NO = ['Yes', 'No'] as const;
+export type YesOrNo = typeof YES_OR_NO[number];
+
+export const CUISINES = ['Algerian', 'American', 'BBQ', 'Chinese', 'Other'] as const;
+export type Cuisine = typeof CUISINES[number];
 
 export type Person = {
     name: string;
@@ -17,13 +29,13 @@ export type Person = {
 
 export type Restaurant = {
     name: string;
-    cuisine: string;
-    price: string;
-    rating: string;
+    cuisine: Cuisine;
+    price: Level;
+    rating: Level;
     phone: string;
     address?: string;
     website?: string;
-    delivery: string;
+    delivery: YesOrNo;
     getHint: (key: keyof Restaurant) => string;
 } & StorageAbs;
 
@@ -62,19 +74,22 @@ type SimpleStore<T> = {
 }
 
 export function newRestaurant(restaurant?: Restaurant): Restaurant {
-    return wrapperRestaurant(restaurant ? { ...restaurant } : {} as Restaurant);
+    return wrapperRestaurant(restaurant ? {...restaurant} : {} as Restaurant);
 }
 
 export function wrapperRestaurant(restaurant: Restaurant) {
-    const getHint = (key: keyof Restaurant): string => {
+    restaurant.getHint = (key: keyof Restaurant): string => {
         switch (key) {
-            case "price": return '$'.repeat(Number(restaurant.price) || 0);
-            case "rating": return '⭐️'.repeat(Number(restaurant.rating) || 0);
-            case "delivery": return restaurant.delivery?.toLowerCase() === 'yes' ? 'DOES delivery' : 'NOT delivery';
-            default: return String(restaurant[key] || '');
+            case "price":
+                return '$'.repeat(Number(restaurant.price) || 0);
+            case "rating":
+                return '⭐️'.repeat(Number(restaurant.rating) || 0);
+            case "delivery":
+                return restaurant.delivery === 'Yes' ? 'DOES delivery' : 'NOT delivery';
+            default:
+                return String(restaurant[key] || '');
         }
     };
-    restaurant.getHint = getHint;
     return restaurant;
 }
 
@@ -85,7 +100,7 @@ export function newPerson(person?: Person): Person {
 export function newMarkerStore() {
     return create<Marker>()((set) => ({
         marker: false,
-        resetMarker: (marker = false) => set(() => ({ marker })),
+        resetMarker: (marker = false) => set(() => ({marker})),
     }));
 }
 
@@ -93,12 +108,12 @@ export function newObjState<T>(t: T, name?: StorageTyp) {
     const createFun: StateCreator<ObjStore<T>> = (set, get) => ({
         obj: t,
         objUpdate: (key: keyof T, v: any) => set((state) => ({
-            obj: { ...state.obj, [key]: v },
+            obj: {...state.obj, [key]: v},
         })),
-        objReset: (record: T) => set(() => ({ obj: record })),
+        objReset: (record: T) => set(() => ({obj: record})),
         objMerge: (obj: any) => {
             set((state) => ({
-                obj: { ...state.obj, ...obj },
+                obj: {...state.obj, ...obj},
             }));
             return get().obj;
         },
@@ -106,31 +121,31 @@ export function newObjState<T>(t: T, name?: StorageTyp) {
     if (!name) {
         return create<ObjStore<T>>()(createFun);
     }
-    return create<ObjStore<T>>()(persist(createFun, { name, storage: JSON_STORAGE }));
+    return create<ObjStore<T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
 }
 
 export function newLocalState<T>(name?: StorageTyp, t?: T) {
     const createFun: StateCreator<SimpleStore<T>> = (set) => ({
         v: t,
-        reset: (obj: T) => set(() => ({ v: obj })),
+        reset: (obj: T) => set(() => ({v: obj})),
     });
     if (!name) {
         return create<SimpleStore<T>>()(createFun);
     }
-    return create<SimpleStore<T>>()(persist(createFun, { name, storage: JSON_STORAGE }));
+    return create<SimpleStore<T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
 }
 
 export function newRecordState<T>(name?: StorageTyp) {
     const createFun: StateCreator<RecordMap<T>> = (set) => ({
         record: {},
         addRecord: (key: string, t: T) => set((state) => ({
-            record: { ...state.record, [key]: t },
+            record: {...state.record, [key]: t},
         })),
-        clearRecord: () => set(() => ({ record: {} })),
+        clearRecord: () => set(() => ({record: {}})),
         deleteRecord: (...keys: string[]) => set((state) => {
-            const record = { ...state.record };
+            const record = {...state.record};
             if (keys.filter((key) => delete record[key]).length > 0) {
-                return { record };
+                return {record};
             }
             return state;
         }),
@@ -138,7 +153,7 @@ export function newRecordState<T>(name?: StorageTyp) {
     if (!name) {
         return create<RecordMap<T>>()(createFun);
     }
-    return create<RecordMap<T>>()(persist(createFun, { name, storage: JSON_STORAGE }));
+    return create<RecordMap<T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
 }
 
 export const statePerson = newObjState<Person>(newPerson(), StorageTyp.PERSON);

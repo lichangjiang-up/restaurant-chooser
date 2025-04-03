@@ -5,11 +5,12 @@ import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {
+    CUISINES, LEVELS,
     newMarkerStore,
     Restaurant,
     stateRestaurant,
     stateRestaurants,
-    StorageTyp
+    StorageTyp, YES_OR_NO
 } from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
 import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
@@ -114,13 +115,13 @@ export default function UpsertRestaurantScreen() {
         <VFull>
             <ScrollView contentContainerStyle={Styles.p10}>
                 {getTextField('name')}
-                {getPicker('cuisine', ['Algerian', 'American', 'BBQ', 'Chinese', 'Other'].map(newValueLabel))}
-                {getPicker('price', [1, 2, 3, 4, 5].map(newValueLabel))}
-                {getPicker('rating', [1, 2, 3, 4, 5].map(newValueLabel))}
+                {getPicker('cuisine', CUISINES.map(newValueLabel))}
+                {getPicker('price', LEVELS.map(newValueLabel))}
+                {getPicker('rating', LEVELS.map(newValueLabel))}
                 {getTextField('phone')}
                 {getTextField('address')}
                 {getTextField('website', 512)}
-                {getPicker('delivery', ['Yes', 'No'].map(newValueLabel))}
+                {getPicker('delivery', YES_OR_NO.map(newValueLabel))}
                 <LargeBtn
                     style={Styles.mv20}
                     disabled={marker}

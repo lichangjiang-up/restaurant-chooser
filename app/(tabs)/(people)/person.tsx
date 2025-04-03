@@ -5,14 +5,12 @@ import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {VFull} from "@/components/VFull";
-import {newMarkerStore, Person, statePeople, statePerson, StorageTyp} from "@/store/state";
+import {GENDERS, newMarkerStore, Person, PERSON_RELATIONS, statePeople, statePerson, StorageTyp} from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
 import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
 import LargeBtn from "@/components/ui/LargeBtn";
 import {checkName, checkPhone} from "@/constants/method";
 
-
-// type IsErrFunc<K extends keyof Person> = (v?: Person[K]) => string | false;
 
 const markerState = newMarkerStore();
 
@@ -111,8 +109,8 @@ export default function UpsertPersonScreen() {
             <ScrollView contentContainerStyle={Styles.p10}>
                 {getTextField('name')}
                 {getTextField('phone', 16)}
-                {getPicker('gender', ['-', 'Male', 'Female'].map(newValueLabel))}
-                {getPicker('relation', ['Other', 'Me', 'Family'].map(newValueLabel))}
+                {getPicker('gender', GENDERS.map(newValueLabel))}
+                {getPicker('relation', PERSON_RELATIONS.map(newValueLabel))}
                 <LargeBtn
                     disabled={marker}
                     style={Styles.mv20}
