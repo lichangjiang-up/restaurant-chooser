@@ -1,8 +1,7 @@
 import { Button, ScrollView, StyleSheet, View, Text } from "react-native";
 import { Styles } from "@/constants/Styles";
-import { Restaurant, stateChoiceRestaurant, wrapperRestaurant } from "@/store/state";
-import { router } from "expo-router";
-import { useContext } from "react";
+import { newRestaurant, Restaurant, stateChoiceRestaurant, wrapperRestaurant } from "@/store/state";
+import { useContext, useEffect } from "react";
 import { ToastContext } from "@/components/provider/ToastProvider";
 import { VFull } from "@/components/VFull";
 
@@ -12,9 +11,11 @@ export default function TabEnjoyScreen() {
     let restaurant = stateChoiceRestaurant(state => state.v);
 
     if (!restaurant?.key) {
-        router.replace('/');
-        return <View />;
+        return <VFull />;
     }
+    useEffect(() => {
+        return () => stateChoiceRestaurant.getState().reset(newRestaurant());
+    });
     restaurant = wrapperRestaurant(restaurant);
     const showKeys = Array.of<keyof Restaurant>('name', 'cuisine', 'price', 'rating', 'phone', 'address', 'website', 'delivery');
     function renderItem(key: keyof Restaurant) {

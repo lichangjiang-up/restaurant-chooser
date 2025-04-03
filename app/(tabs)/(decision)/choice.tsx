@@ -22,17 +22,16 @@ import { useContext, useEffect } from "react";
 import { ToastPresets } from "react-native-ui-lib";
 import { ToastContext } from "@/components/provider/ToastProvider";
 import MyCheckbox from "@/components/ui/MyCheckbox";
-
+// 定义对话框状态存储类型
 type DialogStore = {
     show: boolean;
     modalShowOrHide: (v?: boolean) => void;
     vetoShow: boolean;
     vetoShowHide: (v?: boolean) => void;
 };
-
+// 创建对话框状态存储
 const dialogStore = create<DialogStore>()((set) => ({
     show: false,
-    vetoedSet: new Set<string>(),
     vetoShow: false,
     modalShowOrHide: (show) => set(state => {
         const res = { ...state, show: !!show };
@@ -112,13 +111,8 @@ export default function TabChoiceScreen() {
     };
 
     const choicePeople = descSortStorage(people.filter(p => choices.hasOwnProperty(p.key)));
-
-    if (!choicePeople?.length) {
-        router.replace('/(tabs)/(decision)/who');
-        return <View />;
-    }
-
     let modalContent = <></>;
+    const disabledBtn = !choicePeople?.length;
 
     if (vetoShow) {
         const vetoRenderItem = ({ item }: { item: Person }) => (<MyCheckbox
@@ -137,6 +131,7 @@ export default function TabChoiceScreen() {
             />
             <View style={[Styles.rowBtw, Styles.mv20]}>
                 <LargeBtn
+                    disabled={disabledBtn}
                     label='Cancel'
                     style={{ marginRight: 10, flex: 1 }}
                     backgroundColor={'#AAA'}
@@ -146,7 +141,7 @@ export default function TabChoiceScreen() {
                     }}
                 />
                 <LargeBtn
-                    disabled={!recordSize}
+                    disabled={!recordSize || disabledBtn}
                     label='Save'
                     style={{ marginLeft: 10, flex: 1 }}
                     onPress={() => {
@@ -167,7 +162,7 @@ export default function TabChoiceScreen() {
 
     return (
         <VFull>
-            <MyModal visible={show}>{modalContent}</MyModal>
+            <MyModal onRequestClose={() => modalShowOrHide()} visible={show}>{modalContent}</MyModal>
             <Text style={Styles.title}>Choice Screen</Text>
             <FlatList
                 style={[Styles.flexG1, { paddingHorizontal: 10 }]}
@@ -176,6 +171,7 @@ export default function TabChoiceScreen() {
                 keyExtractor={({ key }) => key}
             />
             <LargeBtn
+                disabled={disabledBtn}
                 label='Rondomly Choice'
                 onPress={() => {
                     modalShowOrHide(true);

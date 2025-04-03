@@ -1,23 +1,24 @@
-import {FlatList, StyleSheet} from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 
-import {VFull} from "@/components/VFull";
-import {router} from "expo-router";
-import {Styles} from "@/constants/Styles";
-import {Text} from "react-native-ui-lib";
-import {descSortStorage} from "@/store/storage";
-import {useContext} from "react";
-import {ToastContext} from "@/components/provider/ToastProvider";
-import {newPerson, Person, statePeople, statePerson} from "@/store/state";
-import {PlatformPressable} from "@react-navigation/elements";
+import { VFull } from "@/components/VFull";
+import { router } from "expo-router";
+import { Styles } from "@/constants/Styles";
+import { Text, ToastPresets } from "react-native-ui-lib";
+import { descSortStorage } from "@/store/storage";
+import { useContext } from "react";
+import { ToastContext } from "@/components/provider/ToastProvider";
+import { newPerson, Person, stateChoicesPeople, statePeople, statePerson } from "@/store/state";
+import { PlatformPressable } from "@react-navigation/elements";
 import LargeBtn from "@/components/ui/LargeBtn";
 
 export default function TabPeopleScreen() {
     const people = Object.values(statePeople(state => state.record)) as Person[];
-    const {showToast} = useContext(ToastContext);
+    const { showToast } = useContext(ToastContext);
+    const choices = stateChoicesPeople(state => state.record);
 
     const styles = getStyles();
 
-    function renderItem({item}: { item: Person }) {
+    function renderItem({ item }: { item: Person }) {
         return <PlatformPressable
             onPress={upsertPerson(item)}
             key={item.key}
@@ -26,19 +27,20 @@ export default function TabPeopleScreen() {
             <LargeBtn
                 label='Delete'
                 style={Styles.m0}
+                disabled={choices.hasOwnProperty(item.key)}
                 onPress={() => {
                     statePeople.getState().deleteRecord(item.key);
                     showToast('Person deleted');
-                }}/>
+                }} />
         </PlatformPressable>;
     }
 
     return (
         <VFull>
             <FlatList data={descSortStorage(people)}
-                      style={[Styles.flexG1, Styles.ph5]}
-                      keyExtractor={({key}) => key}
-                      renderItem={renderItem}>
+                style={[Styles.flexG1, Styles.ph5]}
+                keyExtractor={({ key }) => key}
+                renderItem={renderItem}>
             </FlatList>
             <LargeBtn
                 label='Add Peron'
@@ -57,6 +59,6 @@ function upsertPerson(person?: Person) {
 
 function getStyles() {
     return StyleSheet.create({
-        itemText: {flexGrow: 1, fontWeight: '500'},
+        itemText: { flexGrow: 1, fontWeight: '500' },
     });
 }
