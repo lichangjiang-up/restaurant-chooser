@@ -42,7 +42,7 @@ export type Restaurant = {
 export enum StorageTyp {
     RESTAURANTS = 'restaurants',
     PEOPLE = 'people',
-    CHOICES = 'choices',
+    CHOICES_PEOPLE = 'choices_people',
     RESTAURANT = 'restaurant',
     PERSON = 'person',
     CHOICE_RESTAURANT = 'choice_restaurant',
@@ -162,4 +162,4 @@ export const stateChoiceRestaurant = newLocalState<Restaurant>(StorageTyp.CHOICE
 
 export const statePeople = newRecordState<Person>(StorageTyp.PEOPLE);
 export const stateRestaurants = newRecordState<Restaurant>(StorageTyp.RESTAURANTS);
-export const stateChoicesPeople = newRecordState<null>(StorageTyp.CHOICES);
+export const stateChoicesPeople = newRecordState<null>(StorageTyp.CHOICES_PEOPLE);
