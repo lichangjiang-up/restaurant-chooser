@@ -64,7 +64,7 @@ export default function TabChoiceScreen() {
     useEffect(() => {
         modalShowOrHide();
         clearVetoedList();
-    }, []);
+    }, [modalShowOrHide, clearVetoedList]);
 
     function renderItem({item}: { item: Person }) {
         return <View

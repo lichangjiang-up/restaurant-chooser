@@ -56,7 +56,7 @@ export type Marker = {
     resetMarker: (marker?: boolean) => void;
 }
 
-type ObjStore<T extends {}> = {
+type ObjStore<T> = {
     v: T;
     update: (key: keyof T, v: any) => void;
     reset: (obj: T) => void;
@@ -74,7 +74,7 @@ export function createMarkerStore() {
     }))
 }
 
-export function newObjState<T extends {}>(t: T, name: StorageTyp) {
+export function newObjState<T>(t: T, name: StorageTyp) {
     return create<ObjStore<T>>()(persist(
         (set, get) => ({
             v: t,

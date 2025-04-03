@@ -1,4 +1,4 @@
-import {Button, ButtonProps, ButtonSize, Colors, TouchableOpacityProps} from "react-native-ui-lib";
+import {Button, ButtonProps, ButtonSize, Colors} from "react-native-ui-lib";
 import {Styles} from "@/constants/Styles";
 
 export default function LargeBtn(props: ButtonProps) {

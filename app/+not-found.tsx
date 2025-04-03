@@ -1,6 +1,5 @@
 import {Link, Stack} from 'expo-router';
 
-import {VFull} from '@/components/VFull';
 import {Text} from "react-native-ui-lib";
 import {Styles} from "@/constants/Styles";
 import {SafeAreaView} from "react-native-safe-area-context";

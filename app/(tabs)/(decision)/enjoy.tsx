@@ -16,7 +16,6 @@ export default function TabEnjoyScreen() {
         return <View/>;
     }
     restaurant = wrapperRestaurant(restaurant);
-
     const listData = Array.of<keyof Restaurant>('name', 'cuisine', 'price', 'rating', 'phone', 'address', 'website', 'delivery')
         .map(key => ({key, value: restaurant.getHint(key)}));
 
