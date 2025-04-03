@@ -5,18 +5,7 @@ export const G_MMKV = new MMKV();
 
 export const STATE_STORAGE: StateStorage = {
     getItem: (name) => {
-        return new Promise<string | null>((resolve, reject) => {
-            try {
-                const res = G_MMKV.getString(name)
-                if (res) {
-                    resolve(res);
-                } else {
-                    reject(res);
-                }
-            } catch (err) {
-                reject(err);
-            }
-        });
+        return G_MMKV.getString(name) || null;
     },
     setItem: (name, value) => {
         G_MMKV.set(name, value);
