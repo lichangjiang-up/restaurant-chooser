@@ -1,45 +1,42 @@
-import {Button, ScrollView, StyleSheet, View, Text} from "react-native";
-import {Styles} from "@/constants/Styles";
-import {Restaurant, stateChoiceRestaurant, wrapperRestaurant} from "@/store/state";
-import {router} from "expo-router";
-import {useContext} from "react";
-import {ToastContext} from "@/components/provider/ToastProvider";
-import {VFull} from "@/components/VFull";
+import { Button, ScrollView, StyleSheet, View, Text } from "react-native";
+import { Styles } from "@/constants/Styles";
+import { Restaurant, stateChoiceRestaurant, wrapperRestaurant } from "@/store/state";
+import { router } from "expo-router";
+import { useContext } from "react";
+import { ToastContext } from "@/components/provider/ToastProvider";
+import { VFull } from "@/components/VFull";
 
 
 export default function TabEnjoyScreen() {
-    const {showToast} = useContext(ToastContext)
+    const { showToast } = useContext(ToastContext);
+    let restaurant = stateChoiceRestaurant(state => state.v);
 
-    let restaurant = stateChoiceRestaurant(state => state.v)
     if (!restaurant?.key) {
-        router.push('/');
-        return <View/>;
+        router.replace('/');
+        return <View />;
     }
     restaurant = wrapperRestaurant(restaurant);
-    const listData = Array.of<keyof Restaurant>('name', 'cuisine', 'price', 'rating', 'phone', 'address', 'website', 'delivery')
-        .map(key => ({key, value: restaurant.getHint(key)}));
-
-
-    function renderItem({key, value}: { key: string, value: string }) {
+    const showKeys = Array.of<keyof Restaurant>('name', 'cuisine', 'price', 'rating', 'phone', 'address', 'website', 'delivery');
+    function renderItem(key: keyof Restaurant) {
         return <View key={key} style={styles.valueText}>
-            <Text style={[{width: 100, color: 'red'}, Styles.capital]}>{key}:</Text>
-            <Text>{value}</Text>
+            <Text style={[styles.label, Styles.capital]}>{key}:</Text>
+            <Text>{restaurant?.getHint(key) || 'N/A'}</Text>
         </View>;
     }
 
     return <VFull style={Styles.center}>
-        <View style={{width: '100%'}}>
-            <ScrollView style={{height: 'auto', width: '100%'}}>
+        <View style={Styles.w100}>
+            <ScrollView style={{ height: 'auto', width: '100%' }}>
                 <View style={[Styles.center, Styles.ph15]}>
                     <Text style={styles.title}>Enjoy your meal</Text>
                     <View style={styles.detail}>
-                        {listData.map((item) => renderItem(item))}
+                        {showKeys.map((key) => renderItem(key))}
                     </View>
                     <Button
                         title='All Done'
                         onPress={() => {
                             showToast('Enjoy your meal!');
-                        }}/>
+                        }} />
                 </View>
             </ScrollView>
         </View>
@@ -56,9 +53,10 @@ const styles = StyleSheet.create({
         marginVertical: 40,
         borderRadius: 6,
     },
-    valueText: {display: 'flex', flexDirection: 'row', alignItems: 'center', height: 30},
+    valueText: { display: 'flex', flexDirection: 'row', alignItems: 'center', height: 30 },
     title: {
         fontSize: 26,
         fontWeight: 'bold',
-    }
+    },
+    label: { width: 100, color: 'red' }
 });

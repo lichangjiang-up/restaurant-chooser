@@ -93,7 +93,7 @@ export default function UpsertPersonScreen() {
         setTimeout(() => {
             try {
                 const res = personState.merge(initLastModifiedAndRet(person, StorageTyp.PERSON));
-                statePeople.getState().add(res.key, res);
+                statePeople.getState().addRecord(res.key, res);
                 showToast('Person saved');
                 router.back();
             } catch (err) {

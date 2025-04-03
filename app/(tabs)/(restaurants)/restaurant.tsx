@@ -99,7 +99,7 @@ export default function UpsertRestaurantScreen() {
         setTimeout(() => {
             try {
                 const res = state.merge(initLastModifiedAndRet(restaurant, StorageTyp.RESTAURANT));
-                stateRestaurants.getState().add(res.key, res);
+                stateRestaurants.getState().addRecord(res.key, res);
                 showToast('Restaurant saved');
                 router.replace('/(tabs)/(restaurants)/restaurants');
             } catch (err) {

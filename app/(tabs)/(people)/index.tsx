@@ -12,7 +12,7 @@ import {PlatformPressable} from "@react-navigation/elements";
 import LargeBtn from "@/components/ui/LargeBtn";
 
 export default function TabPeopleScreen() {
-    const people = Object.values(statePeople(state => state.v)) as Person[];
+    const people = Object.values(statePeople(state => state.record)) as Person[];
     const {showToast} = useContext(ToastContext);
 
     const styles = getStyles();
@@ -27,7 +27,7 @@ export default function TabPeopleScreen() {
                 label='Delete'
                 style={Styles.m0}
                 onPress={() => {
-                    statePeople.getState().delete(item.key);
+                    statePeople.getState().deleteRecord(item.key);
                     showToast('Person deleted');
                 }}/>
         </PlatformPressable>;

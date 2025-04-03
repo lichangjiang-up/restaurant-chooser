@@ -1,7 +1,7 @@
-import {create} from "zustand/react";
-import {produce} from "immer";
-import {STATE_STORAGE, StorageAbs} from "@/store/storage";
-import {createJSONStorage, persist} from "zustand/middleware";
+import { create } from "zustand/react";
+import { produce } from "immer";
+import { STATE_STORAGE, StorageAbs } from "@/store/storage";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 export type Gender = '-' | 'Male' | 'Female';
 export type PersonRelation = 'Other' | 'Me' | 'Family';
@@ -32,18 +32,15 @@ export function newRestaurant(restaurant?: Restaurant): Restaurant {
 }
 
 export function wrapperRestaurant(restaurant: Restaurant) {
-    restaurant.getHint = (key: keyof Restaurant) => {
+    const getHint = (key: keyof Restaurant): string => {
         switch (key) {
-            case "price":
-                return '$'.repeat(Number(restaurant.price || 0));
-            case "rating":
-                return '⭐️'.repeat(Number(restaurant.rating || 0));
-            case "delivery":
-                return restaurant.delivery?.toLowerCase() === 'yes' ? 'DOES delivery' : 'NOT delivery';
-            default:
-                return restaurant[key]?.toString() || '';
+            case "price": return '$'.repeat(Number(restaurant.price || 0));
+            case "rating": return '⭐️'.repeat(Number(restaurant.rating || 0));
+            case "delivery": return restaurant.delivery?.toLowerCase() === 'yes' ? 'DOES delivery' : 'NOT delivery';
+            default: return restaurant[key]?.toString() || '';
         }
     };
+    restaurant.getHint = getHint;
     return restaurant;
 }
 
@@ -69,7 +66,7 @@ export function createMarkerStore() {
     return create<Marker>()((set) => ({
         marker: false,
         resetMarker: (marker?: boolean) => set(state => {
-            return {marker: !!marker};
+            return { marker: !!marker };
         }),
     }))
 }
@@ -82,7 +79,7 @@ export function newObjState<T>(t: T, name: StorageTyp) {
                 state.v[key] = v;
             })),
             reset: (obj: T) => set(_ => {
-                return {v: obj, marker: false};
+                return { v: obj, marker: false };
             }),
             merge: (obj: any) => {
                 set(produce(state => {
@@ -91,15 +88,15 @@ export function newObjState<T>(t: T, name: StorageTyp) {
                 return get().v;
             },
         }),
-        {name, storage: JSON_STORAGE})
+        { name, storage: JSON_STORAGE })
     );
 }
 
-type StorageMap<T> = {
-    v: any;
-    add: (key: string, t: T) => void;
-    clear: () => void;
-    delete: (...keys: string[]) => void;
+export type StorageMap<T> = {
+    record: Record<string, T>;
+    addRecord: (key: string, t: T) => void;
+    clearRecord: () => void;
+    deleteRecord: (...keys: string[]) => void;
 }
 
 export function newLocalState<T extends {}>(name: StorageTyp, t?: T) {
@@ -107,10 +104,10 @@ export function newLocalState<T extends {}>(name: StorageTyp, t?: T) {
         (set) => ({
             v: t,
             reset: (obj: T) => set(_ => {
-                return {v: obj};
+                return { v: obj };
             }),
         }),
-        {name, storage: JSON_STORAGE})
+        { name, storage: JSON_STORAGE })
     );
 }
 
@@ -123,22 +120,23 @@ type SimpleStore<T> = {
 function newStorageState<T>(name: StorageTyp) {
     return create<StorageMap<T>>()(persist(
         (set) => ({
-            v: {},
-            add: (key: string, t) => set(produce(state => {
-                state.v[key] = t;
-            })),
-            clear: () => set(_ => {
-                return {v: {}};
+            record: {},
+            addRecord: (key: string, t) => set(state => {
+                const v = Object.assign({}, state.record, { [key]: t });
+                return { ...state, record: v };
             }),
-            delete: (...keys: string[]) => {
-                if (keys.length > 0) {
-                    set(produce(state => {
-                        keys.filter((key: string) => delete state.v[key]);
-                    }));
-                }
-            },
+            clearRecord: () => set(state => {
+                return { ...state, record: {} };
+            }),
+            deleteRecord: (...keys: string[]) => set(state => {
+                const v = { ...state.record }
+                if (keys.filter((key: string) => delete v[key]).length > 0) {
+                    return { ...state, record: v };
+                };
+                return state;
+            }),
         }),
-        {name, storage: JSON_STORAGE})
+        { name, storage: JSON_STORAGE })
     );
 }
 
@@ -158,10 +156,6 @@ export const stateChoiceRestaurant = newLocalState<Restaurant>(StorageTyp.CHOICE
 export const statePeople = newStorageState<Person>(StorageTyp.PEOPLE);
 export const stateRestaurants = newStorageState<Restaurant>(StorageTyp.RESTAURANTS);
 export const stateChoicesPeople = newStorageState<null>(StorageTyp.CHOICES);
-
-export type Record<K extends keyof any, T> = {
-    [P in K]: T;
-};
 
 export function checkPhone(v?: string) {
     if ((v?.length || 0) < 1) {

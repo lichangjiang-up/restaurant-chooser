@@ -1,4 +1,4 @@
-import {Platform, StyleProp, StyleSheet, TextStyle, ViewStyle} from "react-native";
+import { Platform, StyleProp, StyleSheet, TextStyle, ViewStyle } from "react-native";
 
 export const Styles = StyleSheet.create({
     cContainer: {
@@ -31,6 +31,9 @@ export const Styles = StyleSheet.create({
     },
     m15: {
         margin: 15,
+    },
+    w100: {
+        height: '100%',
     },
     hw100: {
         height: '100%',
@@ -78,7 +81,7 @@ export const Styles = StyleSheet.create({
         fontWeight: 500,
         lineHeight: 24,
     },
-    itemText: {flex: 1, fontWeight: '500', color: 'black', fontSize: 16, textAlign: 'left'},
+    itemText: { flex: 1, fontWeight: '500', color: 'black', fontSize: 16, textAlign: 'left' },
     wFullMb20: {
         width: '100%',
         marginBottom: 20,
@@ -93,8 +96,8 @@ export const Styles = StyleSheet.create({
         marginVertical: 20,
     },
     toastMt30: Platform.select({
-        android: {paddingTop: 30},
-        ios: {paddingTop: 30},
+        android: { paddingTop: 30 },
+        ios: { paddingTop: 30 },
         default: {},
     }),
     capital: {
@@ -103,7 +106,7 @@ export const Styles = StyleSheet.create({
 });
 
 export function getStyleBg() {
-    return {backgroundColor: 'white'}
+    return { backgroundColor: 'white' }
 }
 
 export type VSP = StyleProp<ViewStyle>

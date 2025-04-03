@@ -12,7 +12,7 @@ import LargeBtn from '@/components/ui/LargeBtn';
 import {VFull} from "@/components/VFull";
 
 export default function TabRestaurantsScreen() {
-    const restaurants = Object.values(stateRestaurants(state => state.v)) as Restaurant[];
+    const restaurants = Object.values(stateRestaurants(state => state.record)) as Restaurant[];
     const {showToast} = useContext(ToastContext);
 
     function renderItem({item}: { item: Restaurant }) {
@@ -25,7 +25,7 @@ export default function TabRestaurantsScreen() {
                 label='Delete'
                 style={Styles.m0}
                 onPress={() => {
-                    stateRestaurants.getState().delete(item.key);
+                    stateRestaurants.getState().deleteRecord(item.key);
                     showToast('Restaurant deleted', ToastPresets.OFFLINE);
                 }}/>
         </PlatformPressable>
