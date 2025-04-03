@@ -40,12 +40,12 @@ export type Restaurant = {
 } & StorageAbs;
 
 export enum StorageTyp {
-    RESTAURANTS = 'rs',
-    PEOPLE = 'ps',
-    CHOICES = 'cs',
-    RESTAURANT = 'rp',
-    PERSON = 'pp',
-    CHOICE_RESTAURANT = 'cs',
+    RESTAURANTS = 'restaurants',
+    PEOPLE = 'people',
+    CHOICES = 'choices',
+    RESTAURANT = 'restaurant',
+    PERSON = 'person',
+    CHOICE_RESTAURANT = 'choice_restaurant',
 }
 
 export type Marker = {
