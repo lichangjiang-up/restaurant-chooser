@@ -108,14 +108,10 @@ export function newMarkerStore() {
 export function newObjStore<T>(t: T, name?: StorageTyp) {
     const createFun: StateCreator<ObjStore<T>> = (set, get) => ({
         obj: t,
-        objUpdate: (key: keyof T, v: any) => set((state) => ({
-            obj: { ...state.obj, [key]: v },
-        })),
+        objUpdate: (key: keyof T, v: any) => set((state) => (state.obj[key] === v ? state : { obj: { ...state.obj, [key]: v } })),
         objReset: (record: T) => set(() => ({ obj: record })),
         objMerge: (obj: any) => {
-            set((state) => ({
-                obj: { ...state.obj, ...obj },
-            }));
+            set((state) => ({ obj: { ...state.obj, ...obj } }));
             return get().obj;
         },
     });
@@ -139,9 +135,7 @@ export function newLocalStore<T>(name?: StorageTyp, t?: T) {
 export function newRecordStore<K extends string, T>(name?: StorageTyp) {
     const createFun: StateCreator<RecordMap<K, T>> = (set) => ({
         record: {} as Record<K, T>,
-        addRecord: (key: K, t: T) => set((state) => ({
-            record: { ...state.record, [key]: t },
-        })),
+        addRecord: (key: K, t: T) => set((state) => state.record[key] === t ? state : { record: { ...state.record, [key]: t } }),
         clearRecord: () => set(() => ({ record: {} as Record<K, T> })),
         deleteRecord: (...keys: K[]) => set((state) => {
             if (keys.some(key => state.record.hasOwnProperty(key))) {
