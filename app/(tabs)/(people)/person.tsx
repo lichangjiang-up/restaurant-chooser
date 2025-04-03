@@ -1,35 +1,43 @@
-import {Styles} from "@/constants/Styles";
-import {ScrollView, StyleSheet} from "react-native";
-import {useContext, useState} from "react";
-import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
-import {router} from "expo-router";
-import {ToastContext} from "@/components/provider/ToastProvider";
-import {VFull} from "@/components/VFull";
-import {GENDERS, newMarkerStore, Person, PERSON_RELATIONS, statePeople, statePerson, StorageTyp} from "@/store/state";
-import {initLastModifiedAndRet} from "@/store/storage";
-import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
+import { Styles } from "@/constants/Styles";
+import { ScrollView, StyleSheet } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import { Colors, Picker, TextField, ToastPresets } from "react-native-ui-lib";
+import { router } from "expo-router";
+import { ToastContext } from "@/components/provider/ToastProvider";
+import { VFull } from "@/components/VFull";
+import { GENDERS, newMarkerStore, newRecordStore as newRecordStore, Person, PERSON_RELATIONS, statePeople, statePerson, StorageTyp } from "@/store/state";
+import { initLastModifiedAndRet } from "@/store/storage";
+import { newValueLabel, ValueLabel } from "@/components/ui/PikerView";
 import LargeBtn from "@/components/ui/LargeBtn";
-import {checkName, checkPhone} from "@/constants/method";
+import { checkName, checkPhone } from "@/constants/method";
 
 
 const markerState = newMarkerStore();
 
 type ErrRecord = Record<keyof Person, string | false | undefined>;
+const errRecordStore = newRecordStore<keyof Person, string | false | undefined>();
+
 
 export default function UpsertPersonScreen() {
     const person = statePerson((state) => state.obj);
-    const {marker, resetMarker} = markerState();
+    const { marker, resetMarker } = markerState();
     const personState = statePerson.getState();
 
     person.gender ||= '-';
 
-    const styles = getStyles();
+    const { record, resetRecord, deleteRecord } = errRecordStore();
 
-    const [errors, setErrors] = useState<ErrRecord>({} as ErrRecord);
+    useEffect(() => {
+        return () => {
+            resetRecord({} as ErrRecord);
+            resetMarker();
+        };
+    }, []);
 
 
     function getTextField(key: keyof Person, maxLength = 30) {
-        const newErr = errors[key];
+        const newErr = record[key];
+        const value = person[key];
         return <TextField
             key={key}
             multiline={maxLength > 30}
@@ -40,41 +48,42 @@ export default function UpsertPersonScreen() {
             color={Colors.$textDefault}
             labelStyle={Styles.capital}
             onBlur={() => {
-                const v = person[key];
-                if (v && typeof v === 'string' && v.trim().length !== v.length) {
-                    personState.objUpdate(key, v.trim());
+                if (typeof value === 'string') {
+                    const trimV = value.trim();
+                    trimV !== value && personState.objUpdate(key, trimV);
                 }
             }}
-            containerStyle={[Styles.mb20, styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
+            containerStyle={[Styles.mb20, styles.tfContainer, newErr ? { borderColor: 'red' } : {}]}
             value={person[key] as any}
             style={styles.tf}
-            onFocus={() => (delete errors[key]) && setErrors({...errors})}
-            onChangeText={(text) => personState.objUpdate(key, text)}/>;
+            onFocus={() => deleteRecord(key)}
+            onChangeText={(text) => personState.objUpdate(key, text)} />;
     }
 
     function getPicker(key: keyof Person, valueLabel: ValueLabel[]) {
-        const newErr = errors[key];
+        const newErr = record[key];
+    
         return <Picker
             key={key}
-            style={[styles.picker, Styles.mb20, newErr ? {borderColor: 'red'} : {}]}
+            style={[styles.picker, Styles.mb20, newErr ? { borderColor: 'red' } : {}]}
             value={person[key] as any}
             label={newErr || key}
             labelColor={newErr ? 'red' : undefined}
             labelStyle={Styles.capital}
             placeholder={`Select ${key}`}
             onChange={(text) => {
-                (delete errors[key]) && setErrors({...errors});
+                deleteRecord(key);
                 personState.objUpdate(key, text);
             }}>
-            {valueLabel.map(({value, label}) => <Picker.Item
+            {valueLabel.map(({ value, label }) => <Picker.Item
                 labelStyle={Styles.lh40}
                 key={value}
                 label={label}
-                value={value}/>)}
+                value={value} />)}
         </Picker>;
     }
 
-    const {showToast} = useContext(ToastContext);
+    const { showToast } = useContext(ToastContext);
 
     function onSavePress() {
         const errMp = {
@@ -82,9 +91,9 @@ export default function UpsertPersonScreen() {
             'phone': checkPhone(person.phone),
             'relation': person.relation ? false : 'Relation must not empty',
         } as ErrRecord;
+        resetRecord(errMp);
         if (Object.values(errMp).some(v => !!v)) {
             showToast('Please check the form', ToastPresets.FAILURE);
-            setErrors(errMp);
             return;
         }
         showToast('Person saving...', 'loader');
@@ -122,25 +131,22 @@ export default function UpsertPersonScreen() {
     );
 }
 
-function getStyles() {
-    return StyleSheet.create({
-        picker: {
-            borderRadius: 4,
-            borderWidth: 1,
-            borderColor: Colors.$textDefault,
-            borderStyle: 'solid',
-            paddingVertical: 6,
-            paddingHorizontal: 10,
-            lineHeight: 46,
-            marginTop: 4,
-        },
-        tfContainer: {
-            borderStyle: 'solid',
-            borderBottomWidth: 1,
-            paddingBottom: 4,
-            borderColor: Colors.$textDefault,
-        },
-        tf: {lineHeight: 24, fontSize: 18, marginVertical: 6}
-    })
-}
-
+const styles = StyleSheet.create({
+    picker: {
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: Colors.$textDefault,
+        borderStyle: 'solid',
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        lineHeight: 46,
+        marginTop: 4,
+    },
+    tfContainer: {
+        borderStyle: 'solid',
+        borderBottomWidth: 1,
+        paddingBottom: 4,
+        borderColor: Colors.$textDefault,
+    },
+    tf: { lineHeight: 24, fontSize: 18, marginVertical: 6 }
+});

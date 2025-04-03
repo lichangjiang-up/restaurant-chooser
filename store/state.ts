@@ -105,7 +105,7 @@ export function newMarkerStore() {
     }));
 }
 
-export function newObjState<T>(t: T, name?: StorageTyp) {
+export function newObjStore<T>(t: T, name?: StorageTyp) {
     const createFun: StateCreator<ObjStore<T>> = (set, get) => ({
         obj: t,
         objUpdate: (key: keyof T, v: any) => set((state) => ({
@@ -125,7 +125,7 @@ export function newObjState<T>(t: T, name?: StorageTyp) {
     return create<ObjStore<T>>()(persist(createFun, { name, storage: JSON_STORAGE }));
 }
 
-export function newLocalState<T>(name?: StorageTyp, t?: T) {
+export function newLocalStore<T>(name?: StorageTyp, t?: T) {
     const createFun: StateCreator<SimpleStore<T>> = (set) => ({
         v: t,
         reset: (obj: T) => set(() => ({ v: obj })),
@@ -136,7 +136,7 @@ export function newLocalState<T>(name?: StorageTyp, t?: T) {
     return create<SimpleStore<T>>()(persist(createFun, { name, storage: JSON_STORAGE }));
 }
 
-export function newRecordState<K extends string, T>(name?: StorageTyp) {
+export function newRecordStore<K extends string, T>(name?: StorageTyp) {
     const createFun: StateCreator<RecordMap<K, T>> = (set) => ({
         record: {} as Record<K, T>,
         addRecord: (key: K, t: T) => set((state) => ({
@@ -144,8 +144,9 @@ export function newRecordState<K extends string, T>(name?: StorageTyp) {
         })),
         clearRecord: () => set(() => ({ record: {} as Record<K, T> })),
         deleteRecord: (...keys: K[]) => set((state) => {
-            const record = { ...state.record };
-            if (keys.filter((key) => delete record[key]).length > 0) {
+            if (keys.some(key => state.record.hasOwnProperty(key))) {
+                const record = { ...state.record };
+                keys.forEach((key) => delete record[key])
                 return { record };
             }
             return state;
@@ -158,10 +159,10 @@ export function newRecordState<K extends string, T>(name?: StorageTyp) {
     return create<RecordMap<K, T>>()(persist(createFun, { name, storage: JSON_STORAGE }));
 }
 
-export const statePerson = newObjState<Person>(newPerson(), StorageTyp.PERSON);
-export const stateRestaurant = newObjState<Restaurant>(newRestaurant(), StorageTyp.RESTAURANT);
-export const stateChoiceRestaurant = newLocalState<Restaurant>(StorageTyp.CHOICE_RESTAURANT);
+export const statePerson = newObjStore<Person>(newPerson(), StorageTyp.PERSON);
+export const stateRestaurant = newObjStore<Restaurant>(newRestaurant(), StorageTyp.RESTAURANT);
+export const stateChoiceRestaurant = newLocalStore<Restaurant>(StorageTyp.CHOICE_RESTAURANT);
 
-export const statePeople = newRecordState<string, Person>(StorageTyp.PEOPLE);
-export const stateRestaurants = newRecordState<string, Restaurant>(StorageTyp.RESTAURANTS);
-export const stateChoicesPeople = newRecordState<string, null>(StorageTyp.CHOICES_PEOPLE);
+export const statePeople = newRecordStore<string, Person>(StorageTyp.PEOPLE);
+export const stateRestaurants = newRecordStore<string, Restaurant>(StorageTyp.RESTAURANTS);
+export const stateChoicesPeople = newRecordStore<string, null>(StorageTyp.CHOICES_PEOPLE);

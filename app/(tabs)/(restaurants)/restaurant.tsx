@@ -1,13 +1,13 @@
 import { Styles } from "@/constants/Styles";
 import { ScrollView, StyleSheet } from "react-native";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Colors, Picker, TextField, ToastPresets } from "react-native-ui-lib";
 import { router } from "expo-router";
 import { ToastContext } from "@/components/provider/ToastProvider";
 import {
     CUISINES, LEVELS,
     newMarkerStore,
-    newRecordState,
+    newRecordStore,
     Restaurant,
     stateRestaurant,
     stateRestaurants,
@@ -20,20 +20,26 @@ import LargeBtn from "@/components/ui/LargeBtn";
 import { checkName, checkPhone, checkWebsite } from "@/constants/method";
 
 
-const markerState = newMarkerStore();
 
 type ErrRecord = Record<keyof Restaurant, string | false | undefined>;
-const errRecordState = newRecordState<keyof Restaurant, string | false | undefined>();
+
+const errRecordState = newRecordStore<keyof Restaurant, string | false | undefined>();
+const markerState = newMarkerStore();
 
 export default function UpsertRestaurantScreen() {
     const { showToast } = useContext(ToastContext);
-
-
     const restaurant = stateRestaurant((state) => state.obj);
     const { marker, resetMarker } = markerState();
     const state = stateRestaurant.getState();
 
     const { record, resetRecord, deleteRecord } = errRecordState();
+
+    useEffect(() => {
+        return () => {
+            resetRecord({} as ErrRecord);
+            resetMarker();
+        };
+    }, []);
 
     function getTextField(key: keyof Restaurant, maxLength = 30) {
         const newErr = record[key];

@@ -2,7 +2,7 @@ import { Styles } from "@/constants/Styles";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { descSortStorage } from "@/store/storage";
 import {
-    newRecordState,
+    newRecordStore,
     newRestaurant,
     Person,
     Restaurant,
@@ -43,7 +43,7 @@ const dialogStore = create<DialogStore>()((set) => ({
     vetoShowHide: (v) => set(state => ({ ...state, vetoShow: !!v })),
 }));
 
-const vetoedRecordStore = newRecordState<string, null>();
+const vetoedRecordStore = newRecordStore<string, null>();
 
 export default function TabChoiceScreen() {
     const { showToast } = useContext(ToastContext);
