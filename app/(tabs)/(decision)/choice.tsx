@@ -43,7 +43,7 @@ const dialogStore = create<DialogStore>()((set) => ({
     vetoShowHide: (v) => set(state => ({ ...state, vetoShow: !!v })),
 }));
 
-const vetoedRecordStore = newRecordState<null>();
+const vetoedRecordStore = newRecordState<string, null>();
 
 export default function TabChoiceScreen() {
     const { showToast } = useContext(ToastContext);

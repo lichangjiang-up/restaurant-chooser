@@ -1,6 +1,6 @@
-import {Colors, Toast, ToastPresets} from "react-native-ui-lib";
-import {createContext, useState} from "react";
-import {Styles} from "@/constants/Styles";
+import { Colors, Toast, ToastPresets } from "react-native-ui-lib";
+import { createContext, useEffect, useState } from "react";
+import { Styles } from "@/constants/Styles";
 
 type ToastTyp = ToastPresets | 'loader';
 
@@ -9,13 +9,16 @@ export const ToastContext = createContext({
     },
 });
 
-let timeoutId: NodeJS.Timeout;
+let timeoutId: NodeJS.Timeout | null = null;
 
 function gClearTimeout() {
-    timeoutId && clearTimeout(timeoutId);
+    if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+    }
 }
 
-export const ToastProvider = ({children}: { children: React.ReactNode }) => {
+export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
 
     const [toast, setToast] = useState({
         message: '',
@@ -27,31 +30,38 @@ export const ToastProvider = ({children}: { children: React.ReactNode }) => {
     const showToast = (message: string, typ?: ToastTyp) => {
         const isLoading = typ === 'loader';
 
-        const BG_MAP = {
+        const BG_MAP: Record<ToastTyp, string> = {
             [ToastPresets.FAILURE]: Colors.$backgroundDangerHeavy,
             [ToastPresets.SUCCESS]: Colors.$backgroundSuccessHeavy,
             [ToastPresets.OFFLINE]: Colors.$backgroundNeutralHeavy,
             [ToastPresets.GENERAL]: Colors.$backgroundPrimaryHeavy,
+            loader: Colors.$backgroundPrimaryHeavy,
         };
 
         const newToast = {
             message,
-            backgroundColor: BG_MAP[isLoading ? ToastPresets.GENERAL : (typ || ToastPresets.SUCCESS)],
+            backgroundColor: BG_MAP[typ || ToastPresets.SUCCESS],
             showLoader: isLoading,
             visible: true,
         };
         setToast(newToast);
         gClearTimeout();
-        timeoutId = setTimeout(() => setToast({...newToast, visible: false}), isLoading ? 30000 : 1500);
+        timeoutId = setTimeout(() => setToast({ ...newToast, visible: false }), isLoading ? 30000 : 1500);
     };
 
+    useEffect(() => {
+        return () => {
+            gClearTimeout();
+        };
+    }, []);
+
     return (
-        <ToastContext.Provider value={{showToast}}>
-            <Toast {...toast}
-                   position='top'
-                   style={Styles.toastMt30}
-                   centerMessage/>
+        <ToastContext.Provider value={{ showToast }}>
             {children}
+            <Toast {...toast}
+                position='top'
+                style={Styles.toastMt30}
+                centerMessage />
         </ToastContext.Provider>
     );
 };

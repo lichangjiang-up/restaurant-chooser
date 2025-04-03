@@ -9,13 +9,15 @@ import { VFull } from "@/components/VFull";
 export default function TabEnjoyScreen() {
     const { showToast } = useContext(ToastContext);
     let restaurant = stateChoiceRestaurant(state => state.v);
+    useEffect(() => {
+        return () => {
+            stateChoiceRestaurant.getState().reset(newRestaurant());
+        };
+    }, []);
 
     if (!restaurant?.key) {
         return <VFull />;
     }
-    useEffect(() => {
-        return () => stateChoiceRestaurant.getState().reset(newRestaurant());
-    });
     restaurant = wrapperRestaurant(restaurant);
     const showKeys = Array.of<keyof Restaurant>('name', 'cuisine', 'price', 'rating', 'phone', 'address', 'website', 'delivery');
     function renderItem(key: keyof Restaurant) {

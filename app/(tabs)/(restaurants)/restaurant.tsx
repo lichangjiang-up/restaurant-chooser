@@ -1,38 +1,43 @@
-import {Styles} from "@/constants/Styles";
-import {ScrollView, StyleSheet} from "react-native";
-import {useContext, useState} from "react";
-import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
-import {router} from "expo-router";
-import {ToastContext} from "@/components/provider/ToastProvider";
+import { Styles } from "@/constants/Styles";
+import { ScrollView, StyleSheet } from "react-native";
+import { useContext } from "react";
+import { Colors, Picker, TextField, ToastPresets } from "react-native-ui-lib";
+import { router } from "expo-router";
+import { ToastContext } from "@/components/provider/ToastProvider";
 import {
     CUISINES, LEVELS,
     newMarkerStore,
+    newRecordState,
     Restaurant,
     stateRestaurant,
     stateRestaurants,
     StorageTyp, YES_OR_NO
 } from "@/store/state";
-import {initLastModifiedAndRet} from "@/store/storage";
-import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
-import {VFull} from "@/components/VFull";
+import { initLastModifiedAndRet } from "@/store/storage";
+import { newValueLabel, ValueLabel } from "@/components/ui/PikerView";
+import { VFull } from "@/components/VFull";
 import LargeBtn from "@/components/ui/LargeBtn";
-import {checkName, checkPhone, checkWebsite} from "@/constants/method";
+import { checkName, checkPhone, checkWebsite } from "@/constants/method";
 
 
 const markerState = newMarkerStore();
 
 type ErrRecord = Record<keyof Restaurant, string | false | undefined>;
+const errRecordState = newRecordState<keyof Restaurant, string | false | undefined>();
 
 export default function UpsertRestaurantScreen() {
-    const restaurant = stateRestaurant((state) => state.obj);
-    const {marker, resetMarker} = markerState();
-    const state = stateRestaurant.getState();
-    const styles = getStyles();
+    const { showToast } = useContext(ToastContext);
 
-    const [errors, setErrors] = useState<ErrRecord>({} as ErrRecord);
+
+    const restaurant = stateRestaurant((state) => state.obj);
+    const { marker, resetMarker } = markerState();
+    const state = stateRestaurant.getState();
+
+    const { record, resetRecord, deleteRecord } = errRecordState();
 
     function getTextField(key: keyof Restaurant, maxLength = 30) {
-        const newErr = errors[key];
+        const newErr = record[key];
+        const value = restaurant[key];
         return <TextField
             key={key}
             multiline={maxLength > 30}
@@ -42,42 +47,40 @@ export default function UpsertRestaurantScreen() {
             labelColor={newErr ? 'red' : undefined}
             maxLength={maxLength}
             color={Colors.$textDefault}
-            containerStyle={[Styles.mb20, styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
-            value={restaurant[key] as any}
+            containerStyle={[Styles.mb20, styles.tfContainer, newErr ? { borderColor: 'red' } : {}]}
+            value={value as any}
             style={styles.tf}
             onBlur={() => {
-                const v = restaurant[key];
-                if (v && typeof v === 'string' && v.trim().length !== v.length) {
-                    state.objUpdate(key, v.trim());
+                if (typeof value === 'string') {
+                    const trimV = value.trim();
+                    trimV !== value && state.objUpdate(key, trimV);
                 }
             }}
-            onFocus={() => (delete errors[key]) && setErrors({...errors})}
-            onChangeText={(text) => state.objUpdate(key, text)}/>;
+            onFocus={() => deleteRecord(key)}
+            onChangeText={(text) => state.objUpdate(key, text)} />;
     }
 
     function getPicker(key: keyof Restaurant, valueLabel: ValueLabel[]) {
-        const newErr = errors[key];
+        const newErr = record[key];
         return <Picker
             key={key}
-            style={[styles.picker, Styles.mb20, newErr ? {borderColor: 'red'} : {}]}
+            style={[styles.picker, Styles.mb20, newErr ? { borderColor: 'red' } : {}]}
             value={restaurant[key] as any}
             label={newErr || key}
             labelColor={newErr ? 'red' : undefined}
             placeholder={`Select ${key}`}
             labelStyle={Styles.capital}
             onChange={(text) => {
-                (delete errors[key]) && setErrors({...errors});
+                deleteRecord(key);
                 state.objUpdate(key, text);
             }}>
-            {valueLabel.map(({value, label}) => <Picker.Item
+            {valueLabel.map(({ value, label }) => <Picker.Item
                 labelStyle={Styles.lh40}
                 key={value}
                 label={label}
-                value={value}/>)}
+                value={value} />)}
         </Picker>;
     }
-
-    const {showToast} = useContext(ToastContext);
 
     function onSavePress() {
         const errMp = {
@@ -89,9 +92,9 @@ export default function UpsertRestaurantScreen() {
             'delivery': restaurant.delivery ? false : 'Delivery must not empty',
             'website': checkWebsite(restaurant.website),
         } as ErrRecord;
+        resetRecord(errMp);
         if (Object.values(errMp).some(v => !!v)) {
             showToast('Please check the form', ToastPresets.FAILURE);
-            setErrors(errMp);
             return;
         }
         showToast('Restaurant saving...', 'loader');
@@ -126,32 +129,30 @@ export default function UpsertRestaurantScreen() {
                     style={Styles.mv20}
                     disabled={marker}
                     label={marker ? 'Saving...' : 'Save Restaurant'}
-                    onPress={onSavePress}
+                    onPress={() => onSavePress()}
                 />
             </ScrollView>
         </VFull>
     );
 }
 
-function getStyles() {
-    return StyleSheet.create({
-        picker: {
-            borderRadius: 4,
-            borderWidth: 1,
-            borderColor: Colors.$textDefault,
-            borderStyle: 'solid',
-            paddingVertical: 6,
-            paddingHorizontal: 10,
-            lineHeight: 46,
-            marginTop: 4,
-        },
-        tfContainer: {
-            borderStyle: 'solid',
-            borderBottomWidth: 1,
-            paddingBottom: 4,
-            borderColor: Colors.$textDefault,
-        },
-        tf: {lineHeight: 24, fontSize: 18, marginVertical: 6}
-    })
-}
+const styles = StyleSheet.create({
+    picker: {
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: Colors.$textDefault,
+        borderStyle: 'solid',
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        lineHeight: 46,
+        marginTop: 4,
+    },
+    tfContainer: {
+        borderStyle: 'solid',
+        borderBottomWidth: 1,
+        paddingBottom: 4,
+        borderColor: Colors.$textDefault,
+    },
+    tf: { lineHeight: 24, fontSize: 18, marginVertical: 6 }
+});
 

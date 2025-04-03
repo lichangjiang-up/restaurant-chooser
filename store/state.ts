@@ -1,7 +1,7 @@
-import {create} from "zustand/react";
-import {STATE_STORAGE, StorageAbs} from "@/store/storage";
-import {createJSONStorage, persist} from "zustand/middleware";
-import {StateCreator} from "zustand";
+import { create } from "zustand/react";
+import { STATE_STORAGE, StorageAbs } from "@/store/storage";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { StateCreator } from "zustand";
 
 const JSON_STORAGE = createJSONStorage(() => STATE_STORAGE);
 
@@ -61,11 +61,12 @@ export type ObjStore<T> = {
 }
 
 
-export type RecordMap<T> = {
-    record: Record<string, T>;
-    addRecord: (key: string, t: T) => void;
+export type RecordMap<K extends string, T> = {
+    record: Record<K, T>;
+    addRecord: (key: K, t: T) => void;
     clearRecord: () => void;
-    deleteRecord: (...keys: string[]) => void;
+    deleteRecord: (...keys: K[]) => void;
+    resetRecord: (record: Record<K, T>) => void;
 }
 
 type SimpleStore<T> = {
@@ -74,7 +75,7 @@ type SimpleStore<T> = {
 }
 
 export function newRestaurant(restaurant?: Restaurant): Restaurant {
-    return wrapperRestaurant(restaurant ? {...restaurant} : {} as Restaurant);
+    return wrapperRestaurant(restaurant ? { ...restaurant } : {} as Restaurant);
 }
 
 export function wrapperRestaurant(restaurant: Restaurant) {
@@ -100,7 +101,7 @@ export function newPerson(person?: Person): Person {
 export function newMarkerStore() {
     return create<Marker>()((set) => ({
         marker: false,
-        resetMarker: (marker = false) => set(() => ({marker})),
+        resetMarker: (marker = false) => set(() => ({ marker })),
     }));
 }
 
@@ -108,12 +109,12 @@ export function newObjState<T>(t: T, name?: StorageTyp) {
     const createFun: StateCreator<ObjStore<T>> = (set, get) => ({
         obj: t,
         objUpdate: (key: keyof T, v: any) => set((state) => ({
-            obj: {...state.obj, [key]: v},
+            obj: { ...state.obj, [key]: v },
         })),
-        objReset: (record: T) => set(() => ({obj: record})),
+        objReset: (record: T) => set(() => ({ obj: record })),
         objMerge: (obj: any) => {
             set((state) => ({
-                obj: {...state.obj, ...obj},
+                obj: { ...state.obj, ...obj },
             }));
             return get().obj;
         },
@@ -121,45 +122,46 @@ export function newObjState<T>(t: T, name?: StorageTyp) {
     if (!name) {
         return create<ObjStore<T>>()(createFun);
     }
-    return create<ObjStore<T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
+    return create<ObjStore<T>>()(persist(createFun, { name, storage: JSON_STORAGE }));
 }
 
 export function newLocalState<T>(name?: StorageTyp, t?: T) {
     const createFun: StateCreator<SimpleStore<T>> = (set) => ({
         v: t,
-        reset: (obj: T) => set(() => ({v: obj})),
+        reset: (obj: T) => set(() => ({ v: obj })),
     });
     if (!name) {
         return create<SimpleStore<T>>()(createFun);
     }
-    return create<SimpleStore<T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
+    return create<SimpleStore<T>>()(persist(createFun, { name, storage: JSON_STORAGE }));
 }
 
-export function newRecordState<T>(name?: StorageTyp) {
-    const createFun: StateCreator<RecordMap<T>> = (set) => ({
-        record: {},
-        addRecord: (key: string, t: T) => set((state) => ({
-            record: {...state.record, [key]: t},
+export function newRecordState<K extends string, T>(name?: StorageTyp) {
+    const createFun: StateCreator<RecordMap<K, T>> = (set) => ({
+        record: {} as Record<K, T>,
+        addRecord: (key: K, t: T) => set((state) => ({
+            record: { ...state.record, [key]: t },
         })),
-        clearRecord: () => set(() => ({record: {}})),
-        deleteRecord: (...keys: string[]) => set((state) => {
-            const record = {...state.record};
+        clearRecord: () => set(() => ({ record: {} as Record<K, T> })),
+        deleteRecord: (...keys: K[]) => set((state) => {
+            const record = { ...state.record };
             if (keys.filter((key) => delete record[key]).length > 0) {
-                return {record};
+                return { record };
             }
             return state;
         }),
+        resetRecord: (record: Record<K, T>) => set(() => ({ record })),
     });
     if (!name) {
-        return create<RecordMap<T>>()(createFun);
+        return create<RecordMap<K, T>>()(createFun);
     }
-    return create<RecordMap<T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
+    return create<RecordMap<K, T>>()(persist(createFun, { name, storage: JSON_STORAGE }));
 }
 
 export const statePerson = newObjState<Person>(newPerson(), StorageTyp.PERSON);
 export const stateRestaurant = newObjState<Restaurant>(newRestaurant(), StorageTyp.RESTAURANT);
 export const stateChoiceRestaurant = newLocalState<Restaurant>(StorageTyp.CHOICE_RESTAURANT);
 
-export const statePeople = newRecordState<Person>(StorageTyp.PEOPLE);
-export const stateRestaurants = newRecordState<Restaurant>(StorageTyp.RESTAURANTS);
-export const stateChoicesPeople = newRecordState<null>(StorageTyp.CHOICES_PEOPLE);
+export const statePeople = newRecordState<string, Person>(StorageTyp.PEOPLE);
+export const stateRestaurants = newRecordState<string, Restaurant>(StorageTyp.RESTAURANTS);
+export const stateChoicesPeople = newRecordState<string, null>(StorageTyp.CHOICES_PEOPLE);
