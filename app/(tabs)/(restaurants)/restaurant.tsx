@@ -1,9 +1,9 @@
-import { Styles } from "@/constants/Styles";
-import { ScrollView, StyleSheet } from "react-native";
-import { useContext, useEffect } from "react";
-import { Colors, Picker, TextField, ToastPresets } from "react-native-ui-lib";
-import { router } from "expo-router";
-import { ToastContext } from "@/components/provider/ToastProvider";
+import {Styles} from "@/constants/Styles";
+import {ScrollView, StyleSheet} from "react-native";
+import {useContext, useEffect} from "react";
+import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
+import {router} from "expo-router";
+import {ToastContext} from "@/components/provider/ToastProvider";
 import {
     CUISINES, LEVELS,
     newMarkerStore,
@@ -13,12 +13,11 @@ import {
     stateRestaurants,
     StorageTyp, YES_OR_NO
 } from "@/store/state";
-import { initLastModifiedAndRet } from "@/store/storage";
-import { newValueLabel, ValueLabel } from "@/components/ui/PikerView";
-import { VFull } from "@/components/VFull";
+import {initLastModifiedAndRet} from "@/store/storage";
+import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
+import {VFull} from "@/components/VFull";
 import LargeBtn from "@/components/ui/LargeBtn";
-import { checkName, checkPhone, checkWebsite } from "@/constants/method";
-
+import {checkName, checkPhone, checkWebsite} from "@/constants/method";
 
 
 type ErrRecord = Record<keyof Restaurant, string | false | undefined>;
@@ -27,19 +26,19 @@ const errRecordState = newRecordStore<keyof Restaurant, string | false | undefin
 const markerState = newMarkerStore();
 
 export default function UpsertRestaurantScreen() {
-    const { showToast } = useContext(ToastContext);
+    const {showToast} = useContext(ToastContext);
     const restaurant = stateRestaurant((state) => state.obj);
-    const { marker, resetMarker } = markerState();
+    const {marker, resetMarker} = markerState();
     const state = stateRestaurant.getState();
 
-    const { record, resetRecord, deleteRecord } = errRecordState();
+    const {record, resetRecord, deleteRecord} = errRecordState();
 
     useEffect(() => {
         return () => {
             resetRecord({} as ErrRecord);
             resetMarker();
         };
-    }, []);
+    }, [resetRecord, resetMarker]);
 
     function getTextField(key: keyof Restaurant, maxLength = 30) {
         const newErr = record[key];
@@ -53,7 +52,7 @@ export default function UpsertRestaurantScreen() {
             labelColor={newErr ? 'red' : undefined}
             maxLength={maxLength}
             color={Colors.$textDefault}
-            containerStyle={[Styles.mb20, styles.tfContainer, newErr ? { borderColor: 'red' } : {}]}
+            containerStyle={[Styles.mb20, styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
             value={value as any}
             style={styles.tf}
             onBlur={() => {
@@ -63,14 +62,14 @@ export default function UpsertRestaurantScreen() {
                 }
             }}
             onFocus={() => deleteRecord(key)}
-            onChangeText={(text) => state.objUpdate(key, text)} />;
+            onChangeText={(text) => state.objUpdate(key, text)}/>;
     }
 
     function getPicker(key: keyof Restaurant, valueLabel: ValueLabel[]) {
         const newErr = record[key];
         return <Picker
             key={key}
-            style={[styles.picker, Styles.mb20, newErr ? { borderColor: 'red' } : {}]}
+            style={[styles.picker, Styles.mb20, newErr ? {borderColor: 'red'} : {}]}
             value={restaurant[key] as any}
             label={newErr || key}
             labelColor={newErr ? 'red' : undefined}
@@ -80,11 +79,11 @@ export default function UpsertRestaurantScreen() {
                 deleteRecord(key);
                 state.objUpdate(key, text);
             }}>
-            {valueLabel.map(({ value, label }) => <Picker.Item
+            {valueLabel.map(({value, label}) => <Picker.Item
                 labelStyle={Styles.lh40}
                 key={value}
                 label={label}
-                value={value} />)}
+                value={value}/>)}
         </Picker>;
     }
 
@@ -159,6 +158,6 @@ const styles = StyleSheet.create({
         paddingBottom: 4,
         borderColor: Colors.$textDefault,
     },
-    tf: { lineHeight: 24, fontSize: 18, marginVertical: 6 }
+    tf: {lineHeight: 24, fontSize: 18, marginVertical: 6}
 });
 

@@ -1,7 +1,7 @@
-import { create } from "zustand/react";
-import { STATE_STORAGE, StorageAbs } from "@/store/storage";
-import { createJSONStorage, persist } from "zustand/middleware";
-import { StateCreator } from "zustand";
+import {create} from "zustand/react";
+import {STATE_STORAGE, StorageAbs} from "@/store/storage";
+import {createJSONStorage, persist} from "zustand/middleware";
+import {StateCreator} from "zustand";
 
 const JSON_STORAGE = createJSONStorage(() => STATE_STORAGE);
 
@@ -75,7 +75,7 @@ type SimpleStore<T> = {
 }
 
 export function newRestaurant(restaurant?: Restaurant): Restaurant {
-    return wrapperRestaurant(restaurant ? { ...restaurant } : {} as Restaurant);
+    return wrapperRestaurant(restaurant ? {...restaurant} : {} as Restaurant);
 }
 
 export function wrapperRestaurant(restaurant: Restaurant) {
@@ -101,56 +101,66 @@ export function newPerson(person?: Person): Person {
 export function newMarkerStore() {
     return create<Marker>()((set) => ({
         marker: false,
-        resetMarker: (marker = false) => set(() => ({ marker })),
+        resetMarker: (marker = false) => set(() => ({marker})),
     }));
 }
 
 export function newObjStore<T>(t: T, name?: StorageTyp) {
     const createFun: StateCreator<ObjStore<T>> = (set, get) => ({
         obj: t,
-        objUpdate: (key: keyof T, v: any) => set((state) => (state.obj[key] === v ? state : { obj: { ...state.obj, [key]: v } })),
-        objReset: (record: T) => set(() => ({ obj: record })),
+        objUpdate: (key: keyof T, v: any) => set((state) => (state.obj[key] === v ? state : {
+            obj: {
+                ...state.obj,
+                [key]: v
+            }
+        })),
+        objReset: (record: T) => set(() => ({obj: record})),
         objMerge: (obj: any) => {
-            set((state) => ({ obj: { ...state.obj, ...obj } }));
+            set((state) => ({obj: {...state.obj, ...obj}}));
             return get().obj;
         },
     });
     if (!name) {
         return create<ObjStore<T>>()(createFun);
     }
-    return create<ObjStore<T>>()(persist(createFun, { name, storage: JSON_STORAGE }));
+    return create<ObjStore<T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
 }
 
 export function newLocalStore<T>(name?: StorageTyp, t?: T) {
     const createFun: StateCreator<SimpleStore<T>> = (set) => ({
         v: t,
-        reset: (obj: T) => set(() => ({ v: obj })),
+        reset: (obj: T) => set(() => ({v: obj})),
     });
     if (!name) {
         return create<SimpleStore<T>>()(createFun);
     }
-    return create<SimpleStore<T>>()(persist(createFun, { name, storage: JSON_STORAGE }));
+    return create<SimpleStore<T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
 }
 
 export function newRecordStore<K extends string, T>(name?: StorageTyp) {
     const createFun: StateCreator<RecordMap<K, T>> = (set) => ({
         record: {} as Record<K, T>,
-        addRecord: (key: K, t: T) => set((state) => state.record[key] === t ? state : { record: { ...state.record, [key]: t } }),
-        clearRecord: () => set(() => ({ record: {} as Record<K, T> })),
+        addRecord: (key: K, t: T) => set((state) => state.record[key] === t ? state : {
+            record: {
+                ...state.record,
+                [key]: t
+            }
+        }),
+        clearRecord: () => set(() => ({record: {} as Record<K, T>})),
         deleteRecord: (...keys: K[]) => set((state) => {
             if (keys.some(key => state.record.hasOwnProperty(key))) {
-                const record = { ...state.record };
+                const record = {...state.record};
                 keys.forEach((key) => delete record[key])
-                return { record };
+                return {record};
             }
             return state;
         }),
-        resetRecord: (record: Record<K, T>) => set(() => ({ record })),
+        resetRecord: (record: Record<K, T>) => set(() => ({record})),
     });
     if (!name) {
         return create<RecordMap<K, T>>()(createFun);
     }
-    return create<RecordMap<K, T>>()(persist(createFun, { name, storage: JSON_STORAGE }));
+    return create<RecordMap<K, T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
 }
 
 export const statePerson = newObjStore<Person>(newPerson(), StorageTyp.PERSON);
