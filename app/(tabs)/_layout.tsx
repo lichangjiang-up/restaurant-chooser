@@ -1,18 +1,17 @@
-import { Tabs } from 'expo-router';
+import {Tabs} from 'expo-router';
 import React from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
-import { HapticPressable } from '@/components/ui/HapticPressable';
+import {HapticPressable} from '@/components/ui/HapticPressable';
 import TabBarBackground from '@/components/ui/TabBarBackground';
-import { IconImage, IconImageName } from "@/components/ui/IconImage";
-import { Colors } from "react-native-ui-lib";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Styles } from "@/constants/Styles";
+import {IconImage, IconImageName} from "@/components/ui/IconImage";
+import {Colors} from "react-native-ui-lib";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {Styles} from "@/constants/Styles";
 
 const tabHeight = 56;
 
 export default function TabLayout() {
-    const styles = getStyles();
     return (
         <SafeAreaView style={Styles.hw100}>
             <Tabs
@@ -52,21 +51,20 @@ export default function TabLayout() {
 }
 
 function getIconImg(name: IconImageName) {
-    return ({ color }: { color: string }) => <IconImage size={22} name={name} color={color} />
+    const IconComponent = ({color}: { color: string }) => <IconImage size={22} name={name} color={color}/>;
+    IconComponent.displayName = `Icon-${name}`;
+    return IconComponent;
 }
 
-function getStyles() {
-    return StyleSheet.create({
-        tabBar: Platform.select({
-            ios: {
-                // Use a transparent background on iOS to show the blur effect
-                position: 'absolute',
-            },
-            default: {
-                elevation: 0,
-                height: tabHeight,
-            },
-        })
-    });
-}
-
+const styles = StyleSheet.create({
+    tabBar: Platform.select({
+        ios: {
+            // Use a transparent background on iOS to show the blur effect
+            position: 'absolute',
+        },
+        default: {
+            elevation: 0,
+            height: tabHeight,
+        },
+    })
+});
