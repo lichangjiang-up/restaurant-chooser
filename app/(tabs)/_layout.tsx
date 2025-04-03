@@ -9,8 +9,6 @@ import {Colors} from "react-native-ui-lib";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {Styles} from "@/constants/Styles";
 
-const tabHeight = 56;
-
 export default function TabLayout() {
     return (
         <SafeAreaView style={Styles.hw100}>
@@ -64,7 +62,7 @@ const styles = StyleSheet.create({
         },
         default: {
             elevation: 0,
-            height: tabHeight,
+            height: 56,
         },
     })
 });
