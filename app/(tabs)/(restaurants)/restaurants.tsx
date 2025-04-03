@@ -49,7 +49,7 @@ export default function TabRestaurantsScreen() {
 
 function upsertRestaurant(restaurant?: Restaurant) {
     return () => {
-        stateRestaurant.getState().reset(newRestaurant(restaurant));
+        stateRestaurant.getState().objReset(newRestaurant(restaurant));
         router.push('/(tabs)/(restaurants)/restaurant');
     }
 }

@@ -1,7 +1,7 @@
 import { FlatList } from "react-native";
 import { VFull } from "@/components/VFull";
 import { Styles } from "@/constants/Styles";
-import { Checkbox, Colors, Text, ToastPresets } from "react-native-ui-lib";
+import { Colors, Text, ToastPresets } from "react-native-ui-lib";
 import { descSortStorage } from "@/store/storage";
 import { router } from "expo-router";
 import { useContext } from "react";
@@ -15,7 +15,7 @@ export default function TabWho() {
     const choices = stateChoicesPeople((state) => state.record);
     const state = stateChoicesPeople.getState();
 
-    const renderItem = ({ item }: { item: Person }) => <MyCheckbox key={item.key} label={`${item.name}(${item.relation})`} choices={choices} state={state} />;
+    const renderItem = ({ item }: { item: Person }) => <MyCheckbox choice={item.key} label={`${item.name}(${item.relation})`} store={stateChoicesPeople} />;
 
     const { showToast } = useContext(ToastContext);
 

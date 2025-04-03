@@ -5,7 +5,7 @@ import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {VFull} from "@/components/VFull";
-import {checkName, checkPhone, createMarkerStore, Person, statePeople, statePerson, StorageTyp} from "@/store/state";
+import {checkName, checkPhone, newMarkerStore, Person, statePeople, statePerson, StorageTyp} from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
 import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
 import LargeBtn from "@/components/ui/LargeBtn";
@@ -13,12 +13,12 @@ import LargeBtn from "@/components/ui/LargeBtn";
 
 // type IsErrFunc<K extends keyof Person> = (v?: Person[K]) => string | false;
 
-const markerState = createMarkerStore();
+const markerState = newMarkerStore();
 
 type ErrRecord = Record<keyof Person, string | false | undefined>;
 
 export default function UpsertPersonScreen() {
-    const person = statePerson((state) => state.v);
+    const person = statePerson((state) => state.obj);
     const {marker, resetMarker} = markerState();
     const personState = statePerson.getState();
 
@@ -43,14 +43,14 @@ export default function UpsertPersonScreen() {
             onBlur={() => {
                 const v = person[key];
                 if (v && typeof v === 'string' && v.trim().length !== v.length) {
-                    personState.update(key, v.trim());
+                    personState.objUpdate(key, v.trim());
                 }
             }}
             containerStyle={[Styles.mb20, styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
             value={person[key] as any}
             style={styles.tf}
             onFocus={() => (delete errors[key]) && setErrors({...errors})}
-            onChangeText={(text) => personState.update(key, text)}/>;
+            onChangeText={(text) => personState.objUpdate(key, text)}/>;
     }
 
     function getPicker(key: keyof Person, valueLabel: ValueLabel[]) {
@@ -65,7 +65,7 @@ export default function UpsertPersonScreen() {
             placeholder={`Select ${key}`}
             onChange={(text) => {
                 (delete errors[key]) && setErrors({...errors});
-                personState.update(key, text);
+                personState.objUpdate(key, text);
             }}>
             {valueLabel.map(({value, label}) => <Picker.Item
                 labelStyle={Styles.lh40}
@@ -92,7 +92,7 @@ export default function UpsertPersonScreen() {
         resetMarker(true);
         setTimeout(() => {
             try {
-                const res = personState.merge(initLastModifiedAndRet(person, StorageTyp.PERSON));
+                const res = personState.objMerge(initLastModifiedAndRet(person, StorageTyp.PERSON));
                 statePeople.getState().addRecord(res.key, res);
                 showToast('Person saved');
                 router.back();

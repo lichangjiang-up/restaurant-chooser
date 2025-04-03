@@ -7,7 +7,7 @@ import {ToastContext} from "@/components/provider/ToastProvider";
 import {
     checkName,
     checkPhone, checkWebsite,
-    createMarkerStore,
+    newMarkerStore,
     Restaurant,
     stateRestaurant,
     stateRestaurants,
@@ -19,12 +19,12 @@ import {VFull} from "@/components/VFull";
 import LargeBtn from "@/components/ui/LargeBtn";
 
 
-const markerState = createMarkerStore();
+const markerState = newMarkerStore();
 
 type ErrRecord = Record<keyof Restaurant, string | false | undefined>;
 
 export default function UpsertRestaurantScreen() {
-    const restaurant = stateRestaurant((state) => state.v);
+    const restaurant = stateRestaurant((state) => state.obj);
     const {marker, resetMarker} = markerState();
     const state = stateRestaurant.getState();
     const styles = getStyles();
@@ -48,11 +48,11 @@ export default function UpsertRestaurantScreen() {
             onBlur={() => {
                 const v = restaurant[key];
                 if (v && typeof v === 'string' && v.trim().length !== v.length) {
-                    state.update(key, v.trim());
+                    state.objUpdate(key, v.trim());
                 }
             }}
             onFocus={() => (delete errors[key]) && setErrors({...errors})}
-            onChangeText={(text) => state.update(key, text)}/>;
+            onChangeText={(text) => state.objUpdate(key, text)}/>;
     }
 
     function getPicker(key: keyof Restaurant, valueLabel: ValueLabel[]) {
@@ -67,7 +67,7 @@ export default function UpsertRestaurantScreen() {
             labelStyle={Styles.capital}
             onChange={(text) => {
                 (delete errors[key]) && setErrors({...errors});
-                state.update(key, text);
+                state.objUpdate(key, text);
             }}>
             {valueLabel.map(({value, label}) => <Picker.Item
                 labelStyle={Styles.lh40}
@@ -98,7 +98,7 @@ export default function UpsertRestaurantScreen() {
         resetMarker(true);
         setTimeout(() => {
             try {
-                const res = state.merge(initLastModifiedAndRet(restaurant, StorageTyp.RESTAURANT));
+                const res = state.objMerge(initLastModifiedAndRet(restaurant, StorageTyp.RESTAURANT));
                 stateRestaurants.getState().addRecord(res.key, res);
                 showToast('Restaurant saved');
                 router.replace('/(tabs)/(restaurants)/restaurants');

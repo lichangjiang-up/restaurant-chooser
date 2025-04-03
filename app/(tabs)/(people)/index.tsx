@@ -50,7 +50,7 @@ export default function TabPeopleScreen() {
 
 function upsertPerson(person?: Person) {
     return () => {
-        statePerson.getState().reset(Object.assign(newPerson(person)));
+        statePerson.getState().objReset(Object.assign(newPerson(person)));
         router.push('/(tabs)/(people)/person');
     }
 }

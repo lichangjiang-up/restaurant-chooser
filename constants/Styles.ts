@@ -33,7 +33,7 @@ export const Styles = StyleSheet.create({
         margin: 15,
     },
     w100: {
-        height: '100%',
+        width: '100%',
     },
     hw100: {
         height: '100%',
