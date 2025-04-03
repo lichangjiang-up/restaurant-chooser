@@ -5,10 +5,11 @@ import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {VFull} from "@/components/VFull";
-import {checkName, checkPhone, newMarkerStore, Person, statePeople, statePerson, StorageTyp} from "@/store/state";
+import {newMarkerStore, Person, statePeople, statePerson, StorageTyp} from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
 import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
 import LargeBtn from "@/components/ui/LargeBtn";
+import {checkName, checkPhone} from "@/constants/method";
 
 
 // type IsErrFunc<K extends keyof Person> = (v?: Person[K]) => string | false;

@@ -5,8 +5,6 @@ import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {
-    checkName,
-    checkPhone, checkWebsite,
     newMarkerStore,
     Restaurant,
     stateRestaurant,
@@ -17,6 +15,7 @@ import {initLastModifiedAndRet} from "@/store/storage";
 import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
 import {VFull} from "@/components/VFull";
 import LargeBtn from "@/components/ui/LargeBtn";
+import {checkName, checkPhone, checkWebsite} from "@/constants/method";
 
 
 const markerState = newMarkerStore();
