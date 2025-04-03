@@ -30,7 +30,7 @@ export default function TabPeopleScreen() {
                 disabled={choices.hasOwnProperty(item.key)}
                 onPress={() => {
                     statePeople.getState().deleteRecord(item.key);
-                    showToast('Person deleted');
+                    showToast('Person deleted', ToastPresets.OFFLINE);
                 }} />
         </PlatformPressable>;
     }
