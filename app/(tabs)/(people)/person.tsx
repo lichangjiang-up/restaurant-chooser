@@ -29,16 +29,17 @@ export default function UpsertPersonScreen() {
     const [errors, setErrors] = useState<ErrRecord>({} as ErrRecord);
 
 
-    function getTextField(key: keyof Person, name: string, maxLength = 30) {
+    function getTextField(key: keyof Person, maxLength = 30) {
         const newErr = errors[key];
         return <TextField
             key={key}
             multiline={maxLength > 30}
-            placeholder={`Input with person ${name.toLocaleLowerCase()}`}
-            label={newErr || name}
+            placeholder={`Input with person ${key}`}
+            label={newErr || key}
             labelColor={newErr ? 'red' : undefined}
             maxLength={maxLength}
             color={Colors.$textDefault}
+            labelStyle={Styles.capital}
             onBlur={() => {
                 const v = person[key];
                 if (v && typeof v === 'string' && v.trim().length !== v.length) {
@@ -52,16 +53,16 @@ export default function UpsertPersonScreen() {
             onChangeText={(text) => personState.update(key, text)}/>;
     }
 
-    function getPicker(key: keyof Person, name: string, valueLabel: ValueLabel[]) {
+    function getPicker(key: keyof Person, valueLabel: ValueLabel[]) {
         const newErr = errors[key];
         return <Picker
             key={key}
-            hint={name}
             style={[styles.picker, Styles.mb20, newErr ? {borderColor: 'red'} : {}]}
             value={person[key] as any}
-            label={newErr || name}
+            label={newErr || key}
             labelColor={newErr ? 'red' : undefined}
-            placeholder={`Select ${name.toLocaleLowerCase()}`}
+            labelStyle={Styles.capital}
+            placeholder={`Select ${key}`}
             onChange={(text) => {
                 (delete errors[key]) && setErrors({...errors});
                 personState.update(key, text);
@@ -107,10 +108,10 @@ export default function UpsertPersonScreen() {
     return (
         <VFull>
             <ScrollView contentContainerStyle={Styles.p10}>
-                {getTextField('name', 'Name')}
-                {getTextField('phone', 'Phone number', 16)}
-                {getPicker('gender', 'Gender', ['-', 'Male', 'Female'].map(newValueLabel))}
-                {getPicker('relation', 'Relation', ['Other', 'Me', 'Family'].map(newValueLabel))}
+                {getTextField('name')}
+                {getTextField('phone', 16)}
+                {getPicker('gender', ['-', 'Male', 'Female'].map(newValueLabel))}
+                {getPicker('relation', ['Other', 'Me', 'Family'].map(newValueLabel))}
                 <LargeBtn
                     disabled={marker}
                     style={Styles.mv20}

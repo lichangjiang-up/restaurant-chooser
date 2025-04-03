@@ -96,7 +96,10 @@ export const Styles = StyleSheet.create({
         android: {paddingTop: 30},
         ios: {paddingTop: 30},
         default: {},
-    })
+    }),
+    capital: {
+        textTransform: 'capitalize',
+    }
 });
 
 export function getStyleBg() {

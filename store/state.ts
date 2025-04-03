@@ -39,9 +39,9 @@ export function wrapperRestaurant(restaurant: Restaurant) {
             case "rating":
                 return '⭐️'.repeat(Number(restaurant.rating || 0));
             case "delivery":
-                return restaurant.delivery?.toLocaleLowerCase() === 'Yes' ? 'DOES delivery' : 'NOT delivery';
+                return restaurant.delivery?.toLowerCase() === 'yes' ? 'DOES delivery' : 'NOT delivery';
             default:
-                return restaurant[key]?.toLocaleString() || '';
+                return restaurant[key]?.toString() || '';
         }
     };
     return restaurant;

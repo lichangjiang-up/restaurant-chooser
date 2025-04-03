@@ -31,13 +31,14 @@ export default function UpsertRestaurantScreen() {
 
     const [errors, setErrors] = useState<ErrRecord>({} as ErrRecord);
 
-    function getTextField(key: keyof Restaurant, name: string, maxLength = 30) {
+    function getTextField(key: keyof Restaurant, maxLength = 30) {
         const newErr = errors[key];
         return <TextField
             key={key}
             multiline={maxLength > 30}
-            placeholder={`Input with person ${name.toLowerCase()}`}
-            label={newErr || name}
+            placeholder={`Input with person ${key}`}
+            label={newErr || key}
+            labelStyle={Styles.capital}
             labelColor={newErr ? 'red' : undefined}
             maxLength={maxLength}
             color={Colors.$textDefault}
@@ -54,16 +55,16 @@ export default function UpsertRestaurantScreen() {
             onChangeText={(text) => state.update(key, text)}/>;
     }
 
-    function getPicker(key: keyof Restaurant, name: string, valueLabel: ValueLabel[]) {
+    function getPicker(key: keyof Restaurant, valueLabel: ValueLabel[]) {
         const newErr = errors[key];
         return <Picker
             key={key}
-            hint={name}
             style={[styles.picker, Styles.mb20, newErr ? {borderColor: 'red'} : {}]}
             value={restaurant[key] as any}
-            label={newErr || name}
+            label={newErr || key}
             labelColor={newErr ? 'red' : undefined}
-            placeholder={`Select ${name.toLocaleLowerCase()}`}
+            placeholder={`Select ${key}`}
+            labelStyle={Styles.capital}
             onChange={(text) => {
                 (delete errors[key]) && setErrors({...errors});
                 state.update(key, text);
@@ -113,14 +114,14 @@ export default function UpsertRestaurantScreen() {
     return (
         <VFull>
             <ScrollView contentContainerStyle={Styles.p10}>
-                {getTextField('name', 'Name')}
-                {getPicker('cuisine', 'Cuisine', ['Algerian', 'American', 'BBQ', 'Chinese', 'Other'].map(newValueLabel))}
-                {getPicker('price', 'Price', [1, 2, 3, 4, 5].map(newValueLabel))}
-                {getPicker('rating', 'Rating', [1, 2, 3, 4, 5].map(newValueLabel))}
-                {getTextField('phone', 'Phone number')}
-                {getTextField('address', 'Address')}
-                {getTextField('website', 'Website', 512)}
-                {getPicker('delivery', 'Delivery', ['Yes', 'No'].map(newValueLabel))}
+                {getTextField('name')}
+                {getPicker('cuisine', ['Algerian', 'American', 'BBQ', 'Chinese', 'Other'].map(newValueLabel))}
+                {getPicker('price', [1, 2, 3, 4, 5].map(newValueLabel))}
+                {getPicker('rating', [1, 2, 3, 4, 5].map(newValueLabel))}
+                {getTextField('phone')}
+                {getTextField('address')}
+                {getTextField('website', 512)}
+                {getPicker('delivery', ['Yes', 'No'].map(newValueLabel))}
                 <LargeBtn
                     style={Styles.mv20}
                     disabled={marker}

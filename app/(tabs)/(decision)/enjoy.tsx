@@ -8,22 +8,22 @@ import {VFull} from "@/components/VFull";
 
 
 export default function TabEnjoyScreen() {
+    const {showToast} = useContext(ToastContext)
+
     let restaurant = stateChoiceRestaurant(state => state.v)
-    if (!restaurant || !restaurant.key) {
+    if (!restaurant?.key) {
         router.push('/');
         return <View/>;
     }
     restaurant = wrapperRestaurant(restaurant);
 
-    const listData = ['Name', 'Cuisine', 'Price', 'Rating', 'Phone', 'Address', 'Website', 'Delivery'].map(key => {
-        return {key, value: restaurant.getHint(key.toLowerCase() as keyof Restaurant)};
-    });
+    const listData = Array.of<keyof Restaurant>('name', 'cuisine', 'price', 'rating', 'phone', 'address', 'website', 'delivery')
+        .map(key => ({key, value: restaurant.getHint(key)}));
 
-    const {showToast} = useContext(ToastContext)
 
     function renderItem({key, value}: { key: string, value: string }) {
         return <View key={key} style={styles.valueText}>
-            <Text style={{width: 100, color: 'red'}}>{key}:</Text>
+            <Text style={[{width: 100, color: 'red'}, Styles.capital]}>{key}:</Text>
             <Text>{value}</Text>
         </View>;
     }
