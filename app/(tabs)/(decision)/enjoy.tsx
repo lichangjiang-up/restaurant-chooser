@@ -8,10 +8,10 @@ import { VFull } from "@/components/VFull";
 
 export default function TabEnjoyScreen() {
     const { showToast } = useContext(ToastContext);
-    let restaurant = stateChoiceRestaurant(state => state.v);
+    let restaurant = stateChoiceRestaurant(state => state.obj);
     useEffect(() => {
         return () => {
-            stateChoiceRestaurant.getState().reset(newRestaurant());
+            stateChoiceRestaurant.getState().objReset(newRestaurant());
         };
     }, []);
 

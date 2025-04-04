@@ -69,11 +69,6 @@ export type RecordMap<K extends string, T> = {
     resetRecord: (record: Record<K, T>) => void;
 }
 
-type SimpleStore<T> = {
-    v?: T;
-    reset: (obj: T) => void;
-}
-
 export function newRestaurant(restaurant?: Restaurant): Restaurant {
     return wrapperRestaurant(restaurant ? {...restaurant} : {} as Restaurant);
 }
@@ -126,17 +121,6 @@ export function newObjStore<T>(t: T, name?: StorageTyp) {
     return create<ObjStore<T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
 }
 
-export function newLocalStore<T>(name?: StorageTyp, t?: T) {
-    const createFun: StateCreator<SimpleStore<T>> = (set) => ({
-        v: t,
-        reset: (obj: T) => set(() => ({v: obj})),
-    });
-    if (!name) {
-        return create<SimpleStore<T>>()(createFun);
-    }
-    return create<SimpleStore<T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
-}
-
 export function newRecordStore<K extends string, T>(name?: StorageTyp) {
     const createFun: StateCreator<RecordMap<K, T>> = (set) => ({
         record: {} as Record<K, T>,
@@ -165,7 +149,7 @@ export function newRecordStore<K extends string, T>(name?: StorageTyp) {
 
 export const statePerson = newObjStore<Person>(newPerson(), StorageTyp.PERSON);
 export const stateRestaurant = newObjStore<Restaurant>(newRestaurant(), StorageTyp.RESTAURANT);
-export const stateChoiceRestaurant = newLocalStore<Restaurant>(StorageTyp.CHOICE_RESTAURANT);
+export const stateChoiceRestaurant = newObjStore<Restaurant>(newRestaurant(), StorageTyp.CHOICE_RESTAURANT);
 
 export const statePeople = newRecordStore<string, Person>(StorageTyp.PEOPLE);
 export const stateRestaurants = newRecordStore<string, Restaurant>(StorageTyp.RESTAURANTS);

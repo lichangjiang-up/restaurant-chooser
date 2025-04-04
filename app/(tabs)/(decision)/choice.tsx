@@ -1,6 +1,6 @@
-import { Styles } from "@/constants/Styles";
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import { descSortStorage } from "@/store/storage";
+import {Styles} from "@/constants/Styles";
+import {FlatList, StyleSheet, Text, View} from "react-native";
+import {descSortStorage} from "@/store/storage";
 import {
     newRecordStore,
     newRestaurant,
@@ -13,46 +13,46 @@ import {
     stateRestaurants,
     wrapperRestaurant
 } from "@/store/state";
-import { create } from "zustand/react";
-import { router } from "expo-router";
-import { VFull } from "@/components/VFull";
+import {create} from "zustand/react";
+import {router} from "expo-router";
+import {VFull} from "@/components/VFull";
 import LargeBtn from "@/components/ui/LargeBtn";
 import MyModal from "@/components/ui/MyModal";
-import { useContext, useEffect } from "react";
-import { ToastPresets } from "react-native-ui-lib";
-import { ToastContext } from "@/components/provider/ToastProvider";
+import {useContext, useEffect} from "react";
+import {ToastPresets} from "react-native-ui-lib";
+import {ToastContext} from "@/components/provider/ToastProvider";
 import MyCheckbox from "@/components/ui/MyCheckbox";
-// 定义对话框状态存储类型
+
 type DialogStore = {
     show: boolean;
     modalShowOrHide: (v?: boolean) => void;
     vetoShow: boolean;
     vetoShowHide: (v?: boolean) => void;
 };
-// 创建对话框状态存储
+
 const dialogStore = create<DialogStore>()((set) => ({
     show: false,
     vetoShow: false,
     modalShowOrHide: (show) => set(state => {
-        const res = { ...state, show: !!show };
+        const res = {...state, show: !!show};
         if (!res.show) {
             res.vetoShow = false;
         }
         return res;
     }),
-    vetoShowHide: (v) => set(state => ({ ...state, vetoShow: !!v })),
+    vetoShowHide: (v) => set(state => ({...state, vetoShow: !!v})),
 }));
 
 const vetoedRecordStore = newRecordStore<string, null>();
 
 export default function TabChoiceScreen() {
-    const { showToast } = useContext(ToastContext);
+    const {showToast} = useContext(ToastContext);
 
     const restaurants = Object.values(stateRestaurants(state => state.record)) as Restaurant[];
     const choices = stateChoicesPeople(state => state.record);
     const people = Object.values(statePeople(state => state.record)) as Person[];
-    const { show, modalShowOrHide, vetoShow, vetoShowHide } = dialogStore();
-    const { record, clearRecord } = vetoedRecordStore();
+    const {show, modalShowOrHide, vetoShow, vetoShowHide} = dialogStore();
+    const {record, clearRecord} = vetoedRecordStore();
     const recordSize = Object.keys(record).length;
 
     useEffect(() => {
@@ -60,7 +60,7 @@ export default function TabChoiceScreen() {
         clearRecord();
     }, [modalShowOrHide, clearRecord]);
 
-    const renderItem = ({ item }: { item: Person }) => (
+    const renderItem = ({item}: { item: Person }) => (
         <View style={[Styles.borderBottom, Styles.rowBtw, Styles.ph5]} key={item.key}>
             <Text style={styles.itemText}>{`${item.name}(${item.relation})`}</Text>
             <Text style={styles.itemText}>{`Vetoed: ${record.hasOwnProperty(item.key) ? 'yes' : 'no'}`}</Text>
@@ -81,8 +81,12 @@ export default function TabChoiceScreen() {
                     style={Styles.mb20}
                     onPress={() => {
                         modalShowOrHide();
-                        restaurant && stateChoiceRestaurant.getState().reset(restaurant);
-                        router.replace('/(tabs)/(decision)/enjoy');
+                        if (restaurant) {
+                            stateChoiceRestaurant.getState().objReset(restaurant);
+                            router.replace('/(tabs)/(decision)/enjoy');
+                        } else if (router.canGoBack()) {
+                            router.back();
+                        }
                     }}
                 />
             );
@@ -115,7 +119,7 @@ export default function TabChoiceScreen() {
     const disabledBtn = !choicePeople?.length;
 
     if (vetoShow) {
-        const vetoRenderItem = ({ item }: { item: Person }) => (<MyCheckbox
+        const vetoRenderItem = ({item}: { item: Person }) => (<MyCheckbox
             choice={item.key}
             store={vetoedRecordStore}
             label={`${item.name}(${item.relation})`}
@@ -123,37 +127,37 @@ export default function TabChoiceScreen() {
         />);
 
         modalContent = (<>
-            <Text style={[Styles.title, { marginVertical: 10 }]}>Who Veto?</Text>
-            <FlatList
-                data={choicePeople}
-                renderItem={vetoRenderItem}
-                keyExtractor={({ key }) => `${key}-v`}
-            />
-            <View style={[Styles.rowBtw, Styles.mv20]}>
-                <LargeBtn
-                    disabled={disabledBtn}
-                    label='Cancel'
-                    style={{ marginRight: 10, flex: 1 }}
-                    backgroundColor={'#AAA'}
-                    onPress={() => {
-                        clearRecord();
-                        vetoShowHide();
-                    }}
+                <Text style={[Styles.title, {marginVertical: 10}]}>Who Veto?</Text>
+                <FlatList
+                    data={choicePeople}
+                    renderItem={vetoRenderItem}
+                    keyExtractor={({key}) => `${key}-v`}
                 />
-                <LargeBtn
-                    disabled={!recordSize || disabledBtn}
-                    label='Save'
-                    style={{ marginLeft: 10, flex: 1 }}
-                    onPress={() => {
-                        if (recordSize < 1) {
-                            showToast('Least one have vetoed!', ToastPresets.FAILURE);
-                            return;
-                        }
-                        modalShowOrHide();
-                    }}
-                />
-            </View>
-        </>
+                <View style={[Styles.rowBtw, Styles.mv20]}>
+                    <LargeBtn
+                        disabled={disabledBtn}
+                        label='Cancel'
+                        style={styles.vetoBtn}
+                        backgroundColor={'#AAA'}
+                        onPress={() => {
+                            clearRecord();
+                            vetoShowHide();
+                        }}
+                    />
+                    <LargeBtn
+                        disabled={!recordSize || disabledBtn}
+                        label='Save'
+                        style={styles.vetoBtn}
+                        onPress={() => {
+                            if (recordSize < 1) {
+                                showToast('Least one have vetoed!', ToastPresets.FAILURE);
+                                return;
+                            }
+                            modalShowOrHide();
+                        }}
+                    />
+                </View>
+            </>
         );
     } else if (show) {
         const randomRestaurant = restaurants?.length > 0 && restaurants[Math.floor(Math.random() * restaurants.length)];
@@ -165,10 +169,10 @@ export default function TabChoiceScreen() {
             <MyModal onRequestClose={() => modalShowOrHide()} visible={show}>{modalContent}</MyModal>
             <Text style={Styles.title}>Choice Screen</Text>
             <FlatList
-                style={[Styles.flexG1, { paddingHorizontal: 10 }]}
+                style={[Styles.flexG1, {paddingHorizontal: 10}]}
                 renderItem={renderItem}
                 data={choicePeople}
-                keyExtractor={({ key }) => key}
+                keyExtractor={({key}) => key}
             />
             <LargeBtn
                 disabled={disabledBtn}
@@ -198,5 +202,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         textAlign: 'center'
     },
-    itemText: { fontWeight: 400, fontSize: 16, lineHeight: 50 },
+    itemText: {fontWeight: 400, fontSize: 16, lineHeight: 50},
+    vetoBtn: {marginLeft: 10, flex: 1},
 });
