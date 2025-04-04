@@ -13,7 +13,6 @@ export const STATE_STORAGE: StateStorage = {
     removeItem: (name: string) => {
         G_MMKV.delete(name);
     }
-
 }
 
 export type StorageAbs = {
