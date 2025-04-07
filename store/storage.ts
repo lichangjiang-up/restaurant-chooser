@@ -5,7 +5,8 @@ export const G_MMKV = new MMKV();
 
 export const STATE_STORAGE: StateStorage = {
     getItem: (name) => {
-        return G_MMKV.getString(name) || null;
+        const res = G_MMKV.getString(name);
+        return res === undefined ? null : res;
     },
     setItem: (name, value) => {
         G_MMKV.set(name, value);
