@@ -5,15 +5,18 @@ import {Styles} from "@/constants/Styles";
 import {descSortStorage} from "@/store/storage";
 import {newRestaurant, Restaurant, stateRestaurant, stateRestaurants} from "@/store/state";
 import {PlatformPressable} from "@react-navigation/elements";
-import {useContext} from "react";
+import {useContext, useMemo} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {ToastPresets} from "react-native-ui-lib";
 import LargeBtn from '@/components/ui/LargeBtn';
 import {VFull} from "@/components/VFull";
 
 export default function TabRestaurantsScreen() {
-    const restaurants = Object.values(stateRestaurants(state => state.record)) as Restaurant[];
     const {showToast} = useContext(ToastContext);
+
+    const restaurantsRecord = stateRestaurants(state => state.record);
+    const restaurants = useMemo(() => Object.values(restaurantsRecord), [restaurantsRecord]);
+
 
     function renderItem({item}: { item: Restaurant }) {
         return <PlatformPressable

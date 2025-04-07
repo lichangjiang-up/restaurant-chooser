@@ -14,7 +14,9 @@ import {dialogStore, vetoedRecordStore} from "@/components/choice/choice_stores"
 
 export default function TabChoiceScreen() {
     const choicesPeople = stateChoicesPeople(state => state.record);
-    const people = Object.values(statePeople(state => state.record)) as Person[];
+    const peopleRecord = statePeople(state => state.record);
+    const people = useMemo(() => Object.values(peopleRecord), [peopleRecord]);
+
     const {modalShowOrHide, remainingRestaurant} = dialogStore();
     const {record, clearRecord} = vetoedRecordStore();
 

@@ -5,7 +5,6 @@ import {
     CUISINES,
     LEVELS,
     PreFilter,
-    Restaurant,
     stateChoicesRestaurants,
     statePreFilter,
     stateRestaurants,
@@ -14,11 +13,13 @@ import {
 import {PickerModes} from "react-native-ui-lib";
 import {router} from "expo-router";
 import MyPiker, {newValueLabel, ValueLabel} from "@/components/ui/MyPiker";
+import {useMemo} from "react";
 
 
 export default function TabPreFiltersScreen() {
     const {obj, objUpdate} = statePreFilter();
-    const restaurants = Object.values<Restaurant>(stateRestaurants(state => state.record));
+    const restaurantsRecord = stateRestaurants(state => state.record);
+    const restaurants = useMemo(() => Object.values(restaurantsRecord), [restaurantsRecord]);
 
     function getPicker(key: keyof PreFilter, valueLabels: ValueLabel[]) {
         return <MyPiker
