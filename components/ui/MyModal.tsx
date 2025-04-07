@@ -18,6 +18,7 @@ export default function MyModal({
                                 }: ModalProps & ContainerProps) {
     return <Modal
         statusBarTranslucent={true}
+        animationType='slide'
         transparent={true}
         onRequestClose={onDismiss}
         onDismiss={onDismiss}
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
     modalContent: {
         width: '86%',
         height: 'auto',
-        marginTop: '-20%',
+        marginTop: '-10%',
         backgroundColor: 'white',
         borderRadius: 20,
         paddingHorizontal: 15,

@@ -1,4 +1,5 @@
-import { Platform, StyleProp, StyleSheet, TextStyle, ViewStyle } from "react-native";
+import {Platform, StyleProp, StyleSheet, TextStyle, ViewStyle} from "react-native";
+import {Colors} from "react-native-ui-lib";
 
 export const Styles = StyleSheet.create({
     cContainer: {
@@ -81,7 +82,7 @@ export const Styles = StyleSheet.create({
         fontWeight: 500,
         lineHeight: 24,
     },
-    itemText: { flex: 1, fontWeight: '500', color: 'black', fontSize: 16, textAlign: 'left' },
+    itemText: {flex: 1, fontWeight: '500', color: 'black', fontSize: 16, textAlign: 'left'},
     wFullMb20: {
         width: '100%',
         marginBottom: 20,
@@ -96,17 +97,34 @@ export const Styles = StyleSheet.create({
         marginVertical: 20,
     },
     toastMt30: Platform.select({
-        android: { paddingTop: 30 },
-        ios: { paddingTop: 30 },
+        android: {paddingTop: 30},
+        ios: {paddingTop: 30},
         default: {},
     }),
     capital: {
         textTransform: 'capitalize',
-    }
+    },
+    picker: {
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: Colors.$textDefault,
+        borderStyle: 'solid',
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        lineHeight: 46,
+        marginTop: 4,
+    },
+    tfContainer: {
+        borderStyle: 'solid',
+        borderBottomWidth: 1,
+        paddingBottom: 4,
+        borderColor: Colors.$textDefault,
+    },
+    tf: {lineHeight: 24, fontSize: 18, marginVertical: 6}
 });
 
 export function getStyleBg() {
-    return { backgroundColor: 'white' }
+    return {backgroundColor: 'white'}
 }
 
 export type VSP = StyleProp<ViewStyle>

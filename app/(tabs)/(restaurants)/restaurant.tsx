@@ -1,7 +1,7 @@
 import {Styles} from "@/constants/Styles";
-import {ScrollView, StyleSheet} from "react-native";
+import {ScrollView} from "react-native";
 import {useContext, useEffect} from "react";
-import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
+import {Colors, TextField, ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {
@@ -14,10 +14,9 @@ import {
     StorageTyp, YES_OR_NO
 } from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
-import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
-import {VFull} from "@/components/VFull";
 import LargeBtn from "@/components/ui/LargeBtn";
 import {checkName, checkPhone, checkWebsite} from "@/constants/method";
+import MyPiker, {newValueLabel, ValueLabel} from "@/components/ui/MyPiker";
 
 
 type ErrRecord = Record<keyof Restaurant, string | false | undefined>;
@@ -52,9 +51,9 @@ export default function UpsertRestaurantScreen() {
             labelColor={newErr ? 'red' : undefined}
             maxLength={maxLength}
             color={Colors.$textDefault}
-            containerStyle={[Styles.mb20, styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
+            containerStyle={[Styles.mb20, Styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
             value={value as any}
-            style={styles.tf}
+            style={Styles.tf}
             onBlur={() => {
                 if (typeof value === 'string') {
                     const trimV = value.trim();
@@ -65,26 +64,20 @@ export default function UpsertRestaurantScreen() {
             onChangeText={(text) => state.objUpdate(key, text)}/>;
     }
 
-    function getPicker(key: keyof Restaurant, valueLabel: ValueLabel[]) {
+    function getPicker(key: keyof Restaurant, valueLabels: ValueLabel[]) {
         const newErr = record[key];
-        return <Picker
+        return <MyPiker
             key={key}
-            style={[styles.picker, Styles.mb20, newErr ? {borderColor: 'red'} : {}]}
-            value={restaurant[key] as any}
+            keyName={key}
+            valueLabels={valueLabels}
+            style={newErr ? {borderColor: 'red'} : {}}
+            value={restaurant[key] as string}
             label={newErr || key}
             labelColor={newErr ? 'red' : undefined}
-            placeholder={`Select ${key}`}
-            labelStyle={Styles.capital}
             onChange={(text) => {
                 deleteRecord(key);
                 state.objUpdate(key, text);
-            }}>
-            {valueLabel.map(({value, label}) => <Picker.Item
-                labelStyle={Styles.lh40}
-                key={value}
-                label={label}
-                value={value}/>)}
-        </Picker>;
+            }}/>;
     }
 
     function onSavePress() {
@@ -109,7 +102,7 @@ export default function UpsertRestaurantScreen() {
                 const res = state.objMerge(initLastModifiedAndRet(restaurant, StorageTyp.RESTAURANT));
                 stateRestaurants.getState().addRecord(res.key, res);
                 showToast('Restaurant saved');
-                router.replace('/(tabs)/(restaurants)/restaurants');
+                router.replace('/(tabs)/(restaurants)');
             } catch (err) {
                 showToast('Restaurant save failed', ToastPresets.FAILURE);
                 console.log(err);
@@ -120,44 +113,21 @@ export default function UpsertRestaurantScreen() {
     }
 
     return (
-        <VFull>
-            <ScrollView contentContainerStyle={Styles.p10}>
-                {getTextField('name')}
-                {getPicker('cuisine', CUISINES.map(newValueLabel))}
-                {getPicker('price', LEVELS.map(newValueLabel))}
-                {getPicker('rating', LEVELS.map(newValueLabel))}
-                {getTextField('phone')}
-                {getTextField('address')}
-                {getTextField('website', 512)}
-                {getPicker('delivery', YES_OR_NO.map(newValueLabel))}
-                <LargeBtn
-                    style={Styles.mv20}
-                    disabled={marker}
-                    label={marker ? 'Saving...' : 'Save Restaurant'}
-                    onPress={() => onSavePress()}
-                />
-            </ScrollView>
-        </VFull>
+        <ScrollView contentContainerStyle={Styles.p10} style={Styles.hw100}>
+            {getTextField('name')}
+            {getPicker('cuisine', newValueLabel(CUISINES))}
+            {getPicker('price', newValueLabel(LEVELS))}
+            {getPicker('rating', newValueLabel(LEVELS))}
+            {getTextField('phone')}
+            {getTextField('address')}
+            {getTextField('website', 512)}
+            {getPicker('delivery', newValueLabel(YES_OR_NO))}
+            <LargeBtn
+                style={Styles.mv20}
+                disabled={marker}
+                label={marker ? 'Saving...' : 'Save Restaurant'}
+                onPress={() => onSavePress()}
+            />
+        </ScrollView>
     );
 }
-
-const styles = StyleSheet.create({
-    picker: {
-        borderRadius: 4,
-        borderWidth: 1,
-        borderColor: Colors.$textDefault,
-        borderStyle: 'solid',
-        paddingVertical: 6,
-        paddingHorizontal: 10,
-        lineHeight: 46,
-        marginTop: 4,
-    },
-    tfContainer: {
-        borderStyle: 'solid',
-        borderBottomWidth: 1,
-        paddingBottom: 4,
-        borderColor: Colors.$textDefault,
-    },
-    tf: {lineHeight: 24, fontSize: 18, marginVertical: 6}
-});
-

@@ -1,10 +1,9 @@
 import {Styles} from "@/constants/Styles";
-import {ScrollView, StyleSheet} from "react-native";
+import {ScrollView} from "react-native";
 import {useContext, useEffect} from "react";
-import {Colors, Picker, TextField, ToastPresets} from "react-native-ui-lib";
+import {Colors, TextField, ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {VFull} from "@/components/VFull";
 import {
     GENDERS,
     newMarkerStore,
@@ -16,9 +15,9 @@ import {
     StorageTyp
 } from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
-import {newValueLabel, ValueLabel} from "@/components/ui/PikerView";
 import LargeBtn from "@/components/ui/LargeBtn";
 import {checkName, checkPhone} from "@/constants/method";
+import MyPiker, {newValueLabel, ValueLabel} from "@/components/ui/MyPiker";
 
 
 const markerState = newMarkerStore();
@@ -62,34 +61,28 @@ export default function UpsertPersonScreen() {
                     trimV !== value && personState.objUpdate(key, trimV);
                 }
             }}
-            containerStyle={[Styles.mb20, styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
+            containerStyle={[Styles.mb20, Styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
             value={person[key] as any}
-            style={styles.tf}
+            style={Styles.tf}
             onFocus={() => deleteRecord(key)}
             onChangeText={(text) => personState.objUpdate(key, text)}/>;
     }
 
-    function getPicker(key: keyof Person, valueLabel: ValueLabel[]) {
+    function getPicker(key: keyof Person, valueLabels: ValueLabel[]) {
         const newErr = record[key];
 
-        return <Picker
+        return <MyPiker
             key={key}
-            style={[styles.picker, Styles.mb20, newErr ? {borderColor: 'red'} : {}]}
-            value={person[key] as any}
+            keyName={key}
+            valueLabels={valueLabels}
+            style={newErr ? {borderColor: 'red'} : {}}
+            value={person[key]}
             label={newErr || key}
             labelColor={newErr ? 'red' : undefined}
-            labelStyle={Styles.capital}
-            placeholder={`Select ${key}`}
             onChange={(text) => {
                 deleteRecord(key);
                 personState.objUpdate(key, text);
-            }}>
-            {valueLabel.map(({value, label}) => <Picker.Item
-                labelStyle={Styles.lh40}
-                key={value}
-                label={label}
-                value={value}/>)}
-        </Picker>;
+            }}/>;
     }
 
     const {showToast} = useContext(ToastContext);
@@ -123,39 +116,17 @@ export default function UpsertPersonScreen() {
     }
 
     return (
-        <VFull>
-            <ScrollView contentContainerStyle={Styles.p10}>
-                {getTextField('name')}
-                {getTextField('phone', 16)}
-                {getPicker('gender', GENDERS.map(newValueLabel))}
-                {getPicker('relation', PERSON_RELATIONS.map(newValueLabel))}
-                <LargeBtn
-                    disabled={marker}
-                    style={Styles.mv20}
-                    label={marker ? 'Saving...' : 'Save Person'}
-                    onPress={onSavePress}
-                />
-            </ScrollView>
-        </VFull>
+        <ScrollView contentContainerStyle={Styles.p10} style={Styles.hw100}>
+            {getTextField('name')}
+            {getTextField('phone', 16)}
+            {getPicker('gender', newValueLabel(GENDERS))}
+            {getPicker('relation', newValueLabel(PERSON_RELATIONS))}
+            <LargeBtn
+                disabled={marker}
+                style={Styles.mv20}
+                label={marker ? 'Saving...' : 'Save Person'}
+                onPress={onSavePress}
+            />
+        </ScrollView>
     );
 }
-
-const styles = StyleSheet.create({
-    picker: {
-        borderRadius: 4,
-        borderWidth: 1,
-        borderColor: Colors.$textDefault,
-        borderStyle: 'solid',
-        paddingVertical: 6,
-        paddingHorizontal: 10,
-        lineHeight: 46,
-        marginTop: 4,
-    },
-    tfContainer: {
-        borderStyle: 'solid',
-        borderBottomWidth: 1,
-        paddingBottom: 4,
-        borderColor: Colors.$textDefault,
-    },
-    tf: {lineHeight: 24, fontSize: 18, marginVertical: 6}
-});

@@ -3,7 +3,7 @@ import {FlatList, Text} from 'react-native';
 import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
 import {descSortStorage} from "@/store/storage";
-import {newRestaurant, Restaurant, stateChoiceRestaurant, stateRestaurant, stateRestaurants} from "@/store/state";
+import {newRestaurant, Restaurant, stateRestaurant, stateRestaurants} from "@/store/state";
 import {PlatformPressable} from "@react-navigation/elements";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
@@ -14,7 +14,6 @@ import {VFull} from "@/components/VFull";
 export default function TabRestaurantsScreen() {
     const restaurants = Object.values(stateRestaurants(state => state.record)) as Restaurant[];
     const {showToast} = useContext(ToastContext);
-    const restaurant = stateChoiceRestaurant(state => state.obj);
 
     function renderItem({item}: { item: Restaurant }) {
         return <PlatformPressable
@@ -24,7 +23,6 @@ export default function TabRestaurantsScreen() {
             <Text style={Styles.itemText}>{item.name || item.key}</Text>
             <LargeBtn
                 label='Delete'
-                disabled={item.key === restaurant?.key}
                 style={Styles.m0}
                 onPress={() => {
                     stateRestaurants.getState().deleteRecord(item.key);

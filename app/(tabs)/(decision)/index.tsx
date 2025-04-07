@@ -18,8 +18,8 @@ export default function TabDecisionScreen() {
                     resizeMode='contain'
                     source={img_url}
                     style={styles.foodImage}/>
+                <Text color={Colors.$textDefault} style={styles.hintText}>(click the food to get going)</Text>
             </Link>
-            <Text color={Colors.$textDefault} style={styles.hintText}>(click the food to get going)</Text>
         </VFull>
     );
 }
@@ -32,6 +32,9 @@ function getStyles() {
             height: 200,
         },
         link: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
             width: '100%',
             height: 'auto',
             textAlign: 'center',

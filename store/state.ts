@@ -39,13 +39,22 @@ export type Restaurant = {
     getHint: (key: keyof Restaurant) => string;
 } & StorageAbs;
 
+export type PreFilter = {
+    cuisines: Cuisine[];
+    price: Level[];
+    rating: Level[];
+    delivery: YesOrNo[];
+}
+
 export enum StorageTyp {
     RESTAURANTS = 'restaurants',
     PEOPLE = 'people',
     CHOICES_PEOPLE = 'choices_people',
+    CHOICES_RESTAURANTS = 'choices_restaurants',
     RESTAURANT = 'restaurant',
     PERSON = 'person',
     CHOICE_RESTAURANT = 'choice_restaurant',
+    PRE_FILTER = 'pre_filter',
 }
 
 export type Marker = {
@@ -150,7 +159,9 @@ export function newRecordStore<K extends string, T>(name?: StorageTyp) {
 export const statePerson = newObjStore<Person>(newPerson(), StorageTyp.PERSON);
 export const stateRestaurant = newObjStore<Restaurant>(newRestaurant(), StorageTyp.RESTAURANT);
 export const stateChoiceRestaurant = newObjStore<Restaurant>(newRestaurant(), StorageTyp.CHOICE_RESTAURANT);
+export const statePreFilter = newObjStore<PreFilter>({} as PreFilter, StorageTyp.PRE_FILTER);
 
 export const statePeople = newRecordStore<string, Person>(StorageTyp.PEOPLE);
 export const stateRestaurants = newRecordStore<string, Restaurant>(StorageTyp.RESTAURANTS);
 export const stateChoicesPeople = newRecordStore<string, null>(StorageTyp.CHOICES_PEOPLE);
+export const stateChoicesRestaurants = newRecordStore<string, null>(StorageTyp.CHOICES_RESTAURANTS);

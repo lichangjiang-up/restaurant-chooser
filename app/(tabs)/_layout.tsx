@@ -13,6 +13,7 @@ export default function TabLayout() {
     return (
         <SafeAreaView style={Styles.hw100}>
             <Tabs
+                initialRouteName="(decision)"
                 screenOptions={{
                     tabBarPosition: 'bottom',
                     tabBarActiveTintColor: Colors.$iconDanger,

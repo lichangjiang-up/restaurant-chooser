@@ -1,4 +1,3 @@
-
 export function checkPhone(v?: string) {
     if (!v || v.length < 1) {
         return false;
@@ -22,4 +21,16 @@ export function checkName(v?: string) {
         return false;
     }
     return 'Name should be 4-30 characters';
+}
+
+export function getRandomInt(max = 800000) {
+    return Math.floor(Math.random() * max);
+}
+
+export function shuffleArr<T>(arr: T[]): T[] {
+    for (let i = arr.length - 1; i >= 0; i--) {
+        const j = getRandomInt(i + 1);
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
 }
