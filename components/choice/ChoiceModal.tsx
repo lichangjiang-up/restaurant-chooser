@@ -18,7 +18,6 @@ export default function ChoiceModal({choicePeople}: { choicePeople: Person[] }) 
     useEffect(() => {
         setRemainingRestaurant(restaurants.length);
     }, [restaurants, setRemainingRestaurant]);
-
     let modalContent = <></>;
     if (vetoShow) {
         modalContent =
@@ -32,7 +31,6 @@ export default function ChoiceModal({choicePeople}: { choicePeople: Person[] }) 
     }
     return <MyModal
         onRequestClose={() => modalShowOrHide()}
-        onDismiss={() => setRemainingRestaurant(remainingRestaurant - 1)}
         visible={show}>{modalContent}
     </MyModal>
 }

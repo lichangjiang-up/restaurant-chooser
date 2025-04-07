@@ -21,7 +21,6 @@ export default function MyModal({
         animationType='slide'
         transparent={true}
         onRequestClose={onDismiss}
-        onDismiss={onDismiss}
         {...otherProps}>
         <Pressable onPress={onPress}
                    style={[Styles.hw100, styles.modalBg, {backgroundColor: maskColor || '#000000AA'}]}>

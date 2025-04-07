@@ -15,7 +15,7 @@ export type  ChoiceModalVetoProps = {
 export default function ChoiceModalVeto({goingPeople}: ChoiceModalVetoProps) {
     const disabledBtn = !goingPeople?.length;
     const {showToast} = useContext(ToastContext);
-    const {modalShowOrHide, vetoShowHide} = dialogStore();
+    const {modalShowOrHide, vetoShowHide, remainingRestaurant, setRemainingRestaurant} = dialogStore();
     const {clearRecord, record} = vetoedRecordStore();
     const vetoCount = useMemo(() => Object.keys(record).length, [record]);
     const
@@ -53,6 +53,7 @@ export default function ChoiceModalVeto({goingPeople}: ChoiceModalVetoProps) {
                             showToast('Least one have vetoed!', ToastPresets.FAILURE);
                             return;
                         }
+                        setRemainingRestaurant(remainingRestaurant - 1);
                         modalShowOrHide();
                     }}
                 />
