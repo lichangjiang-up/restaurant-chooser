@@ -9,10 +9,10 @@ export const STATE_STORAGE: StateStorage = {
         return res === undefined ? null : res;
     },
     setItem: (name, value) => {
-        G_MMKV.set(name, value);
+        return G_MMKV.set(name, value);
     },
     removeItem: (name: string) => {
-        G_MMKV.delete(name);
+        return G_MMKV.delete(name);
     }
 }
 
