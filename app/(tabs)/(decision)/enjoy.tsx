@@ -1,13 +1,14 @@
-import { Button, ScrollView, StyleSheet, View, Text } from "react-native";
-import { Styles } from "@/constants/Styles";
-import { newRestaurant, Restaurant, stateChoiceRestaurant, wrapperRestaurant } from "@/store/state";
-import { useContext, useEffect } from "react";
-import { ToastContext } from "@/components/provider/ToastProvider";
-import { VFull } from "@/components/VFull";
+import {Button, ScrollView, StyleSheet, View, Text} from "react-native";
+import {Styles} from "@/constants/Styles";
+import {newRestaurant, Restaurant, stateChoiceRestaurant, wrapperRestaurant} from "@/store/state";
+import {useContext, useEffect} from "react";
+import {ToastContext} from "@/components/provider/ToastProvider";
+import {VFull} from "@/components/VFull";
 
+const showKeys = Array.of<keyof Restaurant>('name', 'cuisine', 'price', 'rating', 'phone', 'address', 'website', 'delivery');
 
 export default function TabEnjoyScreen() {
-    const { showToast } = useContext(ToastContext);
+    const {showToast} = useContext(ToastContext);
     let restaurant = stateChoiceRestaurant(state => state.obj);
     useEffect(() => {
         return () => {
@@ -16,10 +17,10 @@ export default function TabEnjoyScreen() {
     }, []);
 
     if (!restaurant?.key) {
-        return <VFull />;
+        return <VFull/>;
     }
     restaurant = wrapperRestaurant(restaurant);
-    const showKeys = Array.of<keyof Restaurant>('name', 'cuisine', 'price', 'rating', 'phone', 'address', 'website', 'delivery');
+
     function renderItem(key: keyof Restaurant) {
         return <View key={key} style={styles.valueText}>
             <Text style={[styles.label, Styles.capital]}>{key}:</Text>
@@ -29,7 +30,7 @@ export default function TabEnjoyScreen() {
 
     return <VFull style={Styles.center}>
         <View style={Styles.w100}>
-            <ScrollView style={{ height: 'auto', width: '100%' }}>
+            <ScrollView style={{height: 'auto', width: '100%'}}>
                 <View style={[Styles.center, Styles.ph15]}>
                     <Text style={styles.title}>Enjoy your meal</Text>
                     <View style={styles.detail}>
@@ -39,7 +40,7 @@ export default function TabEnjoyScreen() {
                         title='All Done'
                         onPress={() => {
                             showToast('Enjoy your meal!');
-                        }} />
+                        }}/>
                 </View>
             </ScrollView>
         </View>
@@ -56,10 +57,10 @@ const styles = StyleSheet.create({
         marginVertical: 40,
         borderRadius: 6,
     },
-    valueText: { display: 'flex', flexDirection: 'row', alignItems: 'center', height: 30 },
+    valueText: {display: 'flex', flexDirection: 'row', alignItems: 'center', height: 30},
     title: {
         fontSize: 26,
         fontWeight: 'bold',
     },
-    label: { width: 100, color: 'red' }
+    label: {width: 100, color: 'red'}
 });
