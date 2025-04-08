@@ -44,7 +44,7 @@ export const Styles = StyleSheet.create({
         marginBottom: 20,
     },
     lh26: {
-        lineHeight: 25
+        lineHeight: 26
     },
     lh40: {
         lineHeight: 40
