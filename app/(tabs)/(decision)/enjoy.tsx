@@ -4,6 +4,7 @@ import {newRestaurant, Restaurant, stateChoiceRestaurant, wrapperRestaurant} fro
 import {useContext, useEffect} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {VFull} from "@/components/VFull";
+import {router} from "expo-router";
 
 const showKeys = Array.of<keyof Restaurant>('name', 'cuisine', 'price', 'rating', 'phone', 'address', 'website', 'delivery');
 
@@ -40,6 +41,7 @@ export default function TabEnjoyScreen() {
                         title='All Done'
                         onPress={() => {
                             showToast('Enjoy your meal!');
+                            router.replace('/(tabs)/(decision)');
                         }}/>
                 </View>
             </ScrollView>
