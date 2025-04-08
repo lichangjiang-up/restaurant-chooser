@@ -2,6 +2,7 @@ import {Styles} from "@/constants/Styles";
 import {FlatList, StyleSheet, Text, View} from "react-native";
 import {descSortStorage} from "@/store/storage";
 import {
+    getPersonNameRelation,
     Person,
     stateChoicesPeople, statePeople
 } from "@/store/state";
@@ -27,7 +28,7 @@ export default function TabChoiceScreen() {
 
     const renderItem = ({item}: { item: Person }) => (
         <View style={[Styles.borderBottom, Styles.rowBtw, Styles.ph5]} key={item.key}>
-            <Text style={styles.itemText}>{`${item.name}(${item.relation})`}</Text>
+            <Text style={styles.itemText}>{getPersonNameRelation(item)}</Text>
             <Text style={styles.itemText}>{`Vetoed: ${record.hasOwnProperty(item.key) ? 'yes' : 'no'}`}</Text>
         </View>
     );

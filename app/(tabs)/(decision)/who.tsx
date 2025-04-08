@@ -6,7 +6,7 @@ import {descSortStorage} from "@/store/storage";
 import {router} from "expo-router";
 import {useContext} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {Person, stateChoicesPeople, statePeople} from "@/store/state";
+import {getPersonNameRelation, Person, stateChoicesPeople, statePeople} from "@/store/state";
 import LargeBtn from "@/components/ui/LargeBtn";
 import MyCheckbox from "@/components/ui/MyCheckbox";
 
@@ -16,7 +16,7 @@ export default function TabWho() {
     const state = stateChoicesPeople.getState();
 
     const renderItem = ({item}: { item: Person }) => <MyCheckbox choice={item.key}
-                                                                 label={`${item.name}(${item.relation})`}
+                                                                 label={getPersonNameRelation(item)}
                                                                  store={stateChoicesPeople}/>;
 
     const {showToast} = useContext(ToastContext);

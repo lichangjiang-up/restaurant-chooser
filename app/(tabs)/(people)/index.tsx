@@ -7,7 +7,7 @@ import {Text, ToastPresets} from "react-native-ui-lib";
 import {descSortStorage} from "@/store/storage";
 import {useContext, useMemo} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
-import {newPerson, Person, stateChoicesPeople, statePeople, statePerson} from "@/store/state";
+import {getPersonName, newPerson, Person, stateChoicesPeople, statePeople, statePerson} from "@/store/state";
 import {PlatformPressable} from "@react-navigation/elements";
 import LargeBtn from "@/components/ui/LargeBtn";
 
@@ -25,7 +25,7 @@ export default function TabPeopleScreen() {
             onPress={upsertPerson(item)}
             key={item.key}
             style={[Styles.borderBottom, Styles.rowBtw, Styles.p10_8]}>
-            <Text style={styles.itemText} $textDefault>{item.name || item.key}</Text>
+            <Text style={styles.itemText} $textDefault>{getPersonName(item)}</Text>
             <LargeBtn
                 label='Delete'
                 style={Styles.m0}

@@ -86,7 +86,8 @@ export default function UpsertPersonScreen() {
 
     function onSavePress() {
         const errMp = {
-            'name': checkName(person.name),
+            'firstname': checkName(person.firstname),
+            'lastname': checkName(person.lastname),
             'phone': checkPhone(person.phone),
             'relation': person.relation ? false : 'Relation must not empty',
         } as ErrRecord;
@@ -114,7 +115,8 @@ export default function UpsertPersonScreen() {
 
     return (
         <ScrollView contentContainerStyle={Styles.p10} style={Styles.hw100}>
-            {getTextField('name')}
+            {getTextField('firstname')}
+            {getTextField('lastname')}
             {getTextField('phone', 16)}
             {getPicker('gender', newValueLabel(GENDERS))}
             {getPicker('relation', newValueLabel(PERSON_RELATIONS))}

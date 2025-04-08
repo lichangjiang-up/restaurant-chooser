@@ -21,11 +21,20 @@ export const CUISINES = ['Algerian', 'American', 'BBQ', 'Chinese', 'Other'] as c
 export type Cuisine = typeof CUISINES[number];
 
 export type Person = {
-    name: string;
+    firstname: string;
+    lastname: string;
     phone: string;
     gender: Gender;
     relation: PersonRelation;
 } & StorageAbs;
+
+export function getPersonName(person: Person) {
+    return `${person.firstname} ${person.lastname}`;
+}
+
+export function getPersonNameRelation(person: Person) {
+    return `${getPersonName(person)}(${person.relation})`;
+}
 
 export type Restaurant = {
     name: string;
