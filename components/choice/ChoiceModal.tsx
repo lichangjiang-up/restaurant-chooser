@@ -4,15 +4,14 @@ import ChoiceModalVeto from "@/components/choice/ChoiceModalVeto";
 import ChoiceModalRestaurant from "@/components/choice/ChoiceModalRestaurant";
 import {useEffect, useMemo} from "react";
 import {shuffleArr} from "@/constants/method";
-import {Person, stateChoicesRestaurants, stateRestaurants} from "@/store/state";
+import {filterWithPreFilter, Person, statePreFilter, stateRestaurants} from "@/store/state";
 
 
 export default function ChoiceModal({choicePeople}: { choicePeople: Person[] }) {
-    const choicesRestaurantsRecord = stateChoicesRestaurants(state => state.record);
     const restaurantsRecord = stateRestaurants(state => state.record);
-
+    const preFilter = statePreFilter(state => state.obj);
     const restaurants = useMemo(() => shuffleArr(Object.values(restaurantsRecord))
-        .filter(r => choicesRestaurantsRecord.hasOwnProperty(r.key)), [choicesRestaurantsRecord, restaurantsRecord]);
+        .filter(filterWithPreFilter(preFilter)), [preFilter, restaurantsRecord]);
     const {modalShowOrHide, vetoShow, show, setRemainingRestaurant, remainingRestaurant} = dialogStore();
 
     useEffect(() => {

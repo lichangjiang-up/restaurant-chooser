@@ -2,10 +2,9 @@ import {ScrollView, Text} from "react-native";
 import {Styles} from "@/constants/Styles";
 import LargeBtn from "@/components/ui/LargeBtn";
 import {
-    CUISINES,
+    CUISINES, filterWithPreFilter,
     LEVELS,
     PreFilter,
-    stateChoicesRestaurants,
     statePreFilter,
     stateRestaurants,
     YES_OR_NO
@@ -17,7 +16,7 @@ import {useMemo} from "react";
 
 
 export default function TabPreFiltersScreen() {
-    const {obj, objUpdate} = statePreFilter();
+    const {obj: preFilter, objUpdate} = statePreFilter();
     const restaurantsRecord = stateRestaurants(state => state.record);
     const restaurants = useMemo(() => Object.values(restaurantsRecord), [restaurantsRecord]);
 
@@ -26,18 +25,14 @@ export default function TabPreFiltersScreen() {
             valueLabels={valueLabels}
             key={key}
             mode={PickerModes.MULTI}
-            value={obj[key] || []}
+            value={preFilter[key] || []}
             keyName={key}
             onChange={(v) => {
                 objUpdate(key, (v as string[]).sort());
             }}/>;
     }
 
-    const choiceRestaurants = restaurants.filter(restaurant =>
-        obj.price?.includes(restaurant.price)
-        && obj.rating?.includes(restaurant.rating)
-        && obj.delivery?.includes(restaurant.delivery)
-        && obj.cuisines?.includes(restaurant.cuisine)).map(restaurant => [restaurant.key, null]);
+    const choiceRestaurants = restaurants.filter(filterWithPreFilter(preFilter)).map(restaurant => [restaurant.key, null]);
 
 
     return <ScrollView style={Styles.hw100} contentContainerStyle={Styles.p10}>
@@ -51,7 +46,6 @@ export default function TabPreFiltersScreen() {
             disabled={choiceRestaurants.length < 1}
             label={`Next(${choiceRestaurants.length})`}
             onPress={() => {
-                stateChoicesRestaurants.getState().resetRecord(Object.fromEntries(choiceRestaurants));
                 router.push('/(tabs)/(decision)/choice');
             }}
         />

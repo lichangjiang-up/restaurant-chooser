@@ -46,11 +46,19 @@ export type PreFilter = {
     delivery: YesOrNo[];
 }
 
+
+export function filterWithPreFilter(prefilter: PreFilter) {
+    return (restaurant: Restaurant) =>
+        prefilter.price?.includes(restaurant.price)
+        && prefilter.rating?.includes(restaurant.rating)
+        && prefilter.delivery?.includes(restaurant.delivery)
+        && prefilter.cuisines?.includes(restaurant.cuisine);
+}
+
 export enum StorageTyp {
     RESTAURANTS = 'restaurants',
     PEOPLE = 'people',
     CHOICES_PEOPLE = 'choices_people',
-    CHOICES_RESTAURANTS = 'choices_restaurants',
     RESTAURANT = 'restaurant',
     PERSON = 'person',
     CHOICE_RESTAURANT = 'choice_restaurant',
@@ -143,7 +151,7 @@ export function newRecordStore<K extends string, T>(name?: StorageTyp) {
         deleteRecord: (...keys: K[]) => set((state) => {
             if (keys.some(key => state.record.hasOwnProperty(key))) {
                 const record = {...state.record};
-                keys.forEach((key) => delete record[key])
+                keys.forEach((key) => delete record[key]);
                 return {record};
             }
             return state;
@@ -164,4 +172,3 @@ export const statePreFilter = newObjStore<PreFilter>({} as PreFilter, StorageTyp
 export const statePeople = newRecordStore<string, Person>(StorageTyp.PEOPLE);
 export const stateRestaurants = newRecordStore<string, Restaurant>(StorageTyp.RESTAURANTS);
 export const stateChoicesPeople = newRecordStore<string, null>(StorageTyp.CHOICES_PEOPLE);
-export const stateChoicesRestaurants = newRecordStore<string, null>(StorageTyp.CHOICES_RESTAURANTS);
