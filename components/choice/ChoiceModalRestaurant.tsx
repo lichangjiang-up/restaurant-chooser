@@ -11,7 +11,7 @@ export default function ChoiceModalRestaurant({restaurant}: ChoiceModalRestauran
     const {modalShowOrHide, vetoShowHide} = dialogStore();
 
     let title = 'No restaurants';
-    let text = 'Please go to the restaurant page to add a restaurant first!';
+    let text = 'Please reselect or go to the restaurant page to add a restaurant first!';
     if (restaurant) {
         text = getRestaurantText(restaurant);
         title = restaurant.name;
