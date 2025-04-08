@@ -25,7 +25,15 @@ export default function MyPiker({valueLabels, keyName, ...props}: {
         placeholder={`Select ${keyName}`}
         customPickerProps={{
             useDialog: true,
-            dialogProps: {bottom: true, containerStyle: {marginBottom: 0, width: '100%'}}
+            dialogProps: {
+                bottom: true,
+                containerStyle: {
+                    marginBottom: 0,
+                    width: '100%',
+                    borderBottomRightRadius: 0,
+                    borderBottomLeftRadius: 0
+                }
+            }
         }}
         {...props}>
         {valueLabels.map(({value, label}) => <Picker.Item
