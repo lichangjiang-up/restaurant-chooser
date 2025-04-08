@@ -13,21 +13,21 @@ export default function ChoiceModal({choicePeople}: { choicePeople: Person[] }) 
     const restaurants = useMemo(() => shuffleArr(Object.values(restaurantsRecord))
         .filter(filterWithPreFilter(preFilter)), [preFilter, restaurantsRecord]);
     const {modalShowOrHide, vetoShow, show, setRemainingRestaurant, remainingRestaurant} = dialogStore();
-
     useEffect(() => {
         setRemainingRestaurant(restaurants.length);
     }, [restaurants, setRemainingRestaurant]);
-    let modalContent = <></>;
-    if (vetoShow) {
-        modalContent =
-            <ChoiceModalVeto goingPeople={choicePeople}/>;
-    } else if (show) {
-        let restaurant = null;
-        if (restaurants?.length > 0 && remainingRestaurant > 0) {
-            restaurant = restaurants[restaurants.length - remainingRestaurant];
-        }
-        modalContent = <ChoiceModalRestaurant restaurant={restaurant}/>;
+
+    let restaurant = null;
+    if (restaurants?.length > 0 && remainingRestaurant > 0) {
+        restaurant = restaurants[restaurants.length - remainingRestaurant];
     }
+
+    const restaurantView = useMemo(() => restaurant ?
+        <ChoiceModalRestaurant restaurant={restaurant}/> : <></>, [restaurant]);
+
+    const vetoView = useMemo(() => <ChoiceModalVeto goingPeople={choicePeople}/>, [choicePeople]);
+
+    const modalContent = vetoShow ? vetoView : restaurantView;
     return <MyModal
         onRequestClose={() => modalShowOrHide()}
         visible={show}>{modalContent}
