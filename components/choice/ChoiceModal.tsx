@@ -4,7 +4,7 @@ import ChoiceModalVeto from "@/components/choice/ChoiceModalVeto";
 import ChoiceModalRestaurant from "@/components/choice/ChoiceModalRestaurant";
 import {useEffect, useMemo} from "react";
 import {shuffleArr} from "@/constants/method";
-import {filterWithPreFilter, Person, statePreFilter, stateRestaurants} from "@/store/state";
+import {filterWithPreFilter, Person, Restaurant, statePreFilter, stateRestaurants} from "@/store/state";
 
 
 export default function ChoiceModal({choicePeople}: { choicePeople: Person[] }) {
@@ -17,13 +17,12 @@ export default function ChoiceModal({choicePeople}: { choicePeople: Person[] }) 
         setRemainingRestaurant(restaurants.length);
     }, [restaurants, setRemainingRestaurant]);
 
-    let restaurant = null;
+    let restaurant: Restaurant | null = null;
     if (restaurants?.length > 0 && remainingRestaurant > 0) {
         restaurant = restaurants[restaurants.length - remainingRestaurant];
     }
 
-    const restaurantView = useMemo(() => restaurant ?
-        <ChoiceModalRestaurant restaurant={restaurant}/> : <></>, [restaurant]);
+    const restaurantView = useMemo(() => <ChoiceModalRestaurant restaurant={restaurant}/>, [restaurant]);
 
     const vetoView = useMemo(() => <ChoiceModalVeto goingPeople={choicePeople}/>, [choicePeople]);
 
