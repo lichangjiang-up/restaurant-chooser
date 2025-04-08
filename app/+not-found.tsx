@@ -1,6 +1,5 @@
-import {Link, Stack} from 'expo-router';
-
-import {Text} from "react-native-ui-lib";
+import {Text} from "react-native"
+import {Link, Stack} from "expo-router";
 import {Styles} from "@/constants/Styles";
 import {SafeAreaView} from "react-native-safe-area-context";
 

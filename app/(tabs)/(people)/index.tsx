@@ -1,9 +1,9 @@
-import {FlatList, StyleSheet} from 'react-native';
+import {FlatList, StyleSheet, Text} from 'react-native';
 
 import {VFull} from "@/components/VFull";
 import {router} from "expo-router";
 import {Styles} from "@/constants/Styles";
-import {Text, ToastPresets} from "react-native-ui-lib";
+import {ToastPresets} from "react-native-ui-lib";
 import {descSortStorage} from "@/store/storage";
 import {useContext, useMemo} from "react";
 import {ToastContext} from "@/components/provider/ToastProvider";
@@ -25,7 +25,7 @@ export default function TabPeopleScreen() {
             onPress={upsertPerson(item)}
             key={item.key}
             style={[Styles.borderBottom, Styles.rowBtw, Styles.p10_8]}>
-            <Text style={styles.itemText} $textDefault>{getPersonName(item)}</Text>
+            <Text style={styles.itemText}>{getPersonName(item)}</Text>
             <LargeBtn
                 label='Delete'
                 style={Styles.m0}

@@ -1,8 +1,8 @@
-import {StyleSheet, Image, Platform} from 'react-native';
+import {StyleSheet, Image, Platform, Text, View} from 'react-native';
 import {Link} from 'expo-router';
 import {Styles} from '@/constants/Styles';
 import {VFull} from "@/components/VFull";
-import {Colors, Text} from "react-native-ui-lib";
+import {Colors} from "react-native-ui-lib";
 
 const img_url = Platform.select({
     ios: require('@/assets/images/img/its-decision-time.ios.png'),
@@ -13,12 +13,14 @@ export default function TabDecisionScreen() {
     const styles = getStyles()
     return (
         <VFull style={Styles.cContainer}>
-            <Link href='/(tabs)/(decision)/who' style={styles.link}>
-                <Image
-                    resizeMode='contain'
-                    source={img_url}
-                    style={styles.foodImage}/>
-                <Text color={Colors.$textDefault} style={styles.hintText}>(click the food to get going)</Text>
+            <Link href='/(tabs)/(decision)/who' style={Styles.w100}>
+                <View style={[Styles.w100, Styles.center]}>
+                    <Image
+                        resizeMode='contain'
+                        source={img_url}
+                        style={styles.foodImage}/>
+                    <Text style={styles.hintText}>(click the food to get going)</Text>
+                </View>
             </Link>
         </VFull>
     );
@@ -28,20 +30,14 @@ function getStyles() {
     return StyleSheet.create({
         foodImage: {
             objectFit: 'contain',
-            maxWidth: '80%',
+            width: '80%',
             height: 200,
         },
-        link: {
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
-            height: 'auto',
-            textAlign: 'center',
-        },
         hintText: {
+            marginTop: 20,
             fontWeight: 'bold',
-            marginTop: 20
+            textAlign: 'center',
+            color: Colors.$textDefault
         },
     });
 }

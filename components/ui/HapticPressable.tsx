@@ -7,8 +7,7 @@ export function HapticPressable(props: Props) {
     return (
         <PlatformPressable
             {...props}
-            style={Styles.center}
-            android_ripple={{color: '#CCCCCC88'}}
+            style={[Styles.center, Styles.flexG1]}
             onPressIn={(ev) => {
                 if (process.env.EXPO_OS === 'ios') {
                     // Add a soft haptic feedback when pressing down on the tabs.
