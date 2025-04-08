@@ -86,8 +86,8 @@ export default function UpsertPersonScreen() {
 
     function onSavePress() {
         const errMp = {
-            'firstname': checkName(person.firstname),
-            'lastname': checkName(person.lastname),
+            'firstname': checkName(person.firstname, 'firstname'),
+            'lastname': checkName(person.lastname, 'lastname'),
             'phone': checkPhone(person.phone),
             'relation': person.relation ? false : 'Relation must not empty',
         } as ErrRecord;

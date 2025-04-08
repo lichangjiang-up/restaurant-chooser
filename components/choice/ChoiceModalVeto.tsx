@@ -4,7 +4,7 @@ import MyCheckbox from "@/components/ui/MyCheckbox";
 import {Styles} from "@/constants/Styles";
 import {FlatList, View, Text, StyleSheet} from "react-native";
 import LargeBtn from "@/components/ui/LargeBtn";
-import {Person} from "@/store/state";
+import {getPersonNameRelation, Person} from "@/store/state";
 import {ToastPresets} from "react-native-ui-lib";
 import {dialogStore, vetoedRecordStore} from "@/components/choice/choice_stores";
 
@@ -22,7 +22,7 @@ export default function ChoiceModalVeto({goingPeople}: ChoiceModalVetoProps) {
         vetoRenderItem = ({item}: { item: Person }) => (<MyCheckbox
             choice={item.key}
             store={vetoedRecordStore}
-            label={`${item.name}(${item.relation})`}
+            label={getPersonNameRelation(item)}
             lineHeight={46}
         />);
 

@@ -1,6 +1,9 @@
 import {isMobilePhone, isURL} from "validator";
 
-export function checkPhone(v?: string) {
+type CanEmptyString = string | null | undefined;
+
+
+export function checkPhone(v: CanEmptyString) {
     v = v?.trim();
     if (!v) {
         return 'Phone number required';
@@ -12,7 +15,7 @@ export function checkPhone(v?: string) {
 }
 
 
-export function checkWebsite(website?: string) {
+export function checkWebsite(website: CanEmptyString) {
     website = website?.trim();
     if (!website) {
         return 'Website required';
@@ -24,7 +27,7 @@ export function checkWebsite(website?: string) {
 }
 
 
-export function checkAddress(address?: string) {
+export function checkAddress(address: CanEmptyString) {
     address = address?.trim();
     if (!address) {
         return 'Address required';
@@ -38,16 +41,16 @@ export function checkAddress(address?: string) {
     return false;
 }
 
-export function checkName(v?: string) {
+export function checkName(v: CanEmptyString, nameName: string) {
     v = v?.trim();
     if (!v) {
-        return 'Name required';
+        return `${nameName} required`;
     }
     if (v.length < 2) {
-        return 'Name is too short';
+        return `${nameName} is too short`;
     }
     if (!/^\w+$/.test(v)) {
-        return 'Name contains invalid characters';
+        return `${nameName} contains invalid characters`;
     }
     return false;
 }
