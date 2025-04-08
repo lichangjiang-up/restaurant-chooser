@@ -16,8 +16,8 @@ import {
 } from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
 import LargeBtn from "@/components/ui/LargeBtn";
-import {checkName, checkPhone} from "@/constants/method";
 import MyPiker, {newValueLabel, ValueLabel} from "@/components/ui/MyPiker";
+import {checkName, checkPhone, trimObjByKeys} from "@/constants/method";
 
 
 const markerState = newMarkerStore();
@@ -25,6 +25,7 @@ const markerState = newMarkerStore();
 type ErrRecord = Record<keyof Person, string | false | undefined>;
 const errRecordStore = newRecordStore<keyof Person, string | false | undefined>();
 
+const trimKeys = Array.of<keyof Person>('lastname', 'firstname', 'phone');
 
 export default function UpsertPersonScreen() {
     const person = statePerson((state) => state.obj);
@@ -59,10 +60,7 @@ export default function UpsertPersonScreen() {
             value={value as any}
             style={Styles.tf}
             onFocus={() => deleteRecord(key)}
-            onChangeText={(text) => {
-                text = text?.trim();
-                personState.objUpdate(key, text);
-            }}/>;
+            onChangeText={(text) => personState.objUpdate(key, text)}/>;
     }
 
     function getPicker(key: keyof Person, valueLabels: ValueLabel[]) {
@@ -98,9 +96,9 @@ export default function UpsertPersonScreen() {
         }
         showToast('Person saving...', 'loader');
         resetMarker(true);
+        const res = personState.objMerge(initLastModifiedAndRet(trimObjByKeys(person, trimKeys), StorageTyp.PERSON));
         setTimeout(() => {
             try {
-                const res = personState.objMerge(initLastModifiedAndRet(person, StorageTyp.PERSON));
                 statePeople.getState().addRecord(res.key, res);
                 showToast('Person saved');
                 router.back();

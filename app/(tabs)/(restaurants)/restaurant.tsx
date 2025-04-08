@@ -15,7 +15,7 @@ import {
 } from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
 import LargeBtn from "@/components/ui/LargeBtn";
-import {checkAddress, checkName, checkPhone, checkWebsite} from "@/constants/method";
+import {checkAddress, checkName, checkPhone, checkWebsite, trimObjByKeys} from "@/constants/method";
 import MyPiker, {newValueLabel, ValueLabel} from "@/components/ui/MyPiker";
 
 
@@ -23,6 +23,8 @@ type ErrRecord = Record<keyof Restaurant, string | false | undefined>;
 
 const errRecordState = newRecordStore<keyof Restaurant, string | false | undefined>();
 const markerState = newMarkerStore();
+
+const trimKeys = Array.of<keyof Restaurant>('name', 'website', 'phone', 'address');
 
 export default function UpsertRestaurantScreen() {
     const {showToast} = useContext(ToastContext);
@@ -55,10 +57,7 @@ export default function UpsertRestaurantScreen() {
             value={value as any}
             style={Styles.tf}
             onFocus={() => deleteRecord(key)}
-            onChangeText={(text) => {
-                text = text?.trim();
-                state.objUpdate(key, text);
-            }}/>;
+            onChangeText={(text) => state.objUpdate(key, text)}/>;
     }
 
     function getPicker(key: keyof Restaurant, valueLabels: ValueLabel[]) {
@@ -95,9 +94,9 @@ export default function UpsertRestaurantScreen() {
         }
         showToast('Restaurant saving...', 'loader');
         resetMarker(true);
+        const res = state.objMerge(initLastModifiedAndRet(trimObjByKeys(restaurant, trimKeys), StorageTyp.RESTAURANT));
         setTimeout(() => {
             try {
-                const res = state.objMerge(initLastModifiedAndRet(restaurant, StorageTyp.RESTAURANT));
                 stateRestaurants.getState().addRecord(res.key, res);
                 showToast('Restaurant saved');
                 router.replace('/(tabs)/(restaurants)');

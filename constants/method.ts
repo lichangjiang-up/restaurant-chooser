@@ -14,6 +14,15 @@ export function checkPhone(phone: CanEmptyString) {
     return false;
 }
 
+export function trimObjByKeys<T>(obj: T, keys: (keyof T)[]): T {
+    keys.forEach((key) => {
+        const v = obj[key];
+        if (typeof v === 'string') {
+            obj[key] = v?.trim() as T[keyof T];
+        }
+    });
+    return obj;
+}
 
 export function checkWebsite(website: CanEmptyString) {
     website = website?.trim();
