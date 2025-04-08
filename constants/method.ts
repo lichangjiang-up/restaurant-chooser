@@ -1,26 +1,55 @@
+import {isMobilePhone, isURL} from "validator";
+
 export function checkPhone(v?: string) {
-    if (!v || v.length < 1) {
-        return false;
+    v = v?.trim();
+    if (!v) {
+        return 'Phone number required';
     }
-    const cleanPhone = v.replaceAll('-', '');
-    if (/^[\d+]\d{4,16}$/.test(cleanPhone)) {
-        return false;
+    if (!isMobilePhone(v)) {
+        return 'Phone number invalid';
     }
-    return 'Phone numbers format should be 5-16 digits';
+    return false;
 }
 
+
 export function checkWebsite(website?: string) {
-    if (website && website.includes('.') && !['http://', 'https://'].some(prefix => website.startsWith(prefix))) {
-        return 'Website format error';
+    website = website?.trim();
+    if (!website) {
+        return 'Website required';
     }
-    return website ? false : false;
+    if (!isURL(website, {protocols: ['http', 'https']})) {
+        return 'Website format error'
+    }
+    return false;
+}
+
+
+export function checkAddress(address?: string) {
+    address = address?.trim();
+    if (!address) {
+        return 'Address required';
+    }
+    if (address.length < 5) {
+        return 'Address is too short';
+    }
+    if (!/^(?=.*\d)(?=.*\D).+$/.test(address)) {
+        return 'Address should include street number and name';
+    }
+    return false;
 }
 
 export function checkName(v?: string) {
-    if (v && v.trim().length >= 4) {
-        return false;
+    v = v?.trim();
+    if (!v) {
+        return 'Name required';
     }
-    return 'Name should be 4-30 characters';
+    if (v.length < 2) {
+        return 'Name is too short';
+    }
+    if (!/^\w+$/.test(v)) {
+        return 'Name contains invalid characters';
+    }
+    return false;
 }
 
 export function getRandomInt(max = 800000) {

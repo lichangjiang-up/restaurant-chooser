@@ -55,17 +55,14 @@ export default function UpsertPersonScreen() {
             maxLength={maxLength}
             color={Colors.$textDefault}
             labelStyle={Styles.capital}
-            onBlur={() => {
-                if (typeof value === 'string') {
-                    const trimV = value.trim();
-                    trimV !== value && personState.objUpdate(key, trimV);
-                }
-            }}
             containerStyle={[Styles.mb20, Styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
-            value={person[key] as any}
+            value={value as any}
             style={Styles.tf}
             onFocus={() => deleteRecord(key)}
-            onChangeText={(text) => personState.objUpdate(key, text)}/>;
+            onChangeText={(text) => {
+                text = text?.trim();
+                personState.objUpdate(key, text);
+            }}/>;
     }
 
     function getPicker(key: keyof Person, valueLabels: ValueLabel[]) {

@@ -15,7 +15,7 @@ import {
 } from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
 import LargeBtn from "@/components/ui/LargeBtn";
-import {checkName, checkPhone, checkWebsite} from "@/constants/method";
+import {checkAddress, checkName, checkPhone, checkWebsite} from "@/constants/method";
 import MyPiker, {newValueLabel, ValueLabel} from "@/components/ui/MyPiker";
 
 
@@ -54,14 +54,11 @@ export default function UpsertRestaurantScreen() {
             containerStyle={[Styles.mb20, Styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
             value={value as any}
             style={Styles.tf}
-            onBlur={() => {
-                if (typeof value === 'string') {
-                    const trimV = value.trim();
-                    trimV !== value && state.objUpdate(key, trimV);
-                }
-            }}
             onFocus={() => deleteRecord(key)}
-            onChangeText={(text) => state.objUpdate(key, text)}/>;
+            onChangeText={(text) => {
+                text = text?.trim();
+                state.objUpdate(key, text);
+            }}/>;
     }
 
     function getPicker(key: keyof Restaurant, valueLabels: ValueLabel[]) {
@@ -84,11 +81,12 @@ export default function UpsertRestaurantScreen() {
         const errMp = {
             'name': checkName(restaurant.name),
             'phone': checkPhone(restaurant.phone),
-            'cuisine': restaurant.cuisine ? false : 'Cuisine must not empty',
-            'rating': restaurant.rating ? false : 'Rating must not empty',
-            'price': restaurant.price ? false : 'Price must not empty',
-            'delivery': restaurant.delivery ? false : 'Delivery must not empty',
+            'cuisine': restaurant.cuisine ? false : 'Cuisine required',
+            'rating': restaurant.rating ? false : 'Rating required',
+            'price': restaurant.price ? false : 'Price required',
+            'delivery': restaurant.delivery ? false : 'Delivery required',
             'website': checkWebsite(restaurant.website),
+            'address': checkAddress(restaurant.address),
         } as ErrRecord;
         resetRecord(errMp);
         if (Object.values(errMp).some(v => !!v)) {
