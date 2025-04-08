@@ -27,10 +27,10 @@ export default function ChoiceModal({choicePeople}: { choicePeople: Person[] }) 
         if (restaurants?.length > 0 && remainingRestaurant > 0) {
             restaurant = restaurants[restaurants.length - remainingRestaurant];
         }
-        modalContent = <ChoiceModalRestaurant restaurant={restaurant}/>
+        modalContent = <ChoiceModalRestaurant restaurant={restaurant}/>;
     }
     return <MyModal
         onRequestClose={() => modalShowOrHide()}
         visible={show}>{modalContent}
-    </MyModal>
+    </MyModal>;
 }

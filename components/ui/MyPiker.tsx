@@ -23,6 +23,10 @@ export default function MyPiker({valueLabels, keyName, ...props}: {
         useSafeArea={true}
         labelStyle={Styles.capital}
         placeholder={`Select ${keyName}`}
+        customPickerProps={{
+            useDialog: true,
+            dialogProps: {bottom: true, containerStyle: {marginBottom: 0, width: '100%'}}
+        }}
         {...props}>
         {valueLabels.map(({value, label}) => <Picker.Item
             labelStyle={Styles.lh40}
