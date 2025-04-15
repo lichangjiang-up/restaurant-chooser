@@ -11,7 +11,7 @@ import {
     Restaurant,
     stateRestaurant,
     stateRestaurants,
-    StorageTyp, YES_OR_NO
+    YES_OR_NO
 } from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
 import LargeBtn from "@/components/ui/LargeBtn";
@@ -94,7 +94,7 @@ export default function UpsertRestaurantScreen() {
         }
         showToast('Restaurant saving...', 'loader');
         resetMarker(true);
-        const res = state.objMerge(initLastModifiedAndRet(trimObjByKeys(restaurant, trimKeys), StorageTyp.RESTAURANT));
+        const res = state.objMerge(initLastModifiedAndRet(trimObjByKeys(restaurant, trimKeys)));
         setTimeout(() => {
             try {
                 stateRestaurants.getState().addRecord(res.key, res);

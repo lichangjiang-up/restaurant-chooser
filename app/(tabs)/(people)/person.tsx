@@ -12,7 +12,6 @@ import {
     PERSON_RELATIONS,
     statePeople,
     statePerson,
-    StorageTyp
 } from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
 import LargeBtn from "@/components/ui/LargeBtn";
@@ -96,7 +95,7 @@ export default function UpsertPersonScreen() {
         }
         showToast('Person saving...', 'loader');
         resetMarker(true);
-        const res = personState.objMerge(initLastModifiedAndRet(trimObjByKeys(person, trimKeys), StorageTyp.PERSON));
+        const res = personState.objMerge(initLastModifiedAndRet(trimObjByKeys(person, trimKeys)));
         setTimeout(() => {
             try {
                 statePeople.getState().addRecord(res.key, res);

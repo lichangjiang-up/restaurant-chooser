@@ -68,8 +68,6 @@ export enum StorageTyp {
     RESTAURANTS = 'restaurants',
     PEOPLE = 'people',
     CHOICES_PEOPLE = 'choices_people',
-    RESTAURANT = 'restaurant',
-    PERSON = 'person',
     CHOICE_RESTAURANT = 'choice_restaurant',
     PRE_FILTER = 'pre_filter',
 }
@@ -173,8 +171,8 @@ export function newRecordStore<K extends string, T>(name?: StorageTyp) {
     return create<RecordMap<K, T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
 }
 
-export const statePerson = newObjStore<Person>(newPerson(), StorageTyp.PERSON);
-export const stateRestaurant = newObjStore<Restaurant>(newRestaurant(), StorageTyp.RESTAURANT);
+export const statePerson = newObjStore<Person>(newPerson());
+export const stateRestaurant = newObjStore<Restaurant>(newRestaurant());
 export const stateChoiceRestaurant = newObjStore<Restaurant>(newRestaurant(), StorageTyp.CHOICE_RESTAURANT);
 export const statePreFilter = newObjStore<PreFilter>({} as PreFilter, StorageTyp.PRE_FILTER);
 
