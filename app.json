@@ -10,13 +10,13 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.restaurantchooser"
+      "bundleIdentifier": "fun.xread.restaurantchooser"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png"
       },
-      "package": "com.anonymous.restaurantchooser"
+      "package": "fun.xread.restaurantchooser"
     },
     "web": {
       "bundler": "metro",
@@ -27,11 +27,17 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/img/splash.png",
+          "enableFullScreenImage_legacy": true,
           "resizeMode": "cover",
-          "backgroundColor": "#ffffff",
-          "enableFullScreen": true, 
-          "enableFullScreenImage_legacy": true
+          "ios": {
+            "image": "./assets/images/img/splash.png",
+            "backgroundColor": "#ffffff"
+          },
+          "android": {
+            "backgroundColor": "#ffffff",
+            "image": "./assets/images/img/splash.png",
+            "imageWidth": 500
+          }
         }
       ]
     ],

@@ -58,7 +58,7 @@ export function checkName(name: CanEmptyString, nameName: string) {
     if (name.length < 2) {
         return `${nameName} is too short`;
     }
-    if (!/^\w+$/.test(name)) {
+    if (!/^[a-zA-Z0-9\s,'-]*$/.test(name)) {
         return `${nameName} contains invalid characters`;
     }
     return false;
