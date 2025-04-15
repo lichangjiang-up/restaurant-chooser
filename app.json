@@ -2,7 +2,7 @@
   "expo": {
     "name": "restaurant-chooser",
     "slug": "restaurant-chooser",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "restaurant-chooser",
@@ -28,7 +28,7 @@
         "expo-splash-screen",
         {
           "enableFullScreenImage_legacy": true,
-          "resizeMode": "cover",
+          "resizeMode": "contain",
           "ios": {
             "image": "./assets/images/img/splash.png",
             "backgroundColor": "#ffffff"
