@@ -1,9 +1,7 @@
 import {Styles} from "@/constants/Styles";
 import {KeyboardTypeOptions, ScrollView} from "react-native";
-import {useContext, useEffect} from "react";
-import {ToastPresets} from "react-native-ui-lib";
+import {useEffect} from "react";
 import {router} from "expo-router";
-import {ToastContext} from "@/components/provider/ToastProvider";
 import {
     GENDERS,
     newMarkerStore,
@@ -14,16 +12,16 @@ import {
     statePerson,
 } from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
-import LargeBtn from "@/components/ui/LargeBtn";
+import MyBtn from "@/components/ui/MyBtn";
 import MyPiker, {newValueLabel, ValueLabel} from "@/components/ui/MyPiker";
-import {checkName, checkPhone, trimObjByKeys} from "@/constants/method";
+import {checkName, checkPhone, ErrMsg, trimObjByKeys} from "@/constants/method";
 import MyTextInput from "@/components/ui/MyTextInput";
 
 
 const markerState = newMarkerStore();
 
-type ErrRecord = Record<keyof Person, string | false | undefined>;
-const errRecordStore = newRecordStore<keyof Person, string | false | undefined>();
+type ErrRecord = Record<keyof Person, ErrMsg>;
+const errRecordStore = newRecordStore<keyof Person, ErrMsg>();
 
 const trimKeys = Array.of<keyof Person>('lastname', 'firstname', 'phone');
 
@@ -68,8 +66,7 @@ export default function UpsertPersonScreen() {
             key={key}
             keyName={key}
             valueLabels={valueLabels}
-            value={person[key]}
-            label={key}
+            value={person[key] as string}
             errMsg={newErr}
             onChange={(text) => {
                 deleteRecord(key);
@@ -77,7 +74,6 @@ export default function UpsertPersonScreen() {
             }}/>;
     }
 
-    const {showToast} = useContext(ToastContext);
 
     function onSavePress() {
         const errMp = {
@@ -88,23 +84,19 @@ export default function UpsertPersonScreen() {
         } as ErrRecord;
         resetRecord(errMp);
         if (Object.values(errMp).some(v => !!v)) {
-            showToast('Please check the form', ToastPresets.FAILURE);
             return;
         }
-        showToast('Person saving...', 'loader');
         resetMarker(true);
         const res = personState.objMerge(initLastModifiedAndRet(trimObjByKeys(person, trimKeys)));
         setTimeout(() => {
             try {
                 statePeople.getState().addRecord(res.key, res);
-                showToast('Person saved');
                 if (router.canGoBack()) {
                     router.back();
                 } else {
                     router.push('/(tabs)/(people)')
                 }
             } catch (err) {
-                showToast('Person save failed', ToastPresets.FAILURE);
                 console.log(err);
             } finally {
                 resetMarker();
@@ -113,13 +105,14 @@ export default function UpsertPersonScreen() {
     }
 
     return (
-        <ScrollView contentContainerStyle={Styles.p10} style={Styles.hw100}>
+        <ScrollView contentContainerStyle={[Styles.p10, Styles.gap20]} style={Styles.hw100}>
             {getTextField('firstname')}
             {getTextField('lastname')}
             {getTextField('phone', 'phone-pad', 16)}
             {getPicker('gender', newValueLabel(GENDERS))}
             {getPicker('relation', newValueLabel(PERSON_RELATIONS))}
-            <LargeBtn
+            <MyBtn
+                isLoading={marker}
                 disabled={marker}
                 style={Styles.mv20}
                 label={marker ? 'Saving...' : 'Save Person'}

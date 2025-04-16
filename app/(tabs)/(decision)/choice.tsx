@@ -7,7 +7,7 @@ import {
     stateChoicesPeople, statePeople
 } from "@/store/state";
 import {VFull} from "@/components/VFull";
-import LargeBtn from "@/components/ui/LargeBtn";
+import MyBtn from "@/components/ui/MyBtn";
 import {useEffect, useMemo} from "react";
 import ChoiceModal from "@/components/choice/ChoiceModal";
 import {dialogStore, vetoedRecordStore} from "@/components/choice/choice_stores";
@@ -39,12 +39,12 @@ export default function TabChoiceScreen() {
             <ChoiceModal choicePeople={choicePeople}/>
             <Text style={Styles.title}>Choice Screen</Text>
             <FlatList
-                style={[Styles.flexG1, {paddingHorizontal: 10}]}
+                style={[Styles.flex1, {paddingHorizontal: 10}]}
                 renderItem={renderItem}
                 data={choicePeople}
                 keyExtractor={({key}) => key}
             />
-            <LargeBtn
+            <MyBtn
                 disabled={!choicePeople?.length}
                 label={`Randomly Choice(${remainingRestaurant})`}
                 onPress={() => {

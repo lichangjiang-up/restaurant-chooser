@@ -1,7 +1,7 @@
 import {isMobilePhone, isURL} from "validator";
 
-type CanEmptyString = string | null | undefined;
-
+export type CanEmptyString = string | null | undefined;
+export type ErrMsg = string | false | undefined;
 
 export function checkPhone(phone: CanEmptyString) {
     phone = phone?.trim();

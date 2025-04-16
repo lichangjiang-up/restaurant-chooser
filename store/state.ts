@@ -84,14 +84,14 @@ export type ObjStore<T> = {
     objMerge: (obj: any) => T;
 }
 
-
 export type RecordMap<K extends string, T> = {
     record: Record<K, T>;
     addRecord: (key: K, t: T) => void;
-    clearRecord: () => void;
     deleteRecord: (...keys: K[]) => void;
+    clearRecord: () => void;
     resetRecord: (record: Record<K, T>) => void;
-}
+};
+
 
 export function newRestaurant(restaurant?: Restaurant): Restaurant {
     return wrapperRestaurant(restaurant ? {...restaurant} : {} as Restaurant);
@@ -145,9 +145,17 @@ export function newObjStore<T>(t: T, name?: StorageTyp) {
     return create<ObjStore<T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
 }
 
-export function newRecordStore<K extends string, T>(name?: StorageTyp) {
+export function toRecord<K extends string, T>(value: K | K[] | undefined, defV: T): Record<K, T> {
+    return (typeof value === 'string' ? {[value]: defV} : Object.fromEntries(value?.map(value => [value, defV]) || [])) as Record<K, T>;
+}
+
+export function newRecordStore<K extends string, T>(storageTyp?: StorageTyp) {
+    return newRecordInit({} as Record<K, T>, storageTyp)
+}
+
+export function newRecordInit<K extends string, T>(record: Record<K, T>, storageTyp?: StorageTyp) {
     const createFun: StateCreator<RecordMap<K, T>> = (set) => ({
-        record: {} as Record<K, T>,
+        record,
         addRecord: (key: K, t: T) => set((state) => state.record[key] === t ? state : {
             record: {
                 ...state.record,
@@ -165,10 +173,10 @@ export function newRecordStore<K extends string, T>(name?: StorageTyp) {
         }),
         resetRecord: (record: Record<K, T>) => set(() => ({record})),
     });
-    if (!name) {
+    if (!storageTyp) {
         return create<RecordMap<K, T>>()(createFun);
     }
-    return create<RecordMap<K, T>>()(persist(createFun, {name, storage: JSON_STORAGE}));
+    return create<RecordMap<K, T>>()(persist(createFun, {name: storageTyp, storage: JSON_STORAGE}));
 }
 
 export const statePerson = newObjStore<Person>(newPerson());

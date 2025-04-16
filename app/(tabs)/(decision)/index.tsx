@@ -2,7 +2,7 @@ import {StyleSheet, Image, Platform, Text, View} from 'react-native';
 import {Link} from 'expo-router';
 import {Styles} from '@/constants/Styles';
 import {VFull} from "@/components/VFull";
-import {Colors} from "react-native-ui-lib";
+import {Colors} from "@/constants/Colors";
 
 const img_url = Platform.select({
     ios: require('@/assets/images/img/its-decision-time.ios.png'),
@@ -37,7 +37,7 @@ function getStyles() {
             marginTop: 20,
             fontWeight: 'bold',
             textAlign: 'center',
-            color: Colors.$textDefault
+            color: Colors.textDefault
         },
     });
 }

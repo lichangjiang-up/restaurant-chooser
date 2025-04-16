@@ -1,5 +1,4 @@
 import {Platform, StyleProp, StyleSheet, TextStyle, ViewStyle} from "react-native";
-import {Colors} from "react-native-ui-lib";
 
 export const Styles = StyleSheet.create({
     cContainer: {
@@ -11,8 +10,8 @@ export const Styles = StyleSheet.create({
     m0: {
         margin: 0,
     },
-    flexG1: {
-        flexGrow: 1,
+    flex1: {
+        flex: 1,
     },
     pv5: {
         paddingVertical: 5,
@@ -107,8 +106,9 @@ export const Styles = StyleSheet.create({
         borderStyle: 'solid',
         borderBottomWidth: 1,
         paddingBottom: 4,
-        borderColor: Colors.$textDefault,
+        borderColor: '#444',
     },
+    gap20: {gap: 20}
 });
 
 export function getStyleBg() {

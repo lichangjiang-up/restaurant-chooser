@@ -1,15 +1,13 @@
 import {Button, ScrollView, StyleSheet, View, Text} from "react-native";
 import {Styles} from "@/constants/Styles";
 import {newRestaurant, Restaurant, stateChoiceRestaurant, wrapperRestaurant} from "@/store/state";
-import {useContext, useEffect} from "react";
-import {ToastContext} from "@/components/provider/ToastProvider";
+import {useEffect} from "react";
 import {VFull} from "@/components/VFull";
 import {router} from "expo-router";
 
 const showKeys = Array.of<keyof Restaurant>('name', 'cuisine', 'price', 'rating', 'phone', 'address', 'website', 'delivery');
 
 export default function TabEnjoyScreen() {
-    const {showToast} = useContext(ToastContext);
     let restaurant = stateChoiceRestaurant(state => state.obj);
     useEffect(() => {
         return () => {
@@ -40,7 +38,6 @@ export default function TabEnjoyScreen() {
                     <Button
                         title='All Done'
                         onPress={() => {
-                            showToast('Enjoy your meal!');
                             router.replace('/(tabs)/(decision)');
                         }}/>
                 </View>

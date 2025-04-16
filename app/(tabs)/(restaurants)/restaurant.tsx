@@ -1,9 +1,7 @@
 import {Styles} from "@/constants/Styles";
 import {KeyboardTypeOptions, ScrollView} from "react-native";
-import {useContext, useEffect} from "react";
-import {ToastPresets} from "react-native-ui-lib";
+import {useEffect} from "react";
 import {router} from "expo-router";
-import {ToastContext} from "@/components/provider/ToastProvider";
 import {
     CUISINES, LEVELS,
     newMarkerStore,
@@ -14,21 +12,20 @@ import {
     YES_OR_NO
 } from "@/store/state";
 import {initLastModifiedAndRet} from "@/store/storage";
-import LargeBtn from "@/components/ui/LargeBtn";
-import {checkAddress, checkName, checkPhone, checkWebsite, trimObjByKeys} from "@/constants/method";
+import MyBtn from "@/components/ui/MyBtn";
+import {checkAddress, checkName, checkPhone, checkWebsite, ErrMsg, trimObjByKeys} from "@/constants/method";
 import MyPiker, {newValueLabel, ValueLabel} from "@/components/ui/MyPiker";
 import MyTextInput from "@/components/ui/MyTextInput";
 
 
-type ErrRecord = Record<keyof Restaurant, string | false | undefined>;
+type ErrRecord = Record<keyof Restaurant, ErrMsg>;
 
-const errRecordState = newRecordStore<keyof Restaurant, string | false | undefined>();
+const errRecordState = newRecordStore<keyof Restaurant, ErrMsg>();
 const markerState = newMarkerStore();
 
 const trimKeys = Array.of<keyof Restaurant>('name', 'website', 'phone', 'address');
 
 export default function UpsertRestaurantScreen() {
-    const {showToast} = useContext(ToastContext);
     const restaurant = stateRestaurant((state) => state.obj);
     const {marker, resetMarker} = markerState();
     const state = stateRestaurant.getState();
@@ -65,7 +62,6 @@ export default function UpsertRestaurantScreen() {
             keyName={key}
             valueLabels={valueLabels}
             value={restaurant[key] as string}
-            label={key}
             errMsg={newErr}
             onChange={(text) => {
                 deleteRecord(key);
@@ -86,19 +82,15 @@ export default function UpsertRestaurantScreen() {
         } as ErrRecord;
         resetRecord(errMp);
         if (Object.values(errMp).some(v => !!v)) {
-            showToast('Please check the form', ToastPresets.FAILURE);
             return;
         }
-        showToast('Restaurant saving...', 'loader');
         resetMarker(true);
         const res = state.objMerge(initLastModifiedAndRet(trimObjByKeys(restaurant, trimKeys)));
         setTimeout(() => {
             try {
                 stateRestaurants.getState().addRecord(res.key, res);
-                showToast('Restaurant saved');
                 router.replace('/(tabs)/(restaurants)');
             } catch (err) {
-                showToast('Restaurant save failed', ToastPresets.FAILURE);
                 console.log(err);
             } finally {
                 resetMarker();
@@ -107,7 +99,7 @@ export default function UpsertRestaurantScreen() {
     }
 
     return (
-        <ScrollView contentContainerStyle={Styles.p10} style={Styles.hw100}>
+        <ScrollView contentContainerStyle={[Styles.p10, Styles.gap20]} style={Styles.hw100}>
             {getTextField('name')}
             {getPicker('cuisine', newValueLabel(CUISINES))}
             {getPicker('price', newValueLabel(LEVELS))}
@@ -116,8 +108,9 @@ export default function UpsertRestaurantScreen() {
             {getTextField('address')}
             {getTextField('website', 'url', 512)}
             {getPicker('delivery', newValueLabel(YES_OR_NO))}
-            <LargeBtn
+            <MyBtn
                 style={Styles.mv20}
+                isLoading={marker}
                 disabled={marker}
                 label={marker ? 'Saving...' : 'Save Restaurant'}
                 onPress={() => onSavePress()}

@@ -5,14 +5,11 @@ import {Styles} from "@/constants/Styles";
 import {descSortStorage} from "@/store/storage";
 import {newRestaurant, Restaurant, stateRestaurant, stateRestaurants} from "@/store/state";
 import {PlatformPressable} from "@react-navigation/elements";
-import {useContext, useMemo} from "react";
-import {ToastContext} from "@/components/provider/ToastProvider";
-import {ToastPresets} from "react-native-ui-lib";
-import LargeBtn from '@/components/ui/LargeBtn';
+import {useMemo} from "react";
+import MyBtn from '@/components/ui/MyBtn';
 import {VFull} from "@/components/VFull";
 
 export default function TabRestaurantsScreen() {
-    const {showToast} = useContext(ToastContext);
 
     const restaurantsRecord = stateRestaurants(state => state.record);
     const restaurants = useMemo(() => Object.values(restaurantsRecord), [restaurantsRecord]);
@@ -24,12 +21,11 @@ export default function TabRestaurantsScreen() {
             key={item.key}
             onPress={upsertRestaurant(item)}>
             <Text style={Styles.itemText}>{item.name || item.key}</Text>
-            <LargeBtn
+            <MyBtn
                 label='Delete'
                 style={Styles.m0}
                 onPress={() => {
                     stateRestaurants.getState().deleteRecord(item.key);
-                    showToast('Restaurant deleted', ToastPresets.OFFLINE);
                 }}/>
         </PlatformPressable>
     }
@@ -38,11 +34,11 @@ export default function TabRestaurantsScreen() {
     return (
         <VFull>
             <FlatList data={descSortStorage(restaurants)}
-                      style={[Styles.flexG1]}
+                      style={[Styles.flex1]}
                       keyExtractor={({key}) => key}
                       renderItem={renderItem}>
             </FlatList>
-            <LargeBtn
+            <MyBtn
                 label='Add Restaurant'
                 onPress={upsertRestaurant()}
             />

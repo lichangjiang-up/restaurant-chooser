@@ -1,12 +1,11 @@
-import {useContext, useMemo} from "react";
-import {ToastContext} from "@/components/provider/ToastProvider";
+import {useMemo} from "react";
 import MyCheckbox from "@/components/ui/MyCheckbox";
 import {Styles} from "@/constants/Styles";
-import {FlatList, View, Text, StyleSheet} from "react-native";
-import LargeBtn from "@/components/ui/LargeBtn";
+import {FlatList, View, Text} from "react-native";
+import MyBtn from "@/components/ui/MyBtn";
 import {getPersonNameRelation, Person} from "@/store/state";
-import {ToastPresets} from "react-native-ui-lib";
 import {dialogStore, vetoedRecordStore} from "@/components/choice/choice_stores";
+import {Colors} from "@/constants/Colors";
 
 export type  ChoiceModalVetoProps = {
     goingPeople: Person[],
@@ -14,7 +13,6 @@ export type  ChoiceModalVetoProps = {
 
 export default function ChoiceModalVeto({goingPeople}: ChoiceModalVetoProps) {
     const disabledBtn = !goingPeople?.length;
-    const {showToast} = useContext(ToastContext);
     const {modalShowOrHide, vetoShowHide, remainingRestaurant, setRemainingRestaurant} = dialogStore();
     const {clearRecord, record} = vetoedRecordStore();
     const vetoCount = useMemo(() => Object.keys(record).length, [record]);
@@ -33,24 +31,25 @@ export default function ChoiceModalVeto({goingPeople}: ChoiceModalVetoProps) {
                 renderItem={vetoRenderItem}
                 keyExtractor={({key}) => `${key}-v`}
             />
-            <View style={[Styles.rowBtw, Styles.mv20]}>
-                <LargeBtn
+            <View style={[Styles.rowBtw, Styles.mv20, Styles.gap20]}>
+                <MyBtn
                     disabled={disabledBtn}
                     label='Cancel'
-                    style={styles.vetoBtn}
-                    backgroundColor={'#AAA'}
+                    style={Styles.flex1}
+                    isSmall={true}
+                    backgroundColor={Colors.colorAAA}
                     onPress={() => {
                         clearRecord();
                         vetoShowHide();
                     }}
                 />
-                <LargeBtn
+                <MyBtn
                     disabled={vetoCount < 1 || disabledBtn}
                     label='Save'
-                    style={styles.vetoBtn}
+                    isSmall={true}
+                    style={Styles.flex1}
                     onPress={() => {
                         if (vetoCount < 1) {
-                            showToast('Least one have vetoed!', ToastPresets.FAILURE);
                             return;
                         }
                         setRemainingRestaurant(remainingRestaurant - 1);
@@ -61,7 +60,3 @@ export default function ChoiceModalVeto({goingPeople}: ChoiceModalVetoProps) {
         </>
     );
 }
-
-const styles = StyleSheet.create({
-    vetoBtn: {marginLeft: 10, flex: 1},
-});

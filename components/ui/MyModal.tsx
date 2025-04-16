@@ -1,5 +1,6 @@
 import {Modal, ModalProps, Pressable, StyleSheet, View} from "react-native";
 import {Styles, VSP} from "@/constants/Styles";
+import {Colors} from "@/constants/Colors";
 
 type ContainerProps = {
     onPress?: () => void;
@@ -18,12 +19,12 @@ export default function MyModal({
                                 }: ModalProps & ContainerProps) {
     return <Modal
         statusBarTranslucent={true}
-        animationType='slide'
+        animationType='none'
         transparent={true}
         onRequestClose={onDismiss}
         {...otherProps}>
         <Pressable onPress={onPress}
-                   style={[Styles.hw100, styles.modalBg, {backgroundColor: maskColor || '#000000AA'}]}>
+                   style={[Styles.hw100, styles.modalBg, {backgroundColor: maskColor || Colors.mask}]}>
             <View style={containerStyle || styles.modalContent}>
                 {children}
             </View>

@@ -1,6 +1,6 @@
 import {ScrollView, Text} from "react-native";
 import {Styles} from "@/constants/Styles";
-import LargeBtn from "@/components/ui/LargeBtn";
+import MyBtn from "@/components/ui/MyBtn";
 import {
     CUISINES, filterWithPreFilter,
     LEVELS,
@@ -9,7 +9,6 @@ import {
     stateRestaurants,
     YES_OR_NO
 } from "@/store/state";
-import {PickerModes} from "react-native-ui-lib";
 import {router} from "expo-router";
 import MyPiker, {newValueLabel, ValueLabel} from "@/components/ui/MyPiker";
 import {useMemo} from "react";
@@ -24,7 +23,7 @@ export default function TabPreFiltersScreen() {
         return <MyPiker
             valueLabels={valueLabels}
             key={key}
-            mode={PickerModes.MULTI}
+            isMulti={true}
             value={preFilter[key] || []}
             keyName={key}
             onChange={(v) => {
@@ -41,7 +40,7 @@ export default function TabPreFiltersScreen() {
         {getPicker('price', newValueLabel(LEVELS))}
         {getPicker('rating', newValueLabel(LEVELS))}
         {getPicker('delivery', newValueLabel(YES_OR_NO))}
-        <LargeBtn
+        <MyBtn
             style={Styles.mv20}
             disabled={choiceRestaurants.length < 1}
             label={`Next(${choiceRestaurants.length})`}

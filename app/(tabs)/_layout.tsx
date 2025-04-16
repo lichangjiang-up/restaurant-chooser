@@ -5,48 +5,53 @@ import {Platform, StyleSheet} from 'react-native';
 import {HapticPressable} from '@/components/ui/HapticPressable';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import {IconImage, IconImageName} from "@/components/ui/IconImage";
-import {Colors} from "react-native-ui-lib";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {Styles} from "@/constants/Styles";
+import {Colors} from "@/constants/Colors";
+
+const tabScreens: { name: string, title: string, iconName: IconImageName }[] = [
+    {
+        name: '(people)',
+        title: 'PEOPLE',
+        iconName: 'people.fill',
+    },
+    {
+        name: '(decision)',
+        title: 'DECISION',
+        iconName: 'decision.fill',
+    },
+    {
+        name: '(restaurants)',
+        title: 'RESTAURANTS',
+        iconName: 'restaurants.fill',
+    },
+];
 
 export default function TabLayout() {
-    return (
-        <SafeAreaView style={Styles.hw100}>
-            <Tabs
-                initialRouteName="(decision)"
-                screenOptions={{
-                    tabBarPosition: 'bottom',
-                    tabBarActiveTintColor: Colors.$iconDanger,
-                    headerShown: false,
-                    tabBarHideOnKeyboard: true,
-                    tabBarButton: HapticPressable,
-                    tabBarBackground: TabBarBackground,
-                    tabBarStyle: styles.tabBar,
-                }}>
+    return <SafeAreaView style={Styles.hw100}>
+        <Tabs
+            initialRouteName="(decision)"
+            screenOptions={{
+                headerShown: false,
+                tabBarHideOnKeyboard: true,
+                tabBarButton: HapticPressable,
+                tabBarBackground: TabBarBackground,
+                tabBarActiveTintColor: Colors.tabIconTintColor,
+                tabBarStyle: styles.tabBar,
+                tabBarPosition: 'bottom',
+            }}>
+            {tabScreens.map(({name, title, iconName}) => (
                 <Tabs.Screen
-                    name="(people)"
+                    key={name}
+                    name={name}
                     options={{
-                        title: 'PEOPLE',
-                        tabBarIcon: getIconImg('people.fill'),
+                        title,
+                        tabBarIcon: getIconImg(iconName),
                     }}
                 />
-                <Tabs.Screen
-                    name="(decision)"
-                    options={{
-                        title: 'DECISION',
-                        tabBarIcon: getIconImg('decision.fill'),
-                    }}
-                />
-                <Tabs.Screen
-                    name="(restaurants)"
-                    options={{
-                        title: 'RESTAURANTS',
-                        tabBarIcon: getIconImg('restaurants.fill'),
-                    }}
-                />
-            </Tabs>
-        </SafeAreaView>
-    );
+            ))}
+        </Tabs>
+    </SafeAreaView>;
 }
 
 function getIconImg(name: IconImageName) {

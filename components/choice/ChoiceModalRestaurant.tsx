@@ -1,5 +1,5 @@
 import {newRestaurant, Restaurant, stateChoiceRestaurant, stateRestaurant, wrapperRestaurant} from "@/store/state";
-import LargeBtn from "../ui/LargeBtn";
+import MyBtn from "../ui/MyBtn";
 import {Styles} from "@/constants/Styles";
 import {router} from "expo-router";
 import {StyleSheet, Text} from "react-native";
@@ -21,7 +21,7 @@ export default function ChoiceModalRestaurant({restaurant}: ChoiceModalRestauran
         <>
             <Text style={Styles.title}>{title}</Text>
             <Text style={styles.restaurantText}>{text}</Text>
-            <LargeBtn
+            <MyBtn
                 label={restaurant ? 'Accept' : 'Reselect'}
                 style={Styles.mb20}
                 onPress={() => {
@@ -34,7 +34,7 @@ export default function ChoiceModalRestaurant({restaurant}: ChoiceModalRestauran
                     }
                 }}
             />
-            <LargeBtn
+            <MyBtn
                 label={restaurant ? 'Veto' : 'Add Restaurant'}
                 style={Styles.mb20}
                 onPress={() => {

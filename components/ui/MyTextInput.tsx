@@ -1,15 +1,16 @@
 import {Styles} from "@/constants/Styles";
 import {TextInput, Text, StyleSheet, TextInputProps, View} from "react-native";
+import {ErrMsg} from "@/constants/method";
 
 export default function MyTextInput({label, errMsg, ...props}: {
     label: string,
-    errMsg: string | false | undefined;
+    errMsg: ErrMsg;
 } & TextInputProps) {
     let errorView = <></>;
     if (errMsg) {
         errorView = <Text style={{color: 'red'}}>{errMsg}</Text>;
     }
-    return <View style={[Styles.w100, Styles.mb20]}>
+    return <View style={[Styles.w100]}>
         <Text style={Styles.capital}>{label}</Text>
         <TextInput
             placeholderTextColor='gray'
