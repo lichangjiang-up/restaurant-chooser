@@ -17,10 +17,10 @@ export default function TabRestaurantsScreen() {
 
     function renderItem({item}: { item: Restaurant }) {
         return <PlatformPressable
-            style={[Styles.borderBottom, Styles.rowBtw, Styles.p10_8]}
+            style={[Styles.borderBottom, Styles.rowBtw, Styles.p10_8, Styles.gap20]}
             key={item.key}
             onPress={upsertRestaurant(item)}>
-            <Text style={Styles.itemText}>{item.name || item.key}</Text>
+            <Text numberOfLines={1} style={[Styles.itemText, Styles.flex1]}>{item.name || item.key}</Text>
             <MyBtn
                 label='Delete'
                 style={Styles.m0}

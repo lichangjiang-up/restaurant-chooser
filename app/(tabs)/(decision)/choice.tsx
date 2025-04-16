@@ -27,8 +27,8 @@ export default function TabChoiceScreen() {
     }, [modalShowOrHide, clearRecord]);
 
     const renderItem = ({item}: { item: Person }) => (
-        <View style={[Styles.borderBottom, Styles.rowBtw, Styles.ph5]} key={item.key}>
-            <Text style={styles.itemText}>{getPersonNameRelation(item)}</Text>
+        <View style={[Styles.borderBottom, Styles.rowBtw, {paddingVertical: 10}, Styles.gap20]} key={item.key}>
+            <Text style={[styles.itemText, Styles.flex1]}>{getPersonNameRelation(item)}</Text>
             <Text style={styles.itemText}>{`Vetoed: ${record.hasOwnProperty(item.key) ? 'yes' : 'no'}`}</Text>
         </View>
     );
@@ -58,5 +58,5 @@ export default function TabChoiceScreen() {
 
 
 const styles = StyleSheet.create({
-    itemText: {fontWeight: 400, fontSize: 16, lineHeight: 50},
+    itemText: {fontWeight: 400, fontSize: 16, lineHeight: 24},
 });

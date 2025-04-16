@@ -6,8 +6,8 @@ import {MaterialIcons} from "@expo/vector-icons";
 
 const checkIcons = ['check-box-outline-blank', 'check-box', 'radio-button-unchecked', 'radio-button-checked'] as const;
 
-export default function MyCheckbox({lineHeight = 56, store, choice, label, isSingle, cb}: {
-    lineHeight?: number,
+export default function MyCheckbox({minHeight = 56, store, choice, label, isSingle, cb}: {
+    minHeight?: number,
     store: UseBoundStore<StoreApi<RecordMap<string, null>>>,
     choice: string,
     label: string,
@@ -29,10 +29,10 @@ export default function MyCheckbox({lineHeight = 56, store, choice, label, isSin
             deleteRecord(choice);
         }
         cb?.(!value);
-    }} style={[Styles.w100, styles.container]}>
+    }} style={[Styles.w100, styles.container, {minHeight}]}>
         <MaterialIcons name={name} size={30} style={{marginEnd: 6}}
                        color={value ? 'black' : 'gray'}/>
-        <Text style={[{lineHeight}, Styles.flex1]}>{label}</Text>
+        <Text style={[{lineHeight: 24}, Styles.flex1]}>{label}</Text>
     </Pressable>
 }
 

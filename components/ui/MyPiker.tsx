@@ -58,7 +58,7 @@ export default function MyPiker({onChange, value, valueLabels, keyName, errMsg, 
         const {label, value} = item;
         return <MyCheckbox
             isSingle={!isMulti}
-            lineHeight={48}
+            minHeight={48}
             key={value}
             label={label}
             cb={isMulti ? undefined : (_) => changeAndHide(label)}

@@ -23,7 +23,7 @@ export default function TabEnjoyScreen() {
     function renderItem(key: keyof Restaurant) {
         return <View key={key} style={styles.valueText}>
             <Text style={[styles.label, Styles.capital]}>{key}:</Text>
-            <Text>{restaurant?.getHint(key) || 'N/A'}</Text>
+            <Text numberOfLines={1} style={Styles.flex1}>{restaurant?.getHint(key) || 'N/A'}</Text>
         </View>;
     }
 
@@ -56,7 +56,12 @@ const styles = StyleSheet.create({
         marginVertical: 40,
         borderRadius: 6,
     },
-    valueText: {display: 'flex', flexDirection: 'row', alignItems: 'center', height: 30},
+    valueText: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 30,
+    },
     title: {
         fontSize: 26,
         fontWeight: 'bold',

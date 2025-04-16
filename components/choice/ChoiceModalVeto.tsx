@@ -21,7 +21,7 @@ export default function ChoiceModalVeto({goingPeople}: ChoiceModalVetoProps) {
             choice={item.key}
             store={vetoedRecordStore}
             label={getPersonNameRelation(item)}
-            lineHeight={46}
+            minHeight={46}
         />);
 
     return (<>

@@ -1,4 +1,4 @@
-import {FlatList, StyleSheet, Text} from 'react-native';
+import {FlatList, Text} from 'react-native';
 
 import {VFull} from "@/components/VFull";
 import {router} from "expo-router";
@@ -15,14 +15,12 @@ export default function TabPeopleScreen() {
 
     const choices = stateChoicesPeople(state => state.record);
 
-    const styles = getStyles();
-
     function renderItem({item}: { item: Person }) {
         return <PlatformPressable
             onPress={upsertPerson(item)}
             key={item.key}
-            style={[Styles.borderBottom, Styles.rowBtw, Styles.p10_8]}>
-            <Text style={styles.itemText}>{getPersonName(item)}</Text>
+            style={[Styles.borderBottom, Styles.rowBtw, Styles.p10_8, Styles.gap20]}>
+            <Text numberOfLines={2} style={[Styles.itemText, Styles.flex1]}>{getPersonName(item)}</Text>
             <MyBtn
                 label='Delete'
                 style={Styles.m0}
@@ -53,10 +51,4 @@ function upsertPerson(person?: Person) {
         statePerson.getState().objReset(Object.assign(newPerson(person)));
         router.push('/(tabs)/(people)/person');
     }
-}
-
-function getStyles() {
-    return StyleSheet.create({
-        itemText: {flexGrow: 1, fontWeight: '500'},
-    });
 }
