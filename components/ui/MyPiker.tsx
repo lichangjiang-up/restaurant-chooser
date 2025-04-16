@@ -14,7 +14,7 @@ export function newValueLabel<T>(vals: readonly T[]): ValueLabel[] {
 export default function MyPiker({valueLabels, keyName, errMsg, ...props}: {
     valueLabels: ValueLabel[],
     keyName: string
-    errMsg: string | false | undefined,
+    errMsg?: string | false | undefined,
 } & PickerProps) {
     let errorView = <></>;
     if (errMsg) {
