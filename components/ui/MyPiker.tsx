@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
         lineHeight: 46,
         marginVertical: 2,
         fontSize: 16,
-        color: Colors.$textDefault,
         fontWeight: 'normal',
     }
 })
