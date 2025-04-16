@@ -34,14 +34,14 @@ export default function TabPreFiltersScreen() {
     const choiceRestaurants = restaurants.filter(filterWithPreFilter(preFilter)).map(restaurant => [restaurant.key, null]);
 
 
-    return <ScrollView style={Styles.hw100} contentContainerStyle={Styles.p10}>
+    return <ScrollView style={[Styles.hw100]} contentContainerStyle={[Styles.p10, Styles.gap20]}>
         <Text style={Styles.title}>Restaurant Filter</Text>
         {getPicker('cuisines', newValueLabel(CUISINES))}
         {getPicker('price', newValueLabel(LEVELS))}
         {getPicker('rating', newValueLabel(LEVELS))}
         {getPicker('delivery', newValueLabel(YES_OR_NO))}
         <MyBtn
-            style={Styles.mv20}
+            style={Styles.mb20}
             disabled={choiceRestaurants.length < 1}
             label={`Next(${choiceRestaurants.length})`}
             onPress={() => {
