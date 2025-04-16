@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         lineHeight: 46,
         marginVertical: 4,
-        fontSize: 18,
+        fontSize: 16,
         color: Colors.$textDefault,
         fontWeight: 'normal',
     }

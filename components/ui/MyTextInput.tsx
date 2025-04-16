@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 10,
         borderRadius: 4,
-        fontSize: 18,
+        fontSize: 16,
         color: Colors.$textDefault,
         fontWeight: 'normal',
     }
