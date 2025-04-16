@@ -24,8 +24,8 @@ export default function MyTextInput({label, errMsg, ...props}: {
 const styles = StyleSheet.create({
     tf: {
         height: 46,
-        marginTop: 6,
-        marginBottom: 4,
+        marginTop: 4,
+        marginBottom: 2,
         borderWidth: 1,
         padding: 10,
         borderRadius: 4,
