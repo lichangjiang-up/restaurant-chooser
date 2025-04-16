@@ -75,7 +75,7 @@ export default function UpsertRestaurantScreen() {
 
     function onSavePress() {
         const errMp = {
-            'name': checkName(restaurant.name, 'name'),
+            'name': checkName(restaurant.name, 'Name'),
             'phone': checkPhone(restaurant.phone),
             'cuisine': restaurant.cuisine ? false : 'Cuisine required',
             'rating': restaurant.rating ? false : 'Rating required',
