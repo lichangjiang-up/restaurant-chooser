@@ -41,7 +41,7 @@ export default function TabPreFiltersScreen() {
         {getPicker('rating', newValueLabel(LEVELS))}
         {getPicker('delivery', newValueLabel(YES_OR_NO))}
         <MyBtn
-            style={Styles.mb20}
+            style={Styles.mv20}
             disabled={choiceRestaurants.length < 1}
             label={`Next(${choiceRestaurants.length})`}
             onPress={() => {
