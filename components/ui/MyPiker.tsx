@@ -1,4 +1,4 @@
-import {Colors, Picker, PickerProps} from "react-native-ui-lib";
+import {Picker, PickerProps} from "react-native-ui-lib";
 import {Styles} from "@/constants/Styles";
 import {View, Text, StyleSheet} from "react-native";
 

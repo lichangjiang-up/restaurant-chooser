@@ -1,6 +1,5 @@
 import {Styles} from "@/constants/Styles";
 import {TextInput, Text, StyleSheet, TextInputProps, View} from "react-native";
-import {Colors} from "react-native-ui-lib";
 
 export default function MyTextInput({label, errMsg, ...props}: {
     label: string,
