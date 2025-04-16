@@ -1,7 +1,7 @@
 import {Styles} from "@/constants/Styles";
-import {ScrollView} from "react-native";
+import {KeyboardTypeOptions, ScrollView} from "react-native";
 import {useContext, useEffect} from "react";
-import {Colors, TextField, ToastPresets} from "react-native-ui-lib";
+import {ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {
@@ -17,6 +17,7 @@ import {initLastModifiedAndRet} from "@/store/storage";
 import LargeBtn from "@/components/ui/LargeBtn";
 import MyPiker, {newValueLabel, ValueLabel} from "@/components/ui/MyPiker";
 import {checkName, checkPhone, trimObjByKeys} from "@/constants/method";
+import MyTextInput from "@/components/ui/MyTextInput";
 
 
 const markerState = newMarkerStore();
@@ -43,21 +44,19 @@ export default function UpsertPersonScreen() {
     }, [resetRecord, resetMarker]);
 
 
-    function getTextField(key: keyof Person, maxLength = 30) {
+    function getTextField(key: keyof Person, keyboardType: KeyboardTypeOptions = 'default', maxLength = 30) {
         const newErr = record[key];
         const value = person[key];
-        return <TextField
+
+        return <MyTextInput
             key={key}
+            errMsg={newErr}
             multiline={maxLength > 30}
             placeholder={`Input with person ${key}`}
-            label={newErr || key}
-            labelColor={newErr ? 'red' : undefined}
+            label={key}
             maxLength={maxLength}
-            color={Colors.$textDefault}
-            labelStyle={Styles.capital}
-            containerStyle={[Styles.mb20, Styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
             value={value as any}
-            style={Styles.tf}
+            keyboardType={keyboardType}
             onFocus={() => deleteRecord(key)}
             onChangeText={(text) => personState.objUpdate(key, text)}/>;
     }
@@ -69,10 +68,9 @@ export default function UpsertPersonScreen() {
             key={key}
             keyName={key}
             valueLabels={valueLabels}
-            style={newErr ? {borderColor: 'red'} : {}}
             value={person[key]}
-            label={newErr || key}
-            labelColor={newErr ? 'red' : undefined}
+            label={key}
+            errMsg={newErr}
             onChange={(text) => {
                 deleteRecord(key);
                 personState.objUpdate(key, text);
@@ -100,7 +98,11 @@ export default function UpsertPersonScreen() {
             try {
                 statePeople.getState().addRecord(res.key, res);
                 showToast('Person saved');
-                router.back();
+                if (router.canGoBack()) {
+                    router.back();
+                } else {
+                    router.push('/(tabs)/(people)')
+                }
             } catch (err) {
                 showToast('Person save failed', ToastPresets.FAILURE);
                 console.log(err);
@@ -114,7 +116,7 @@ export default function UpsertPersonScreen() {
         <ScrollView contentContainerStyle={Styles.p10} style={Styles.hw100}>
             {getTextField('firstname')}
             {getTextField('lastname')}
-            {getTextField('phone', 16)}
+            {getTextField('phone', 'phone-pad', 16)}
             {getPicker('gender', newValueLabel(GENDERS))}
             {getPicker('relation', newValueLabel(PERSON_RELATIONS))}
             <LargeBtn

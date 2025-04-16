@@ -103,23 +103,12 @@ export const Styles = StyleSheet.create({
     capital: {
         textTransform: 'capitalize',
     },
-    picker: {
-        borderRadius: 4,
-        borderWidth: 1,
-        borderColor: Colors.$textDefault,
-        borderStyle: 'solid',
-        paddingVertical: 6,
-        paddingHorizontal: 10,
-        lineHeight: 46,
-        marginTop: 4,
-    },
     tfContainer: {
         borderStyle: 'solid',
         borderBottomWidth: 1,
         paddingBottom: 4,
         borderColor: Colors.$textDefault,
     },
-    tf: {lineHeight: 24, fontSize: 18, marginVertical: 6}
 });
 
 export function getStyleBg() {

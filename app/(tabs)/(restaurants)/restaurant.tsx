@@ -1,7 +1,7 @@
 import {Styles} from "@/constants/Styles";
-import {ScrollView} from "react-native";
+import {KeyboardTypeOptions, ScrollView} from "react-native";
 import {useContext, useEffect} from "react";
-import {Colors, TextField, ToastPresets} from "react-native-ui-lib";
+import {ToastPresets} from "react-native-ui-lib";
 import {router} from "expo-router";
 import {ToastContext} from "@/components/provider/ToastProvider";
 import {
@@ -17,6 +17,7 @@ import {initLastModifiedAndRet} from "@/store/storage";
 import LargeBtn from "@/components/ui/LargeBtn";
 import {checkAddress, checkName, checkPhone, checkWebsite, trimObjByKeys} from "@/constants/method";
 import MyPiker, {newValueLabel, ValueLabel} from "@/components/ui/MyPiker";
+import MyTextInput from "@/components/ui/MyTextInput";
 
 
 type ErrRecord = Record<keyof Restaurant, string | false | undefined>;
@@ -41,21 +42,18 @@ export default function UpsertRestaurantScreen() {
         };
     }, [resetRecord, resetMarker]);
 
-    function getTextField(key: keyof Restaurant, maxLength = 30) {
+    function getTextField(key: keyof Restaurant, keyboardType: KeyboardTypeOptions = 'default', maxLength = 30) {
         const newErr = record[key];
         const value = restaurant[key];
-        return <TextField
+        return <MyTextInput
             key={key}
             multiline={maxLength > 30}
             placeholder={`Input with person ${key}`}
-            label={newErr || key}
-            labelStyle={Styles.capital}
-            labelColor={newErr ? 'red' : undefined}
+            label={key}
             maxLength={maxLength}
-            color={Colors.$textDefault}
-            containerStyle={[Styles.mb20, Styles.tfContainer, newErr ? {borderColor: 'red'} : {}]}
             value={value as any}
-            style={Styles.tf}
+            errMsg={newErr}
+            keyboardType={keyboardType}
             onFocus={() => deleteRecord(key)}
             onChangeText={(text) => state.objUpdate(key, text)}/>;
     }
@@ -66,10 +64,9 @@ export default function UpsertRestaurantScreen() {
             key={key}
             keyName={key}
             valueLabels={valueLabels}
-            style={newErr ? {borderColor: 'red'} : {}}
             value={restaurant[key] as string}
-            label={newErr || key}
-            labelColor={newErr ? 'red' : undefined}
+            label={key}
+            errMsg={newErr}
             onChange={(text) => {
                 deleteRecord(key);
                 state.objUpdate(key, text);
@@ -115,9 +112,9 @@ export default function UpsertRestaurantScreen() {
             {getPicker('cuisine', newValueLabel(CUISINES))}
             {getPicker('price', newValueLabel(LEVELS))}
             {getPicker('rating', newValueLabel(LEVELS))}
-            {getTextField('phone')}
+            {getTextField('phone', 'phone-pad')}
             {getTextField('address')}
-            {getTextField('website', 512)}
+            {getTextField('website', 'url', 512)}
             {getPicker('delivery', newValueLabel(YES_OR_NO))}
             <LargeBtn
                 style={Styles.mv20}
