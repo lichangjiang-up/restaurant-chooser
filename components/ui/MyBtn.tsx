@@ -3,7 +3,7 @@ import {PlatformPressable} from "@react-navigation/elements";
 import {Text, StyleSheet, View, ActivityIndicator} from 'react-native';
 import {Colors} from "@/constants/Colors";
 
-export default function MyBtn({label, style, onPress, disabled, backgroundColor, isSmall, isLoading}: {
+type MyBtnProps = {
     label: string,
     style?: VSP,
     onPress: () => void,
@@ -11,7 +11,9 @@ export default function MyBtn({label, style, onPress, disabled, backgroundColor,
     backgroundColor?: string,
     isSmall?: boolean,
     isLoading?: boolean,
-}) {
+};
+
+export default function MyBtn({label, style, onPress, disabled, backgroundColor, isSmall, isLoading}: MyBtnProps) {
     let aInd = <></>;
     if (isLoading) {
         aInd = <ActivityIndicator color='gray'/>;

@@ -8,7 +8,6 @@ type ContainerProps = {
     maskColor?: string;
 }
 
-
 export default function MyModal({
                                     onDismiss,
                                     onPress,

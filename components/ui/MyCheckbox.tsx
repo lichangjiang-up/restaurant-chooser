@@ -6,14 +6,16 @@ import {MaterialIcons} from "@expo/vector-icons";
 
 const checkIcons = ['check-box-outline-blank', 'check-box', 'radio-button-unchecked', 'radio-button-checked'] as const;
 
-export default function MyCheckbox({minHeight = 56, store, choice, label, isSingle, cb}: {
+type MyCheckboxProps = {
     minHeight?: number,
     store: UseBoundStore<StoreApi<RecordMap<string, null>>>,
     choice: string,
     label: string,
     isSingle?: boolean,
     cb?: (v: boolean) => void,
-}) {
+};
+
+export default function MyCheckbox({minHeight = 56, store, choice, label, isSingle, cb}: MyCheckboxProps) {
     const {record: choices, addRecord, deleteRecord, resetRecord} = store();
     const value = choices.hasOwnProperty(choice);
     const name = checkIcons[(isSingle ? 2 : 0) + (value ? 1 : 0)];

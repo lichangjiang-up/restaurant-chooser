@@ -19,14 +19,16 @@ export function newValueLabel<T>(vals: readonly T[]): ValueLabel[] {
     return vals.map(value => ({value, label: value} as ValueLabel));
 }
 
-export default function MyPiker({onChange, value, valueLabels, keyName, errMsg, isMulti}: {
+type MyPickerProps = {
     valueLabels: ValueLabel[],
     keyName: string
     errMsg?: ErrMsg,
     isMulti?: boolean,
     value: PickerValue,
     onChange: (v: PickerValue) => void,
-}) {
+};
+
+export default function MyPiker({onChange, value, valueLabels, keyName, errMsg, isMulti}: MyPickerProps) {
     let errorView = <></>;
     if (errMsg) {
         errorView = <Text style={{color: 'red'}}>{errMsg}</Text>;
