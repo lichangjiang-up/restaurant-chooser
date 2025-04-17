@@ -16,13 +16,14 @@ export default function ChoiceModalVeto({goingPeople}: ChoiceModalVetoProps) {
     const {modalShowOrHide, vetoShowHide, remainingRestaurant, setRemainingRestaurant} = dialogStore();
     const {clearRecord, record} = vetoedRecordStore();
     const vetoCount = useMemo(() => Object.keys(record).length, [record]);
-    const
-        vetoRenderItem = ({item}: { item: Person }) => (<MyCheckbox
+
+    function vetoRenderItem({item}: { item: Person }) {
+        return <MyCheckbox
             choice={item.key}
             store={vetoedRecordStore}
             label={getPersonNameRelation(item)}
-            minHeight={46}
-        />);
+            minHeight={46}/>;
+    }
 
     return (<>
             <Text style={[Styles.title, {marginVertical: 10}]}>Who Veto?</Text>
