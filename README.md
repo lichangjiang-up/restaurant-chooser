@@ -129,14 +129,14 @@ After filling in the data and clicking the "Save" button, the newly added or mod
 
 **Restaurants Index Page**
 
-* You can click the "Add" button to add a jump to the [Restaurants Upsert](#apptabsrestaurantsrestaurantstsx) page and add a Restaurants.
+* You can click the "Add" button to add a jump to the [Restaurants Upsert](#apptabsrestaurantsrestauranttsx) page and add a Restaurants.
 * You can click the Delete button to remove a Restaurants.
-* You can click on a Restaurants Item to jump to [Restaurants Upsert](#apptabsrestaurantsrestaurantstsx) page for update.
+* You can click on a Restaurants Item to jump to [Restaurants Upsert](#apptabsrestaurantsrestauranttsx) page for update.
 
 <img src="readme/restaurants.png" width="350px">
 
 
-### [app/(tabs)/(restaurants)/restaurants.tsx](app/(tabs)/(restaurants)/restaurants.tsx)
+### [app/(tabs)/(restaurants)/restaurant.tsx](app/(tabs)/(restaurants)/restaurant.tsx)
 
 **Restaurants Upsert Page**
 
