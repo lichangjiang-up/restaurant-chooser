@@ -1,8 +1,10 @@
 # Welcome Restaurant-Chooser App
 
-<video controls width="360" loop autoplay>
-  <source src="readme/RC.mp4" type="video/mp4"/>
-</video>
+
+
+https://github.com/user-attachments/assets/a3343b3d-fe94-4dc7-945d-8885320fea00
+
+
 
 
 # Clone & Run
