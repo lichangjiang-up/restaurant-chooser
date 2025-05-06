@@ -38,7 +38,7 @@ npm run android
 
 <img src="readme/b_bar.png" width="350px">
 
-## (decision)
+## [(decision)](app/(tabs)/(decision)/_layout.tsx)
 ### [app/(tabs)/(decision)/index.tsx](app/(tabs)/(decision)/index.tsx)
 **Decision Index Page**
 
@@ -103,20 +103,43 @@ _On this page, you can select the people who will have meals._
 <img src="readme/enjoy.png" width="350px">
 
 
-## (people) 
+## [(people)](app/(tabs)/(people)/_layout.tsx)
 
-### app/(tabs)/(people)/index.tsx
+### [app/(tabs)/(people)/index.tsx](app/(tabs)/(people)/index.tsx)
 
 **People Index Page**
 
-* You can click the "Add" button to add a jump to the [Person](#apptabspeoplepersontsx) page and add a Person.
+* You can click the "Add" button to add a jump to the [Person Upsert](#apptabspeoplepersontsx) page and add a Person.
 * You can click the Delete button to remove a Person. If someone is selected by Who's Going Page, they **`cannot`** be **deleted**.
-* You can click on a Person Item to jump to page [Person](#apptabspeoplepersontsx) for update.
+* You can click on a Person Item to jump to [Person Upsert](#apptabspeoplepersontsx) page for update.
 
 <img src="readme/people.png" width="300px"> <img src="readme/decision-2.png" width="300px">
 
 ### [app/(tabs)/(people)/person.tsx](app/(tabs)/(people)/person.tsx)
 
-**Person Edit or Create Page**
+**Person Upsert Page**
+
+After filling in the data and clicking the "Save" button, the newly added or modified Person will appear at the top of the [People](#apptabspeopleindextsx) page.
 
 <img src="readme/person.png" width="350px"> 
+
+## [(restaurants)](app/(tabs)/(restaurants)/_layout.tsx)
+
+### [app/(tabs)/(restaurants)/index.tsx](app/(tabs)/(restaurants)/index.tsx)
+
+**Restaurants Index Page**
+
+* You can click the "Add" button to add a jump to the [Restaurants Upsert](#apptabsrestaurantsrestaurantstsx) page and add a Restaurants.
+* You can click the Delete button to remove a Restaurants.
+* You can click on a Restaurants Item to jump to [Restaurants Upsert](#apptabsrestaurantsrestaurantstsx) page for update.
+
+<img src="readme/restaurants.png" width="350px">
+
+
+### [app/(tabs)/(restaurants)/restaurants.tsx](app/(tabs)/(restaurants)/restaurants.tsx)
+
+**Restaurants Upsert Page**
+
+After filling in the data and clicking the "Save" button, the newly added or modified Restaurant will appear at the top of the [Restaurants](#apptabsrestaurantsindextsx) page.
+
+<img src="readme/restaurant.png" width="350px">
