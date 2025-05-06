@@ -109,9 +109,9 @@ _On this page, you can select the people who will have meals._
 
 **People Index Page**
 
-* You can click the "Add" button to add a jump to the [Person](app/(tabs)/(people)/person.tsx) page and add a Person.
+* You can click the "Add" button to add a jump to the [Person](#app--tabs----people--persontsx) page and add a Person.
 * You can click the Delete button to remove a Person. If someone is selected by Who's Going Page, they **`cannot`** be **deleted**.
-* You can click on a Person Item to jump to page `app/(tabs)/(people)/person.tsx` for update.
+* You can click on a Person Item to jump to page [Person](#app--tabs----people--persontsx) for update.
 
 <img src="readme/people.png" width="350px">
 <img src="readme/decision-2.png" width="350px">
