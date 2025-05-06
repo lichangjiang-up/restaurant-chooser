@@ -143,3 +143,24 @@ After filling in the data and clicking the "Save" button, the newly added or mod
 After filling in the data and clicking the "Save" button, the newly added or modified Restaurant will appear at the top of the [Restaurants](#apptabsrestaurantsindextsx) page.
 
 <img src="readme/restaurant.png" width="350px">
+
+# Components
+
+```text
+├── VFull.tsx
+├── choice
+│   ├── ChoiceModal.tsx
+│   ├── ChoiceModalRestaurant.tsx
+│   ├── ChoiceModalVeto.tsx
+│   └── choice_stores.ts
+└── ui
+    ├── HapticPressable.tsx
+    ├── IconImage.tsx
+    ├── MyBtn.tsx
+    ├── MyCheckbox.tsx
+    ├── MyModal.tsx
+    ├── MyPiker.tsx
+    ├── MyTextInput.tsx
+    ├── TabBarBackground.ios.tsx
+    └── TabBarBackground.tsx
+```
