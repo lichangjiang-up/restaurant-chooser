@@ -1,5 +1,8 @@
 # Welcome Restaurant-Chooser App
 
+<br/>
+<br/>
+
 # Clone & Run
 ```shell
 git clone https://github.com/lichangjiang-up/restaurant-chooser.git
@@ -7,6 +10,9 @@ cd restaurant-chooser
 npm install
 npm run android
 ```
+
+<br/>
+<br/>
 
 # Navigation 
 ```text
