@@ -1,7 +1,5 @@
 # Welcome Restaurant-Chooser App
 
-<br/>
-<br/>
 
 # Clone & Run
 ```shell
@@ -11,8 +9,6 @@ npm install
 npm run android
 ```
 
-<br/>
-<br/>
 
 # Navigation 
 ```text
@@ -37,32 +33,30 @@ npm run android
 └── _layout.tsx
 ```
 
-## app/(tabs)/_layout.tsx
+## [app/(tabs)/_layout.tsx](app/(tabs)/_layout.tsx)
 **Bottom navigation bar**
 
 <img src="readme/b_bar.png" width="350px">
-<br/>
 
 ## (decision)
-### app/(tabs)/(decision)/index.tsx
+### [app/(tabs)/(decision)/index.tsx](app/(tabs)/(decision)/index.tsx)
 **Decision Index Page**
 
 _On this page, clicking on the pictures or text will lead you to the page of app/(tabs)/(decision)/who.tsx._
 
 <img src="readme/decision-idx.png" width="350px">
-<br/>
 
-### app/(tabs)/(decision)/who.tsx
+
+### [app/(tabs)/(decision)/who.tsx](app/(tabs)/(decision)/who.tsx)
 
 **Who's Going Page**
 
 _On this page, you can select the people who will have meals._
 
 <img src="readme/who.png" width="350px">
-<br/>
 
 
-### app/(tabs)/(decision)/pre_filters.tsx
+### [app/(tabs)/(decision)/pre_filters.tsx](app/(tabs)/(decision)/pre_filters.tsx)
 
 **Restaurant Filter Page**
 
@@ -70,9 +64,9 @@ _On this page, you can select the people who will have meals._
 * Click the "Next" button, and you will enter the page of `app/(tabs)/(decision)/choice.tsx`.
 
 <img src="readme/pre_filters.png" width="350px">
-<br/>
 
-### app/(tabs)/(decision)/choice.tsx
+
+### [app/(tabs)/(decision)/choice.tsx](app/(tabs)/(decision)/choice.tsx)
 
 **Choice Screen**
 
@@ -101,17 +95,28 @@ _On this page, you can select the people who will have meals._
 
 **All of you are quite satisfied with this restaurant. You clicked the 'Accept' button and then entered the `app/(tabs)/(decision)/enjoy.tsx` page.**
 
-<br/>
 
-### app/(tabs)/(decision)/enjoy.tsx
+### [app/(tabs)/(decision)/enjoy.tsx](app/(tabs)/(decision)/enjoy.tsx)
 
 **Enjoy Page**
 
 <img src="readme/enjoy.png" width="350px">
 
-<br/>
-<br/>
 
 ## (people) 
 
+### app/(tabs)/(people)/index.tsx
+
+**People Index Page**
+
+* You can click the "Add" button to add a jump to the [Person](app/(tabs)/(people)/person.tsx) page and add a Person.
+* You can click the Delete button to remove a Person. If someone is selected by Who's Going Page, they **`cannot`** be **deleted**.
+* You can click on a Person Item to jump to page `app/(tabs)/(people)/person.tsx` for update.
+
+<img src="readme/people.png" width="350px">
+<img src="readme/decision-2.png" width="350px">
+
+### [app/(tabs)/(people)/person.tsx](app/(tabs)/(people)/person.tsx)
+
+**Person Edit or Create Page**
 
