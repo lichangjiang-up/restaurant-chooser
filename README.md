@@ -167,7 +167,10 @@ After filling in the data and clicking the "Save" button, the newly added or mod
 
 # State & Storage
 
+**Use MMKV as the storage engine and use Zustand to manage the state.**
+
 ```text
 ├── state.ts
 └── storage.ts
 ```
+ 
