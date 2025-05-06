@@ -113,7 +113,7 @@ _On this page, you can select the people who will have meals._
 * You can click the Delete button to remove a Person. If someone is selected by Who's Going Page, they **`cannot`** be **deleted**.
 * You can click on a Person Item to jump to page [Person](#app--tabs----people--persontsx) for update.
 
-<img src="readme/people.png" width="300px"><img src="readme/decision-2.png" width="300px">
+<img src="readme/people.png" width="300px"> <img src="readme/decision-2.png" width="300px">
 
 ### [app/(tabs)/(people)/person.tsx](app/(tabs)/(people)/person.tsx)
 
