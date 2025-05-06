@@ -33,15 +33,18 @@ npm run android
 
 ## app/(tabs)/_layout.tsx
 **Bottom navigation bar**
-![b_bar.png](readme/b_bar.png)
 
-## decision
+<img src="readme/b_bar.png" width="350px">
+<br/>
+
+## (decision)
 ### app/(tabs)/(decision)/index.tsx
 **Decision Index Page**
 
 _On this page, clicking on the pictures or text will lead you to the page of app/(tabs)/(decision)/who.tsx._
 
-![decision-idx.png](readme/decision-idx.png)
+<img src="readme/decision-idx.png" width="350px">
+<br/>
 
 ### app/(tabs)/(decision)/who.tsx
 
@@ -49,7 +52,9 @@ _On this page, clicking on the pictures or text will lead you to the page of app
 
 _On this page, you can select the people who will have meals._
 
-![who.png](readme/who.png)
+<img src="readme/who.png" width="350px">
+<br/>
+
 
 ### app/(tabs)/(decision)/pre_filters.tsx
 
@@ -58,39 +63,49 @@ _On this page, you can select the people who will have meals._
 * You can filter the restaurants that meet the conditions on this page.
 * Click the "Next" button, and you will enter the page of `app/(tabs)/(decision)/choice.tsx`.
 
-
-![pre_filters.png](readme/pre_filters.png)
+<img src="readme/pre_filters.png" width="350px">
+<br/>
 
 ### app/(tabs)/(decision)/choice.tsx
 
 **Choice Screen**
 
-![choice.png](readme/choice.png)
+<img src="readme/choice.png" width="350px">
 
 
 **Clicking the button will randomly pop up information about a restaurant:**
 
-![restaurant-pop.png](readme/restaurant-pop.png)
+<img src="readme/restaurant-pop.png" width="350px">
+
 
 **If you click "Veto", it will display the "Vetoed People" list:**
 
-![veto-pop.png](readme/veto-people.png)
+<img src="readme/veto-people.png" width="350px">
+
 
 **After selecting and clicking the "Save" button, you will see that the original "People" list now shows those who have chosen "Veto".**
 
-![veto-yes.png](readme/veto-yes.png)
+<img src="readme/veto-yes.png" width="350px">
+
 
 **In order to obtain a restaurant that satisfies everyone, you continued to click the 'Randomly Choice' button:**
 
-![restaurant-pop-2.png](readme/restaurant-pop-2.png)
+<img src="readme/restaurant-pop-2.png" width="350px">
+
 
 **All of you are quite satisfied with this restaurant. You clicked the 'Accept' button and then entered the `app/(tabs)/(decision)/enjoy.tsx` page.**
 
+<br/>
 
 ### app/(tabs)/(decision)/enjoy.tsx
 
 **Enjoy Page**
 
-![enjoy.png](readme/enjoy.png)
+<img src="readme/enjoy.png" width="350px">
+
+<br/>
+<br/>
+
+## (people) 
 
 
