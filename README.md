@@ -1,6 +1,6 @@
 # Welcome Restaurant-Chooser App
 
-## Clone & Run
+# Clone & Run
 ```shell
 git clone https://github.com/lichangjiang-up/restaurant-chooser.git
 cd restaurant-chooser
@@ -8,7 +8,7 @@ npm install
 npm run android
 ```
 
-## Navigation 
+# Navigation 
 ```text
 ├── (tabs)
 │   ├── (decision)
@@ -30,10 +30,12 @@ npm run android
 ├── +not-found.tsx
 └── _layout.tsx
 ```
-### app/(tabs)/_layout.tsx
+
+## app/(tabs)/_layout.tsx
 **Bottom navigation bar**
 ![b_bar.png](readme/b_bar.png)
 
+## decision
 ### app/(tabs)/(decision)/index.tsx
 **Decision Index Page**
 
