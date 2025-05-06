@@ -42,7 +42,7 @@ npm run android
 ### [app/(tabs)/(decision)/index.tsx](app/(tabs)/(decision)/index.tsx)
 **Decision Index Page**
 
-_On this page, clicking on the pictures or text will lead you to the page of app/(tabs)/(decision)/who.tsx._
+_On this page, clicking on the pictures or text will lead you to the page of [Who's Going](#apptabsdecisionwhotsx)._
 
 <img src="readme/decision-idx.png" width="350px">
 
@@ -61,7 +61,7 @@ _On this page, you can select the people who will have meals._
 **Restaurant Filter Page**
 
 * You can filter the restaurants that meet the conditions on this page.
-* Click the "Next" button, and you will enter the page of `app/(tabs)/(decision)/choice.tsx`.
+* Click the "Next" button, and you will enter the page of [Choice](#apptabsdecisionchoicetsx).
 
 <img src="readme/pre_filters.png" width="350px">
 
@@ -93,7 +93,7 @@ _On this page, you can select the people who will have meals._
 <img src="readme/restaurant-pop-2.png" width="350px">
 
 
-**All of you are quite satisfied with this restaurant. You clicked the 'Accept' button and then entered the `app/(tabs)/(decision)/enjoy.tsx` page.**
+**All of you are quite satisfied with this restaurant. You clicked the 'Accept' button and then entered the [Enjoy](#apptabsdecisionenjoytsx) page.**
 
 
 ### [app/(tabs)/(decision)/enjoy.tsx](app/(tabs)/(decision)/enjoy.tsx)
@@ -119,3 +119,4 @@ _On this page, you can select the people who will have meals._
 
 **Person Edit or Create Page**
 
+<img src="readme/person.png" width="350px"> 
