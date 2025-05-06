@@ -17,12 +17,10 @@ import MyPiker, {newValueLabel, ValueLabel} from "@/components/ui/MyPiker";
 import {checkName, checkPhone, ErrMsg, trimObjByKeys} from "@/constants/method";
 import MyTextInput from "@/components/ui/MyTextInput";
 
+type ErrRecord = Record<keyof Person, ErrMsg>;
 
 const markerState = newMarkerStore();
-
-type ErrRecord = Record<keyof Person, ErrMsg>;
 const errRecordStore = newRecordStore<keyof Person, ErrMsg>();
-
 const trimKeys = Array.of<keyof Person>('lastname', 'firstname', 'phone');
 
 export default function UpsertPersonScreen() {
