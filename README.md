@@ -1,5 +1,9 @@
 # Welcome Restaurant-Chooser App
 
+<video controls width="360" loop autoplay>
+  <source src="readme/RC.mp4" type="video/mp4"/>
+</video>
+
 
 # Clone & Run
 ```shell
