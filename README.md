@@ -164,3 +164,10 @@ After filling in the data and clicking the "Save" button, the newly added or mod
     ├── TabBarBackground.ios.tsx
     └── TabBarBackground.tsx
 ```
+
+# State & Storage
+
+```text
+├── state.ts
+└── storage.ts
+```
