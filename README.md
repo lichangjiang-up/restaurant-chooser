@@ -1,12 +1,8 @@
 # Welcome Restaurant-Chooser App
 
-
-
-https://github.com/user-attachments/assets/a3343b3d-fe94-4dc7-945d-8885320fea00
+https://github.com/user-attachments/assets/a3343b3d-fe94-4dc7-945d-8885320fea00 
 
 https://github.com/user-attachments/assets/e8447aca-f4f2-44cd-97a5-952300daa38a
-
-
 
 
 # Clone & Run
